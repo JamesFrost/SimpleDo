@@ -1,20 +1,13 @@
 package com.example.SimpleDo;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import android.widget.*;
-
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class SimpleDo extends Activity {
 
@@ -28,7 +21,6 @@ public class SimpleDo extends Activity {
     private ArrayList<ToDoItem> toDoList;
     private Calendar now;
     private ListView testThree;
-    private AlarmManagerBroadcastReceiver alarm = new AlarmManagerBroadcastReceiver();
 
     private String[] mPlanetTitles;
     private DrawerLayout mDrawerLayout;
@@ -88,8 +80,6 @@ public class SimpleDo extends Activity {
         }
     }
 
-    private CheckBox ch;
-
     /**
      * Class which adds a checkbox to the relevant layout and links it to the correct toDoItem object.
      *
@@ -98,13 +88,10 @@ public class SimpleDo extends Activity {
     private void addItem(final ToDoItem toDoItem) {
         now = Calendar.getInstance();
         toDoList.add(toDoItem);
-        ch = new CheckBox(this);
-
-//        setReminder(toDoItem);
-
-//        addReminder(2014, 6, 5, 19, 47, "Test");
-
+        CheckBox ch = new CheckBox(this);
         Calendar cal = Calendar.getInstance();
+
+        //Set reminder using the phones native calendar
         Intent intent = new Intent(Intent.ACTION_EDIT);
         intent.setType("vnd.android.cursor.item/event");
         intent.putExtra("beginTime", cal.getTimeInMillis());
@@ -132,82 +119,6 @@ public class SimpleDo extends Activity {
 //                toDoItem.setComplete(((CheckedTextView) view).isChecked());
             }
         });
-    }
-
-    private void setReminder(ToDoItem toDoItem) {
-        Intent myIntent = new Intent(getApplicationContext(), NotificationService.class);
-        myIntent.putExtra("TaskName", toDoItem.getName());
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, myIntent, 0);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 12);
-        calendar.set(Calendar.MINUTE, 00);
-        calendar.set(Calendar.SECOND, 00);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, toDoItem.getDate().getTime(), pendingIntent);
-    }
-
-    private void addReminder(int statrYear, int startMonth, int startDay, int startHour, int startMinut, String title) {
-        // Convert start of begin time of reminder in milliseconds.
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(statrYear, startMonth, startDay, startHour, startMinut);
-        long startMillis = beginTime.getTimeInMillis();
-
-        // String to access default google calendar of device for Event setting.
-        String eventUriString = "content://com.android.calendar/events";
-
-        // Creation of Event.
-        ContentValues eventValues = new ContentValues();
-        // Set calendar as 1 for default calendar.
-        eventValues.put(CalendarContract.Events.CALENDAR_ID, 1);
-        // Set title as user define.
-        eventValues.put(CalendarContract.Events.TITLE, title);
-        // Set description as user define.
-        eventValues.put(CalendarContract.Events.DESCRIPTION, "SimpleDo");
-        // Set location as user define.
-        eventValues.put(CalendarContract.Events.EVENT_TIMEZONE, "GMT");
-        // Set start time as system time or time converted in milliseconds.
-        eventValues.put(CalendarContract.Events.DTSTART, startMillis);
-        // Set status of event as 1.
-        eventValues.put("eventStatus", 1);
-        // Set visibility of event as 3 (public).
-        eventValues.put("visibility", 3);
-        // Set transparency as 0. No other app seen through reminder.
-        eventValues.put("transparency", 0);
-        // Set alarm as 1. Ringing.
-        eventValues.put(CalendarContract.Events.HAS_ALARM, 1);
-
-        // Set Event in calendar.
-        Uri eventUri = getContentResolver().insert(Uri.parse(eventUriString), eventValues);
-        // Getting ID of event in Long.
-        assert eventUri != null;
-        long eventID = Long.parseLong(eventUri.getLastPathSegment());
-
-        /***************** Event: Reminder(with alert) Adding reminder to event *******************/
-        // String to access default google calendar of device for reminder setting.
-        String reminderUriString = "content://com.android.calendar/reminders";
-        ContentValues reminderValues = new ContentValues();
-
-        // Set reminder on Event ID.
-        reminderValues.put("event_id", eventID);
-        // Set reminder minute before.
-        reminderValues.put("minutes", 1);
-        // Set method of reminder
-        reminderValues.put("method", 1);
-
-        @SuppressWarnings("unused")
-        //Setting reminder in calendar on Event.
-                Uri reminderUri = getContentResolver().insert(Uri.parse(reminderUriString), reminderValues);
-    }
-
-    private long calculateReminderTime(ToDoItem toDoItem) {
-        Calendar calendar = Calendar.getInstance();
-//        GregorianCalendar currentDay=new  GregorianCalendar (calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),0);
-//        GregorianCalendar nextDay = new GregorianCalendar(2014, toDoItem.getMonth(), toDoItem.getDay(), toDoItem.getHour(), toDoItem.getMin(), 0);
-        GregorianCalendar nextDay = new GregorianCalendar();
-        toDoItem.getDate().getTime();
-
-//        return nextDay.getTimeInMillis()-currentDay. getTimeInMillis();
-        return nextDay.getTimeInMillis() - System.currentTimeMillis();
     }
 
     @Override
