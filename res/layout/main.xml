@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android"
+                android:paddingLeft="16dp" android:paddingRight="16dp" android:id="@+id/relativeLayout">
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/toDoName"
+                    android:layout_alignParentTop="true"
+                    android:paddingTop="16dp" android:width="285dp" android:layout_toLeftOf="@+id/go"
+                    android:editable="false" android:selectAllOnFocus="false"/>
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Go"
+                    android:id="@+id/go" android:layout_alignBottom="@+id/toDoName"
+                    android:layout_alignParentRight="true"
+                    android:width="65dp"/>
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TODAY"
+                    android:id="@+id/Today"
+                    android:textSize="30dp" android:layout_below="@+id/toDoName" android:layout_alignParentLeft="true"
+                    />
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" android:layout_below="@+id/Today"
+                    android:layout_alignParentLeft="true" android:id="@+id/linearLayoutToday"
+                    android:animateLayoutChanges="true">
+            </LinearLayout>
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TOMORROW"
+                    android:id="@+id/textView"
+                    android:textSize="30dp"
+                    android:layout_below="@+id/linearLayoutToday" android:layout_alignParentLeft="true"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" android:layout_below="@+id/textView"
+                    android:layout_alignParentRight="true" android:id="@+id/linearLayoutTommorw"
+                    android:animateLayoutChanges="true">
+            </LinearLayout>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FUTURE"
+                    android:id="@+id/textView2" android:layout_below="@+id/linearLayoutTommorw"
+                    android:layout_alignLeft="@+id/toDoName" android:textSize="30dp"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" android:layout_below="@+id/textView2"
+                    android:layout_alignParentLeft="true" android:id="@+id/linearLayoutFuture"
+                    android:animateLayoutChanges="true">
+            </LinearLayout>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SOMEDAY"
+                    android:id="@+id/textView3" android:layout_below="@+id/linearLayoutFuture"
+                    android:layout_alignParentLeft="true" android:textSize="30dp"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" android:layout_below="@+id/textView3"
+                    android:layout_alignParentRight="true" android:id="@+id/linearLayoutSomeday"
+                    android:animateLayoutChanges="true">
+            </LinearLayout>
+            <ListView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/listView" android:layout_below="@+id/linearLayoutFuture"
+                    android:layout_centerHorizontal="true"
+                    android:checkMark="?android:attr/listChoiceIndicatorMultiple"/>
+        </RelativeLayout>
+    </ScrollView>
+
+    <ListView android:id="@+id/left_drawer"
+              android:layout_width="240dp"
+              android:layout_height="match_parent"
+              android:layout_gravity="start"
+              android:choiceMode="singleChoice"
+              android:divider="@android:color/transparent"
+              android:dividerHeight="0dp"
+              android:background="#111"/>
+</android.support.v4.widget.DrawerLayout>

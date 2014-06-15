@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" android:paddingLeft="16dp" android:paddingRight="16dp"
+                android:id="@+id/relativeLayout"
+                android:animateLayoutChanges="true">
+            <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/toDoItemName"
+                    android:width="250dp"
+                    android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+                    android:paddingTop="16dp" android:layout_alignParentRight="true"/>
+            <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/groupSpinner"
+                    android:layout_below="@+id/toDoItemName" android:layout_alignRight="@+id/toDoItemName"/>
+            <Spinner
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/prioritySpinner" android:layout_below="@+id/groupSpinner"
+                    android:layout_alignRight="@+id/datePicker"/>
+            <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New ToggleButton"
+                    android:id="@+id/somedayToggleButton"
+                    android:layout_below="@+id/prioritySpinner" android:layout_alignRight="@+id/prioritySpinner"
+                    android:layout_marginRight="53dp"/>
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Someday"
+                    android:id="@+id/textView"
+                    android:singleLine="false" android:textSize="30dp"
+                    android:layout_below="@+id/prioritySpinner" android:layout_alignParentRight="true"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="1"
+                    android:layout_alignParentRight="true" android:layout_below="@+id/somedayToggleButton"
+                    android:id="@+id/linearLayout"
+                    android:animateLayoutChanges="true">
+                <DatePicker
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/datePicker"
+                        android:layout_below="@+id/prioritySpinner" android:layout_alignParentLeft="true"
+                        android:layout_marginTop="48dp" android:calendarViewShown="false"/>
+                <TimePicker
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/timePicker"
+                        android:layout_below="@+id/datePicker" android:layout_alignParentLeft="true"
+                        android:layout_weight="3.58"/>
+            </LinearLayout>
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Done"
+                    android:id="@+id/button"
+                    android:textSize="30dp"
+                    android:layout_gravity="center_horizontal" android:layout_below="@+id/linearLayout"
+                    android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

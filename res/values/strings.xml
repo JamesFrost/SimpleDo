@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SimpleDo</string>
+    <string-array name="group_array">
+        <item>No Group</item>
+        <item>Work</item>
+        <item>Personal</item>
+    </string-array>
+    <string-array name="priority_array">
+        <item>Not Set</item>
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+    <string-array name="filters">
+        <item>Filter One</item>
+        <item>Filter Two</item>
+        <item>Filter Three</item>
+        <item>Filter Four</item>
+    </string-array>
+</resources>
