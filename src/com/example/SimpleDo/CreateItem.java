@@ -13,7 +13,7 @@ import java.util.Date;
 /**
  * Activity where the user enters the relevant information for a To Do item.
  *
- * Created by James on 23/05/2014.
+ * @author James Frost
  */
 public class CreateItem extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -74,7 +74,6 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
                     case R.id.button:
                         Intent intent = new Intent(CreateItem.this, SimpleDo.class);
                         intent.putExtra("newToDoItem", new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString()));
-//                        alarm.setOnetimeTimer(getApplicationContext());
                         setResult(100, intent);
                         finish();
                 }

@@ -12,11 +12,12 @@
         <item>Medium</item>
         <item>High</item>
     </string-array>
-
     <string-array name="filters">
-        <item>Filter One</item>
-        <item>Filter Two</item>
-        <item>Filter Three</item>
-        <item>Filter Four</item>
+        <item>High Priority</item>
+        <item>Medium Priority</item>
+        <item>Low Priority</item>
+        <item>Not Completed</item>
+        <item>Group</item>
+        <item>Overdue</item>
     </string-array>
 </resources>

@@ -42,15 +42,16 @@
                     android:text="Someday"
                     android:id="@+id/textView"
                     android:singleLine="false" android:textSize="30dp"
-                    android:layout_below="@+id/prioritySpinner" android:layout_alignParentRight="true"/>
+                    android:layout_below="@+id/prioritySpinner" android:layout_alignParentRight="true"
+                    />
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:weightSum="1"
-                    android:layout_alignParentRight="true" android:layout_below="@+id/somedayToggleButton"
                     android:id="@+id/linearLayout"
-                    android:animateLayoutChanges="true">
+                    android:animateLayoutChanges="true"
+                    android:layout_below="@+id/somedayToggleButton" android:layout_alignParentLeft="true">
                 <DatePicker
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"

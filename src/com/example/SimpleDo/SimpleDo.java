@@ -1,16 +1,27 @@
 package com.example.SimpleDo;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import android.widget.*;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
+/**
+ * Main Activity.
+ *
+ * @author James Frost
+ */
 public class SimpleDo extends Activity {
 
+    private RelativeLayout relativeLayout;
     private LinearLayout linearLayoutToday;
     private LinearLayout linearLayoutTomorrow;
     private LinearLayout linearLayoutFuture;
@@ -21,10 +32,9 @@ public class SimpleDo extends Activity {
     private ArrayList<ToDoItem> toDoList;
     private Calendar now;
     private ListView testThree;
-
     private String[] mPlanetTitles;
-    private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private DrawerLayout drawerLayout;
+    private ListView drawerList;
 
     /**
      * Called when the activity is first created.
@@ -35,15 +45,15 @@ public class SimpleDo extends Activity {
         setContentView(R.layout.main);
 
         mPlanetTitles = getResources().getStringArray(R.array.filters);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerList = (ListView) findViewById(R.id.left_drawer);
         // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mPlanetTitles));
         // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         toDoName = (EditText) findViewById(R.id.toDoName);
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         linearLayoutToday = (LinearLayout) findViewById(R.id.linearLayoutToday);
         linearLayoutTomorrow = (LinearLayout) findViewById(R.id.linearLayoutTommorw);
         linearLayoutFuture = (LinearLayout) findViewById(R.id.linearLayoutFuture);
@@ -96,9 +106,9 @@ public class SimpleDo extends Activity {
         intent.setType("vnd.android.cursor.item/event");
         intent.putExtra("beginTime", cal.getTimeInMillis());
         intent.putExtra("allDay", false);
-        intent.putExtra("rrule", "FREQ=DAILY");
+//        intent.putExtra("rrule", "FREQ=DAILY");
         intent.putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000);
-        intent.putExtra("title", "A Test Event from android app");
+        intent.putExtra("title", toDoItem.getName());
         startActivity(intent);
 
         ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
@@ -116,7 +126,6 @@ public class SimpleDo extends Activity {
             @Override
             public void onClick(View view) {
                 toDoItem.setComplete(((CheckBox) view).isChecked());
-//                toDoItem.setComplete(((CheckedTextView) view).isChecked());
             }
         });
     }
@@ -195,8 +204,92 @@ public class SimpleDo extends Activity {
         }
 
         private void selectItem(int position) {
-            mDrawerList.setItemChecked(position, true);
-            mDrawerLayout.closeDrawer(mDrawerList);
+            drawerList.setItemChecked(position, true);
+            filter(position);
+            drawerLayout.closeDrawer(drawerList);
+        }
+
+        /**
+         * Method which applies user selected filter.
+         *
+         * @param position The filter selected
+         */
+        private void filter(int position) {
+
+            linearLayoutToday.removeAllViews();
+            linearLayoutTomorrow.removeAllViews();
+            linearLayoutFuture.removeAllViews();
+            linearLayoutSomeday.removeAllViews();
+
+            if (position == 0) { //Only show high priority
+                for (ToDoItem toDoItem : toDoList) {
+                    if (toDoItem.getPriority().equals("High")) {
+                        CheckBox ch = new CheckBox(getApplicationContext());
+                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
+                        if (toDoItem.getDate() == null) {
+                            linearLayoutSomeday.addView(ch);
+                        } else if (isTodaysDate(toDoItem)) {
+                            linearLayoutToday.addView(ch);
+                        } else if (isTomorrowsDate(toDoItem)) {
+                            linearLayoutTomorrow.addView(ch);
+                        } else {
+                            linearLayoutFuture.addView(ch);
+                        }
+                    }
+                }
+            } else if (position == 1) { //Only show medium priority
+                for (ToDoItem toDoItem : toDoList) {
+                    if (toDoItem.getPriority().equals("Medium")) {
+                        CheckBox ch = new CheckBox(getApplicationContext());
+                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
+                        if (toDoItem.getDate() == null) {
+                            linearLayoutSomeday.addView(ch);
+                        } else if (isTodaysDate(toDoItem)) {
+                            linearLayoutToday.addView(ch);
+                        } else if (isTomorrowsDate(toDoItem)) {
+                            linearLayoutTomorrow.addView(ch);
+                        } else {
+                            linearLayoutFuture.addView(ch);
+                        }
+                    }
+                }
+            } else if (position == 2) { //Only show low priority
+                for (ToDoItem toDoItem : toDoList) {
+                    if (toDoItem.getPriority().equals("Low")) {
+                        CheckBox ch = new CheckBox(getApplicationContext());
+                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
+                        if (toDoItem.getDate() == null) {
+                            linearLayoutSomeday.addView(ch);
+                        } else if (isTodaysDate(toDoItem)) {
+                            linearLayoutToday.addView(ch);
+                        } else if (isTomorrowsDate(toDoItem)) {
+                            linearLayoutTomorrow.addView(ch);
+                        } else {
+                            linearLayoutFuture.addView(ch);
+                        }
+                    }
+                }
+            } else if (position == 3) { //Only show not completed items
+                for (ToDoItem toDoItem : toDoList) {
+                    if (!toDoItem.isComplete()) {
+                        CheckBox ch = new CheckBox(getApplicationContext());
+                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
+                        if (toDoItem.getDate() == null) {
+                            linearLayoutSomeday.addView(ch);
+                        } else if (isTodaysDate(toDoItem)) {
+                            linearLayoutToday.addView(ch);
+                        } else if (isTomorrowsDate(toDoItem)) {
+                            linearLayoutTomorrow.addView(ch);
+                        } else {
+                            linearLayoutFuture.addView(ch);
+                        }
+                    }
+                }
+            } else if (position == 4) { //Filter by group
+
+            } else if (position == 5) { //Only show overdue tasks
+
+            }
         }
     }
 }

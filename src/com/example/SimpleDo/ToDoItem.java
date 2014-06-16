@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Class for To Do items.
  *
- * Created by James on 23/05/2014.
+ * @author James Frost
  */
 public class ToDoItem implements Serializable {
 
@@ -20,6 +20,10 @@ public class ToDoItem implements Serializable {
     private String group;
     //The priority of the task
     private String priority;
+    //Is a reminder set
+    private boolean reminder;
+    //Is the task over due
+    private boolean overDue;
 
     /**
      * Constructor for the ToDoItem class.
@@ -34,11 +38,21 @@ public class ToDoItem implements Serializable {
         this.group = group;
         this.priority = priority;
         complete = false;
+
+        //set the value of over due accordingly
     }
 
     public String getDueTime() {
         if (date != null) return "" + date.getHours() + ":" + date.getMinutes();
         else return "";
+    }
+
+    public boolean isReminder() {
+        return reminder;
+    }
+
+    public void setReminder(boolean reminder) {
+        this.reminder = reminder;
     }
 
     public String getPriority() {
@@ -69,9 +83,13 @@ public class ToDoItem implements Serializable {
         return date.getDay();
     }
 
-    public int getHour() { return date.getHours();}
+    public int getHour() {
+        return date.getHours();
+    }
 
-    public int getMin() { return date.getMinutes();}
+    public int getMin() {
+        return date.getMinutes();
+    }
 
     public void setName(String name) {
         this.name = name;
