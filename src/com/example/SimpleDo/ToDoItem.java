@@ -1,6 +1,7 @@
 package com.example.SimpleDo;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -24,6 +25,7 @@ public class ToDoItem implements Serializable {
     private boolean reminder;
     //Is the task over due
     private boolean overDue;
+    private Calendar now;
 
     /**
      * Constructor for the ToDoItem class.
@@ -37,14 +39,42 @@ public class ToDoItem implements Serializable {
         this.date = date;
         this.group = group;
         this.priority = priority;
+
+        overDue = isOverDue();
+
         complete = false;
 
         //set the value of over due accordingly
     }
 
+    private boolean isOverDue() {
+        //need to add time of day to logic
+        if(date != null) {
+            now = Calendar.getInstance();
+            return getYear() < getCurrentYear() || getYear() == getCurrentYear() && getMonth() < getCurrentMonth() || getYear() == getCurrentYear() && getMonth() == getCurrentMonth() && getDay() < getCurrentDay();
+        } else return false;
+    }
+
     public String getDueTime() {
         if (date != null) return "" + date.getHours() + ":" + date.getMinutes();
         else return "";
+    }
+
+    public boolean getOverDue() {
+        return overDue;
+    }
+
+    private int getCurrentYear() {
+        now = Calendar.getInstance();
+        return now.get(Calendar.YEAR);
+    }
+
+    private int getCurrentMonth() {
+        return now.get(Calendar.MONTH);
+    }
+
+    private int getCurrentDay() {
+        return now.get(Calendar.DAY_OF_WEEK);
     }
 
     public boolean isReminder() {

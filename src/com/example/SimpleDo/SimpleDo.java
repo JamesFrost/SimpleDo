@@ -22,6 +22,7 @@ import java.util.Calendar;
 public class SimpleDo extends Activity {
 
     private RelativeLayout relativeLayout;
+    private LinearLayout linearLayoutOverdue;
     private LinearLayout linearLayoutToday;
     private LinearLayout linearLayoutTomorrow;
     private LinearLayout linearLayoutFuture;
@@ -54,6 +55,7 @@ public class SimpleDo extends Activity {
 
         toDoName = (EditText) findViewById(R.id.toDoName);
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
+        linearLayoutOverdue = (LinearLayout) findViewById(R.id.linearLayoutOverdue);
         linearLayoutToday = (LinearLayout) findViewById(R.id.linearLayoutToday);
         linearLayoutTomorrow = (LinearLayout) findViewById(R.id.linearLayoutTommorw);
         linearLayoutFuture = (LinearLayout) findViewById(R.id.linearLayoutFuture);
@@ -119,6 +121,8 @@ public class SimpleDo extends Activity {
             linearLayoutToday.addView(ch);
         } else if (isTomorrowsDate(toDoItem)) {
             linearLayoutTomorrow.addView(ch);
+        } else if (toDoItem.getOverDue()) {
+            linearLayoutOverdue.addView(ch);
         } else {
             linearLayoutFuture.addView(ch);
         }
@@ -128,6 +132,10 @@ public class SimpleDo extends Activity {
                 toDoItem.setComplete(((CheckBox) view).isChecked());
             }
         });
+    }
+
+    private boolean isOverdue(ToDoItem toDoItem) {
+        return toDoItem.getYear() < getCurrentYear() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() < getCurrentMonth() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() < getCurrentDay();
     }
 
     @Override
