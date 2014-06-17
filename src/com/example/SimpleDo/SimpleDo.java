@@ -269,7 +269,24 @@ public class SimpleDo extends Activity {
             linearLayoutSomeday.removeAllViews();
             linearLayoutOverdue.removeAllViews();
 
-            if (position == 0) { //Only show high priority
+            if (position == 0) {
+                for (ToDoItem toDoItem : toDoList) { //No filter
+                    CheckBox ch = new CheckBox(getApplicationContext());
+                    ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
+                    if (toDoItem.getDate() == null) {
+                        linearLayoutSomeday.addView(ch);
+                    } else if (isTodaysDate(toDoItem)) {
+                        linearLayoutToday.addView(ch);
+                    } else if (isTomorrowsDate(toDoItem)) {
+                        linearLayoutTomorrow.addView(ch);
+                    } else if (toDoItem.getOverDue()) {
+                        linearLayoutOverdue.addView(ch);
+                    } else {
+                        linearLayoutFuture.addView(ch);
+                    }
+                }
+                setTitle("Simple Do");
+            } else if (position == 1) { //Only show high priority
                 for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getPriority().equals("High")) {
                         CheckBox ch = new CheckBox(getApplicationContext());
@@ -287,7 +304,8 @@ public class SimpleDo extends Activity {
                         }
                     }
                 }
-            } else if (position == 1) { //Only show medium priority
+                setTitle("High Priority Filter");
+            } else if (position == 2) { //Only show medium priority
                 for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getPriority().equals("Medium")) {
                         CheckBox ch = new CheckBox(getApplicationContext());
@@ -305,7 +323,8 @@ public class SimpleDo extends Activity {
                         }
                     }
                 }
-            } else if (position == 2) { //Only show low priority
+                setTitle("Medium Priority Filter");
+            } else if (position == 3) { //Only show low priority
                 for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getPriority().equals("Low")) {
                         CheckBox ch = new CheckBox(getApplicationContext());
@@ -323,7 +342,8 @@ public class SimpleDo extends Activity {
                         }
                     }
                 }
-            } else if (position == 3) { //Only show not completed items
+                setTitle("Low Priority Filter");
+            } else if (position == 4) { //Only show not completed items
                 for (ToDoItem toDoItem : toDoList) {
                     if (!toDoItem.isComplete()) {
                         CheckBox ch = new CheckBox(getApplicationContext());
@@ -341,10 +361,45 @@ public class SimpleDo extends Activity {
                         }
                     }
                 }
-            } else if (position == 4) { //Filter by group
-
-            } else if (position == 5) { //Only show overdue tasks
-
+                setTitle("Not Completed Filter");
+            } else if (position == 5) { //Filter by work
+                for (ToDoItem toDoItem : toDoList) {
+                    if (toDoItem.getGroup().equals("Work")) {
+                        CheckBox ch = new CheckBox(getApplicationContext());
+                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
+                        if (toDoItem.getDate() == null) {
+                            linearLayoutSomeday.addView(ch);
+                        } else if (isTodaysDate(toDoItem)) {
+                            linearLayoutToday.addView(ch);
+                        } else if (isTomorrowsDate(toDoItem)) {
+                            linearLayoutTomorrow.addView(ch);
+                        } else if (toDoItem.getOverDue()) {
+                            linearLayoutOverdue.addView(ch);
+                        } else {
+                            linearLayoutFuture.addView(ch);
+                        }
+                    }
+                }
+                setTitle("Work Filter");
+            } else if (position == 6) { //Filter by personal
+                for (ToDoItem toDoItem : toDoList) {
+                    if (toDoItem.getGroup().equals("Personal")) {
+                        CheckBox ch = new CheckBox(getApplicationContext());
+                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
+                        if (toDoItem.getDate() == null) {
+                            linearLayoutSomeday.addView(ch);
+                        } else if (isTodaysDate(toDoItem)) {
+                            linearLayoutToday.addView(ch);
+                        } else if (isTomorrowsDate(toDoItem)) {
+                            linearLayoutTomorrow.addView(ch);
+                        } else if (toDoItem.getOverDue()) {
+                            linearLayoutOverdue.addView(ch);
+                        } else {
+                            linearLayoutFuture.addView(ch);
+                        }
+                    }
+                }
+                setTitle("Personal Filter");
             }
         }
     }

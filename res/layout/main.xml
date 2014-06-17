@@ -17,7 +17,8 @@
                     android:id="@+id/toDoName"
                     android:layout_alignParentTop="true"
                     android:paddingTop="16dp" android:width="285dp" android:layout_toLeftOf="@+id/go"
-                    android:editable="true" android:selectAllOnFocus="false"/>
+                    android:editable="true" android:selectAllOnFocus="false" android:autoText="false"
+                    android:hint="I want too..."/>
             <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -38,7 +39,8 @@
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" android:id="@+id/linearLayoutOverdue">
+                        android:layout_height="wrap_content" android:id="@+id/linearLayoutOverdue"
+                        android:animateLayoutChanges="true">
                 </LinearLayout>
                 <TextView
                         android:layout_width="fill_parent"

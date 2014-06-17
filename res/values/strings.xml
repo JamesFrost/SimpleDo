@@ -13,11 +13,12 @@
         <item>High</item>
     </string-array>
     <string-array name="filters">
+        <item>No Filter</item>
         <item>High Priority</item>
         <item>Medium Priority</item>
         <item>Low Priority</item>
         <item>Not Completed</item>
-        <item>Group</item>
-        <item>Overdue</item>
+        <item>Work</item>
+        <item>Personal</item>
     </string-array>
 </resources>

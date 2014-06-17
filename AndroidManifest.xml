@@ -16,7 +16,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".CreateItem"
-                  android:label="Create Item">
+                  android:label="Create Item"
+                  android:configChanges="keyboardHidden|orientation"
+                  android:windowSoftInputMode="stateHidden">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.example.SimpleDo.SimpleDo"/>
