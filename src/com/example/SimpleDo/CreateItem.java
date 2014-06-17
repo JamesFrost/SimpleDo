@@ -72,10 +72,14 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.button:
-                        Intent intent = new Intent(CreateItem.this, SimpleDo.class);
-                        intent.putExtra("newToDoItem", new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString()));
-                        setResult(100, intent);
-                        finish();
+                        if (!toDoItemName.getText().toString().matches("")) {
+                            Intent intent = new Intent(CreateItem.this, SimpleDo.class);
+                            intent.putExtra("newToDoItem", new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString()));
+                            setResult(100, intent);
+                            finish();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "The task name is empty!", Toast.LENGTH_SHORT).show();
+                        }
                 }
             }
         };

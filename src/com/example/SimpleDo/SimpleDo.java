@@ -1,9 +1,6 @@
 package com.example.SimpleDo;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -11,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import android.widget.*;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -79,6 +77,25 @@ public class SimpleDo extends Activity {
         go.setOnClickListener(droidTapListener);
 
         toDoList = new ArrayList<ToDoItem>();
+
+        getOverflowMenu();
+    }
+
+    /**
+     * Method that makes sure the action overflow button is always shown, even on devices with a hard menu button.
+     */
+    private void getOverflowMenu() {
+
+        try {
+            ViewConfiguration config = ViewConfiguration.get(this);
+            Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+            if (menuKeyField != null) {
+                menuKeyField.setAccessible(true);
+                menuKeyField.setBoolean(config, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -100,7 +117,7 @@ public class SimpleDo extends Activity {
     private void addItem(final ToDoItem toDoItem) {
         now = Calendar.getInstance();
         toDoList.add(toDoItem);
-        CheckBox ch = new CheckBox(this);
+        final CheckBox ch = new CheckBox(this);
         Calendar cal = Calendar.getInstance();
 
         //Set reminder using the phones native calendar
@@ -114,7 +131,7 @@ public class SimpleDo extends Activity {
         startActivity(intent);
 
         ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
-        registerForContextMenu(ch);
+//        registerForContextMenu(ch);
         if (toDoItem.getDate() == null) {
             linearLayoutSomeday.addView(ch);
         } else if (isTodaysDate(toDoItem)) {
@@ -132,10 +149,13 @@ public class SimpleDo extends Activity {
                 toDoItem.setComplete(((CheckBox) view).isChecked());
             }
         });
-    }
-
-    private boolean isOverdue(ToDoItem toDoItem) {
-        return toDoItem.getYear() < getCurrentYear() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() < getCurrentMonth() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() < getCurrentDay();
+        ch.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                registerForContextMenu(ch);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -164,6 +184,25 @@ public class SimpleDo extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.action_bar, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case R.id.settings:
+                Intent intent = new Intent(SimpleDo.this, SettingsActivity.class);
+                startActivity(intent);
+            case R.id.help:
+                //start help activity
+                break;
+            case R.id.about:
+                //start about activity
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -228,6 +267,7 @@ public class SimpleDo extends Activity {
             linearLayoutTomorrow.removeAllViews();
             linearLayoutFuture.removeAllViews();
             linearLayoutSomeday.removeAllViews();
+            linearLayoutOverdue.removeAllViews();
 
             if (position == 0) { //Only show high priority
                 for (ToDoItem toDoItem : toDoList) {
@@ -240,6 +280,8 @@ public class SimpleDo extends Activity {
                             linearLayoutToday.addView(ch);
                         } else if (isTomorrowsDate(toDoItem)) {
                             linearLayoutTomorrow.addView(ch);
+                        } else if (toDoItem.getOverDue()) {
+                            linearLayoutOverdue.addView(ch);
                         } else {
                             linearLayoutFuture.addView(ch);
                         }
@@ -256,6 +298,8 @@ public class SimpleDo extends Activity {
                             linearLayoutToday.addView(ch);
                         } else if (isTomorrowsDate(toDoItem)) {
                             linearLayoutTomorrow.addView(ch);
+                        } else if (toDoItem.getOverDue()) {
+                            linearLayoutOverdue.addView(ch);
                         } else {
                             linearLayoutFuture.addView(ch);
                         }
@@ -272,6 +316,8 @@ public class SimpleDo extends Activity {
                             linearLayoutToday.addView(ch);
                         } else if (isTomorrowsDate(toDoItem)) {
                             linearLayoutTomorrow.addView(ch);
+                        } else if (toDoItem.getOverDue()) {
+                            linearLayoutOverdue.addView(ch);
                         } else {
                             linearLayoutFuture.addView(ch);
                         }
@@ -288,6 +334,8 @@ public class SimpleDo extends Activity {
                             linearLayoutToday.addView(ch);
                         } else if (isTomorrowsDate(toDoItem)) {
                             linearLayoutTomorrow.addView(ch);
+                        } else if (toDoItem.getOverDue()) {
+                            linearLayoutOverdue.addView(ch);
                         } else {
                             linearLayoutFuture.addView(ch);
                         }
