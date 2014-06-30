@@ -58,7 +58,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/datePicker"
                         android:layout_below="@+id/prioritySpinner" android:layout_alignParentLeft="true"
-                        android:layout_marginTop="48dp" android:calendarViewShown="false"/>
+                        android:layout_marginTop="48dp" android:calendarViewShown="false" android:spinnersShown="true"/>
                 <TimePicker
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"

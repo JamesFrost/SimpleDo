@@ -47,11 +47,15 @@ public class ToDoItem implements Serializable {
         //set the value of over due accordingly
     }
 
-    private boolean isOverDue() {
+    public boolean isOverDue() {
         //need to add time of day to logic
-        if(date != null) {
+        if(date != null && !complete) {
             now = Calendar.getInstance();
-            return getYear() < getCurrentYear() || getYear() == getCurrentYear() && getMonth() < getCurrentMonth() || getYear() == getCurrentYear() && getMonth() == getCurrentMonth() && getDay() < getCurrentDay();
+            return getYear() < getCurrentYear() ||
+                    getYear() == getCurrentYear() && getMonth() < getCurrentMonth() ||
+                    getYear() == getCurrentYear() && getMonth() == getCurrentMonth() && getDay() < getCurrentDay() ||
+                    getYear() == getCurrentYear() && getMonth() == getCurrentMonth() && getDay() == getCurrentDay() && getHour() < getCurrentHour() ||
+                    getYear() == getCurrentYear() && getMonth() == getCurrentMonth() && getDay() == getCurrentDay() && getHour() == getCurrentHour() && getMin() < getCurrentMin();
         } else return false;
     }
 
@@ -72,6 +76,10 @@ public class ToDoItem implements Serializable {
     private int getCurrentMonth() {
         return now.get(Calendar.MONTH);
     }
+
+    private  int getCurrentHour() { return now.get(Calendar.HOUR_OF_DAY);}
+
+    private int getCurrentMin() { return now.get(Calendar.MINUTE); }
 
     private int getCurrentDay() {
         return now.get(Calendar.DAY_OF_WEEK);
@@ -102,7 +110,7 @@ public class ToDoItem implements Serializable {
     }
 
     public int getYear() {
-        return date.getYear();
+            return date.getYear();
     }
 
     public int getMonth() {
