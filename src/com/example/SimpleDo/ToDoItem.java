@@ -43,12 +43,14 @@ public class ToDoItem implements Serializable {
         overDue = isOverDue();
 
         complete = false;
-
-        //set the value of over due accordingly
     }
 
+    /**
+     * Checks if the item is overdue.
+     *
+     * @return
+     */
     public boolean isOverDue() {
-        //need to add time of day to logic
         if(date != null && !complete) {
             now = Calendar.getInstance();
             return getYear() < getCurrentYear() ||
@@ -62,10 +64,6 @@ public class ToDoItem implements Serializable {
     public String getDueTime() {
         if (date != null) return "" + date.getHours() + ":" + date.getMinutes();
         else return "";
-    }
-
-    public boolean getOverDue() {
-        return overDue;
     }
 
     private int getCurrentYear() {

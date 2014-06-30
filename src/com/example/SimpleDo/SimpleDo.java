@@ -103,7 +103,7 @@ public class SimpleDo extends Activity {
             super.onActivityResult(requestCode, resultCode, data);
             Bundle bundle = data.getExtras();
             if (resultCode == 100 && bundle != null) {
-                addItem((ToDoItem) data.getSerializableExtra("newToDoItem"));
+                addItem((ToDoItem) data.getSerializableExtra("newToDoItem"), bundle.getBoolean("reminder"));
             }
         }
     }
@@ -113,21 +113,24 @@ public class SimpleDo extends Activity {
      *
      * @param toDoItem The ToDoItem to add.
      */
-    private void addItem(final ToDoItem toDoItem) {
+    private void addItem(final ToDoItem toDoItem, boolean reminder) {
         now = Calendar.getInstance();
         toDoList.add(toDoItem);
         final CheckBox ch = new CheckBox(this);
         Calendar cal = Calendar.getInstance();
 
+
         //Set reminder using the phones native calendar
-        Intent intent = new Intent(Intent.ACTION_EDIT);
-        intent.setType("vnd.android.cursor.item/event");
-        intent.putExtra("beginTime", cal.getTimeInMillis());
-        intent.putExtra("allDay", false);
+        if (reminder) {
+            Intent intent = new Intent(Intent.ACTION_EDIT);
+            intent.setType("vnd.android.cursor.item/event");
+            intent.putExtra("beginTime", cal.getTimeInMillis());
+            intent.putExtra("allDay", false);
 //        intent.putExtra("rrule", "FREQ=DAILY");
-        intent.putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000);
-        intent.putExtra("title", toDoItem.getName());
-        startActivity(intent);
+            intent.putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000);
+            intent.putExtra("title", toDoItem.getName());
+            startActivity(intent);
+        }
 
         ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
 //        registerForContextMenu(ch);
@@ -318,7 +321,7 @@ public class SimpleDo extends Activity {
                             ch.setChecked(true);
                         }
 
-                    } else if (toDoItem.getOverDue() && !toDoItem.isComplete()) {
+                    } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
                         linearLayoutOverdue.addView(ch);
                     } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
                         linearLayoutFuture.addView(ch);
@@ -359,7 +362,7 @@ public class SimpleDo extends Activity {
                                 ch.setChecked(true);
                             }
 
-                        } else if (toDoItem.getOverDue() && !toDoItem.isComplete()) {
+                        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
                             linearLayoutOverdue.addView(ch);
                         } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
                             linearLayoutFuture.addView(ch);
@@ -401,7 +404,7 @@ public class SimpleDo extends Activity {
                                 ch.setChecked(true);
                             }
 
-                        } else if (toDoItem.getOverDue() && !toDoItem.isComplete()) {
+                        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
                             linearLayoutOverdue.addView(ch);
                         } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
                             linearLayoutFuture.addView(ch);
@@ -443,7 +446,7 @@ public class SimpleDo extends Activity {
                                 ch.setChecked(true);
                             }
 
-                        } else if (toDoItem.getOverDue() && !toDoItem.isComplete()) {
+                        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
                             linearLayoutOverdue.addView(ch);
                         } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
                             linearLayoutFuture.addView(ch);
@@ -485,7 +488,7 @@ public class SimpleDo extends Activity {
                                 ch.setChecked(true);
                             }
 
-                        } else if (toDoItem.getOverDue() && !toDoItem.isComplete()) {
+                        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
                             linearLayoutOverdue.addView(ch);
                         } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
                             linearLayoutFuture.addView(ch);
@@ -519,7 +522,7 @@ public class SimpleDo extends Activity {
                             linearLayoutToday.addView(ch);
                         } else if (isTomorrowsDate(toDoItem)) {
                             linearLayoutTomorrow.addView(ch);
-                        } else if (toDoItem.getOverDue()) {
+                        } else if (toDoItem.isOverDue()) {
                             linearLayoutOverdue.addView(ch);
                         } else if (!isPastDate(toDoItem)) {
                             linearLayoutFuture.addView(ch);
@@ -553,7 +556,7 @@ public class SimpleDo extends Activity {
                             linearLayoutToday.addView(ch);
                         } else if (isTomorrowsDate(toDoItem)) {
                             linearLayoutTomorrow.addView(ch);
-                        } else if (toDoItem.getOverDue()) {
+                        } else if (toDoItem.isOverDue()) {
                             linearLayoutOverdue.addView(ch);
                         } else if (!isPastDate(toDoItem)) {
                             linearLayoutFuture.addView(ch);

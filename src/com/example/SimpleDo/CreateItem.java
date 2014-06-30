@@ -24,8 +24,13 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
     private TimePicker timePicker;
     private Spinner groupSpinner;
     private Spinner prioritySpinner;
-    private ToggleButton somedayToggleButton;
-    private LinearLayout linearLayout;
+    private ToggleButton dateToggleButton;
+    private ToggleButton timeToggleButton;
+    private ToggleButton reminderToggleButton;
+    private RelativeLayout relativeLayout;
+    private TextView date;
+    private TextView time;
+    private TextView reminder;
 
     /**
      * Called when the activity is first created.
@@ -36,21 +41,50 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
         setContentView(R.layout.create_todo_item);
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         toDoItemName = (EditText) findViewById(R.id.toDoItemName);
         button = (Button) findViewById(R.id.button);
         datePicker = (DatePicker) findViewById(R.id.datePicker);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
-        somedayToggleButton = (ToggleButton) findViewById(R.id.somedayToggleButton);
+        dateToggleButton = (ToggleButton) findViewById(R.id.somedayToggleButton);
+        timeToggleButton = (ToggleButton) findViewById(R.id.timeToggleButton);
+        reminderToggleButton = (ToggleButton) findViewById(R.id.reminderToggleButton);
+        date = (TextView) findViewById(R.id.DateText);
+        time = (TextView) findViewById(R.id.TimeText);
+        reminder = (TextView) findViewById(R.id.reminderText);
 
-        somedayToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        relativeLayout.removeView(datePicker);
+        relativeLayout.removeView(timeToggleButton);
+        relativeLayout.removeView(timePicker);
+        relativeLayout.removeView(reminderToggleButton);
+        relativeLayout.removeView(reminder);
+        relativeLayout.removeView(time);
+
+        dateToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    linearLayout.removeView(datePicker);
-                    linearLayout.removeView(timePicker);
+                if (!isChecked) {
+                    relativeLayout.removeView(datePicker);
+                    relativeLayout.removeView(timeToggleButton);
+                    relativeLayout.removeView(time);
+                    timeToggleButton.setChecked(false);
                 } else {
-                    linearLayout.addView(datePicker);
-                    linearLayout.addView(timePicker);
+                    relativeLayout.addView(datePicker);
+                    relativeLayout.addView(timeToggleButton);
+                    relativeLayout.addView(time);
+                }
+            }
+        });
+
+        timeToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
+                    relativeLayout.removeView(timePicker);
+                    relativeLayout.removeView(reminderToggleButton);
+                    relativeLayout.removeView(reminder);
+                } else {
+                    relativeLayout.addView(timePicker);
+                    relativeLayout.addView(reminderToggleButton);
+                    relativeLayout.addView(reminder);
                 }
             }
         });
@@ -75,6 +109,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
                         if (!toDoItemName.getText().toString().matches("")) {
                             Intent intent = new Intent(CreateItem.this, SimpleDo.class);
                             intent.putExtra("newToDoItem", new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString()));
+                            intent.putExtra("reminder", reminderToggleButton.isChecked());
                             setResult(100, intent);
                             finish();
                         } else {
@@ -84,7 +119,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
             }
         };
         button.setOnClickListener(droidTapListener);
-        somedayToggleButton.setOnClickListener(droidTapListener);
+        dateToggleButton.setOnClickListener(droidTapListener);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -109,11 +144,13 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
      * @return date
      */
     private Date createDate() {
-        if (!somedayToggleButton.isChecked()) {
+        if (dateToggleButton.isChecked()) {
             Date date = new Date();
-            date.setSeconds(0);
-            date.setMinutes(timePicker.getCurrentMinute());
-            date.setHours(timePicker.getCurrentHour());
+            if(timeToggleButton.isChecked()) {
+                date.setMinutes(timePicker.getCurrentMinute());
+                date.setHours(timePicker.getCurrentHour());
+                date.setSeconds(0);
+            }
             date.setDate(datePicker.getDayOfMonth());
             date.setMonth(datePicker.getMonth());
             date.setYear(datePicker.getYear());
