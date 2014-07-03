@@ -82,7 +82,7 @@ public class SimpleDo extends Activity {
     }
 
     /**
-     * Method that makes sure the action overflow button is always shown, even on devices with a hard menu button.
+     * Method that makes sure the action overflow button is always shown, even on devices with a menu button.
      */
     private void getOverflowMenu() {
         try {
@@ -103,9 +103,31 @@ public class SimpleDo extends Activity {
             super.onActivityResult(requestCode, resultCode, data);
             Bundle bundle = data.getExtras();
             if (resultCode == 100 && bundle != null) {
-                addItem((ToDoItem) data.getSerializableExtra("newToDoItem"), bundle.getBoolean("reminder"));
+
+                if (bundle.getBoolean("reminder")) {
+                    addReminder((ToDoItem) data.getSerializableExtra("newToDoItem"));
+                }
+                toDoList.add((ToDoItem) data.getSerializableExtra("newToDoItem"));
+                addItem((ToDoItem) data.getSerializableExtra("newToDoItem"));
             }
         }
+    }
+
+    /**
+     * Set a reminder for an item using the phones native calendar.
+     *
+     * @param toDoItem The item to set a reminder for.
+     */
+    private void addReminder(ToDoItem toDoItem) {
+        Calendar cal = Calendar.getInstance();
+        Intent intent = new Intent(Intent.ACTION_EDIT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra("beginTime", cal.getTimeInMillis());
+        intent.putExtra("allDay", false);
+//        intent.putExtra("rrule", "FREQ=DAILY");
+        intent.putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000);
+        intent.putExtra("title", toDoItem.getName());
+        startActivity(intent);
     }
 
     /**
@@ -113,38 +135,34 @@ public class SimpleDo extends Activity {
      *
      * @param toDoItem The ToDoItem to add.
      */
-    private void addItem(final ToDoItem toDoItem, boolean reminder) {
+    private void addItem(final ToDoItem toDoItem) {
         now = Calendar.getInstance();
-        toDoList.add(toDoItem);
         final CheckBox ch = new CheckBox(this);
-        Calendar cal = Calendar.getInstance();
-
-
-        //Set reminder using the phones native calendar
-        if (reminder) {
-            Intent intent = new Intent(Intent.ACTION_EDIT);
-            intent.setType("vnd.android.cursor.item/event");
-            intent.putExtra("beginTime", cal.getTimeInMillis());
-            intent.putExtra("allDay", false);
-//        intent.putExtra("rrule", "FREQ=DAILY");
-            intent.putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000);
-            intent.putExtra("title", toDoItem.getName());
-            startActivity(intent);
-        }
 
         ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
 //        registerForContextMenu(ch);
-        if (toDoItem.getDate() == null) {
+
+        if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
             linearLayoutSomeday.addView(ch);
-        } else if (toDoItem.isOverDue()) {
-            linearLayoutOverdue.addView(ch);
         } else if (isTodaysDate(toDoItem)) {
             linearLayoutToday.addView(ch);
+            if (toDoItem.isComplete()) {
+                ch.setChecked(true);
+            }
+
         } else if (isTomorrowsDate(toDoItem)) {
             linearLayoutTomorrow.addView(ch);
-        } else if (!isPastDate(toDoItem)) {
+            if (toDoItem.isComplete()) {
+                ch.setChecked(true);
+            }
+
+        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
+            linearLayoutOverdue.addView(ch);
+        } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
             linearLayoutFuture.addView(ch);
         }
+
+
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -289,278 +307,49 @@ public class SimpleDo extends Activity {
             linearLayoutOverdue.removeAllViews();
 
             if (position == 0) { // No Filter
-                final CheckBox ch = new CheckBox(getApplicationContext());
-                for (final ToDoItem toDoItem : toDoList) { //No filter
-                    ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
-
-                    ch.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (toDoItem.isOverDue()) {
-                                linearLayoutOverdue.removeView(ch);
-                            } else if (toDoItem.getDate() == null) {
-                                linearLayoutSomeday.removeView(ch);
-                            } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
-                                linearLayoutFuture.removeView(ch);
-                            }
-                            toDoItem.setComplete(((CheckBox) view).isChecked());
-                        }
-                    });
-
-                    if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
-                        linearLayoutSomeday.addView(ch);
-                    } else if (isTodaysDate(toDoItem)) {
-                        linearLayoutToday.addView(ch);
-                        if (toDoItem.isComplete()) {
-                            ch.setChecked(true);
-                        }
-
-                    } else if (isTomorrowsDate(toDoItem)) {
-                        linearLayoutTomorrow.addView(ch);
-                        if (toDoItem.isComplete()) {
-                            ch.setChecked(true);
-                        }
-
-                    } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
-                        linearLayoutOverdue.addView(ch);
-                    } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
-                        linearLayoutFuture.addView(ch);
-                    }
+                for (ToDoItem toDoItem : toDoList) {
+                    addItem(toDoItem);
                 }
                 setTitle("Simple Do");
             } else if (position == 1) { //Only show high priority
-                for (final ToDoItem toDoItem : toDoList) {
+                for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getPriority().equals("High")) {
-                        final CheckBox ch = new CheckBox(getApplicationContext());
-                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
-
-                        ch.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (toDoItem.isOverDue()) {
-                                    linearLayoutOverdue.removeView(ch);
-                                } else if (toDoItem.getDate() == null) {
-                                    linearLayoutSomeday.removeView(ch);
-                                } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
-                                    linearLayoutFuture.removeView(ch);
-                                }
-                                toDoItem.setComplete(((CheckBox) view).isChecked());
-                            }
-                        });
-
-                        if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
-                            linearLayoutSomeday.addView(ch);
-                        } else if (isTodaysDate(toDoItem)) {
-                            linearLayoutToday.addView(ch);
-                            if (toDoItem.isComplete()) {
-                                ch.setChecked(true);
-                            }
-
-                        } else if (isTomorrowsDate(toDoItem)) {
-                            linearLayoutTomorrow.addView(ch);
-                            if (toDoItem.isComplete()) {
-                                ch.setChecked(true);
-                            }
-
-                        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
-                            linearLayoutOverdue.addView(ch);
-                        } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
-                            linearLayoutFuture.addView(ch);
-                        }
+                        addItem(toDoItem);
                     }
                 }
                 setTitle("High Priority");
             } else if (position == 2) { //Only show medium priority
-                for (final ToDoItem toDoItem : toDoList) {
+                for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getPriority().equals("Medium")) {
-                        final CheckBox ch = new CheckBox(getApplicationContext());
-                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
-
-                        ch.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (toDoItem.isOverDue()) {
-                                    linearLayoutOverdue.removeView(ch);
-                                } else if (toDoItem.getDate() == null) {
-                                    linearLayoutSomeday.removeView(ch);
-                                } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
-                                    linearLayoutFuture.removeView(ch);
-                                }
-                                toDoItem.setComplete(((CheckBox) view).isChecked());
-                            }
-                        });
-
-                        if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
-                            linearLayoutSomeday.addView(ch);
-                        } else if (isTodaysDate(toDoItem)) {
-                            linearLayoutToday.addView(ch);
-                            if (toDoItem.isComplete()) {
-                                ch.setChecked(true);
-                            }
-
-                        } else if (isTomorrowsDate(toDoItem)) {
-                            linearLayoutTomorrow.addView(ch);
-                            if (toDoItem.isComplete()) {
-                                ch.setChecked(true);
-                            }
-
-                        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
-                            linearLayoutOverdue.addView(ch);
-                        } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
-                            linearLayoutFuture.addView(ch);
-                        }
+                        addItem(toDoItem);
                     }
                 }
                 setTitle("Medium Priority");
             } else if (position == 3) { //Only show low priority
-                for (final ToDoItem toDoItem : toDoList) {
+                for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getPriority().equals("Low")) {
-                        final CheckBox ch = new CheckBox(getApplicationContext());
-                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
-
-                        ch.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (toDoItem.isOverDue()) {
-                                    linearLayoutOverdue.removeView(ch);
-                                } else if (toDoItem.getDate() == null) {
-                                    linearLayoutSomeday.removeView(ch);
-                                } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
-                                    linearLayoutFuture.removeView(ch);
-                                }
-                                toDoItem.setComplete(((CheckBox) view).isChecked());
-                            }
-                        });
-
-                        if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
-                            linearLayoutSomeday.addView(ch);
-                        } else if (isTodaysDate(toDoItem)) {
-                            linearLayoutToday.addView(ch);
-                            if (toDoItem.isComplete()) {
-                                ch.setChecked(true);
-                            }
-
-                        } else if (isTomorrowsDate(toDoItem)) {
-                            linearLayoutTomorrow.addView(ch);
-                            if (toDoItem.isComplete()) {
-                                ch.setChecked(true);
-                            }
-
-                        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
-                            linearLayoutOverdue.addView(ch);
-                        } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
-                            linearLayoutFuture.addView(ch);
-                        }
+                        addItem(toDoItem);
                     }
                 }
                 setTitle("Low Priority");
             } else if (position == 4) { //Only show not completed items
-                for (final ToDoItem toDoItem : toDoList) {
+                for (ToDoItem toDoItem : toDoList) {
                     if (!toDoItem.isComplete()) {
-                        final CheckBox ch = new CheckBox(getApplicationContext());
-                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
-
-                        ch.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (toDoItem.isOverDue()) {
-                                    linearLayoutOverdue.removeView(ch);
-                                } else if (toDoItem.getDate() == null) {
-                                    linearLayoutSomeday.removeView(ch);
-                                } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
-                                    linearLayoutFuture.removeView(ch);
-                                }
-                                toDoItem.setComplete(((CheckBox) view).isChecked());
-                            }
-                        });
-
-                        if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
-                            linearLayoutSomeday.addView(ch);
-                        } else if (isTodaysDate(toDoItem)) {
-                            linearLayoutToday.addView(ch);
-                            if (toDoItem.isComplete()) {
-                                ch.setChecked(true);
-                            }
-
-                        } else if (isTomorrowsDate(toDoItem)) {
-                            linearLayoutTomorrow.addView(ch);
-                            if (toDoItem.isComplete()) {
-                                ch.setChecked(true);
-                            }
-
-                        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
-                            linearLayoutOverdue.addView(ch);
-                        } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
-                            linearLayoutFuture.addView(ch);
-                        }
+                        addItem(toDoItem);
                     }
                 }
                 setTitle("Not Completed");
             } else if (position == 5) { //Filter by work
-                for (final ToDoItem toDoItem : toDoList) {
+                for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getGroup().equals("Work")) {
-                        final CheckBox ch = new CheckBox(getApplicationContext());
-                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
-
-                        ch.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (toDoItem.isOverDue()) {
-                                    linearLayoutOverdue.removeView(ch);
-                                } else if (toDoItem.getDate() == null) {
-                                    linearLayoutSomeday.removeView(ch);
-                                } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
-                                    linearLayoutFuture.removeView(ch);
-                                }
-                                toDoItem.setComplete(((CheckBox) view).isChecked());
-                            }
-                        });
-
-                        if (toDoItem.getDate() == null) {
-                            linearLayoutSomeday.addView(ch);
-                        } else if (isTodaysDate(toDoItem)) {
-                            linearLayoutToday.addView(ch);
-                        } else if (isTomorrowsDate(toDoItem)) {
-                            linearLayoutTomorrow.addView(ch);
-                        } else if (toDoItem.isOverDue()) {
-                            linearLayoutOverdue.addView(ch);
-                        } else if (!isPastDate(toDoItem)) {
-                            linearLayoutFuture.addView(ch);
-                        }
+                        addItem(toDoItem);
                     }
                 }
                 setTitle("Work");
             } else if (position == 6) { //Filter by personal
-                for (final ToDoItem toDoItem : toDoList) {
+                for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getGroup().equals("Personal")) {
-                        final CheckBox ch = new CheckBox(getApplicationContext());
-                        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
-
-                        ch.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (toDoItem.isOverDue()) {
-                                    linearLayoutOverdue.removeView(ch);
-                                } else if (toDoItem.getDate() == null) {
-                                    linearLayoutSomeday.removeView(ch);
-                                } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
-                                    linearLayoutFuture.removeView(ch);
-                                }
-                                toDoItem.setComplete(((CheckBox) view).isChecked());
-                            }
-                        });
-
-                        if (toDoItem.getDate() == null) {
-                            linearLayoutSomeday.addView(ch);
-                        } else if (isTodaysDate(toDoItem)) {
-                            linearLayoutToday.addView(ch);
-                        } else if (isTomorrowsDate(toDoItem)) {
-                            linearLayoutTomorrow.addView(ch);
-                        } else if (toDoItem.isOverDue()) {
-                            linearLayoutOverdue.addView(ch);
-                        } else if (!isPastDate(toDoItem)) {
-                            linearLayoutFuture.addView(ch);
-                        }
+                        addItem(toDoItem);
                     }
                 }
                 setTitle("Personal");

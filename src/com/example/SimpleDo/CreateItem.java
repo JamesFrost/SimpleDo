@@ -106,7 +106,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.button:
-                        if (!toDoItemName.getText().toString().matches("")) {
+                        if (!toDoItemName.getText().toString().matches("")) { //if the name field is not empty
                             Intent intent = new Intent(CreateItem.this, SimpleDo.class);
                             intent.putExtra("newToDoItem", new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString()));
                             intent.putExtra("reminder", reminderToggleButton.isChecked());
@@ -146,14 +146,15 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
     private Date createDate() {
         if (dateToggleButton.isChecked()) {
             Date date = new Date();
-            if(timeToggleButton.isChecked()) {
+            date.setDate(datePicker.getDayOfMonth());
+            date.setMonth(datePicker.getMonth());
+            date.setYear(datePicker.getYear());
+
+            if (timeToggleButton.isChecked()) {
                 date.setMinutes(timePicker.getCurrentMinute());
                 date.setHours(timePicker.getCurrentHour());
                 date.setSeconds(0);
             }
-            date.setDate(datePicker.getDayOfMonth());
-            date.setMonth(datePicker.getMonth());
-            date.setYear(datePicker.getYear());
             return date;
         } else return null;
     }
