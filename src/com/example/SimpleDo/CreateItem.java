@@ -108,7 +108,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
                     case R.id.button:
                         if (!toDoItemName.getText().toString().matches("")) { //if the name field is not empty
                             Intent intent = new Intent(CreateItem.this, SimpleDo.class);
-                            intent.putExtra("newToDoItem", new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString()));
+                            intent.putExtra("newToDoItem", new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString(), timeToggleButton.isChecked()));
                             intent.putExtra("reminder", reminderToggleButton.isChecked());
                             setResult(100, intent);
                             finish();

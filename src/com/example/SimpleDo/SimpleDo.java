@@ -162,7 +162,6 @@ public class SimpleDo extends Activity {
             linearLayoutFuture.addView(ch);
         }
 
-
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

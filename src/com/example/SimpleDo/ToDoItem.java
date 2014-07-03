@@ -23,8 +23,9 @@ public class ToDoItem implements Serializable {
     private String priority;
     //Is a reminder set
     private boolean reminder;
-    //Is the task over due
-    private boolean overDue;
+    //Has the user specified a time
+    private boolean timeSet;
+
     private Calendar now;
 
     /**
@@ -34,13 +35,12 @@ public class ToDoItem implements Serializable {
      * @param date  The due date of the task.
      * @param group The group of the task.
      */
-    public ToDoItem(String name, Date date, String group, String priority) {
+    public ToDoItem(String name, Date date, String group, String priority, boolean timeSet) {
         this.name = name;
         this.date = date;
         this.group = group;
         this.priority = priority;
-
-        overDue = isOverDue();
+        this.timeSet = timeSet;
 
         complete = false;
     }
@@ -51,7 +51,7 @@ public class ToDoItem implements Serializable {
      * @return
      */
     public boolean isOverDue() {
-        if(date != null && !complete) {
+        if (date != null && !complete) {
             now = Calendar.getInstance();
             return getYear() < getCurrentYear() ||
                     getYear() == getCurrentYear() && getMonth() < getCurrentMonth() ||
@@ -62,7 +62,7 @@ public class ToDoItem implements Serializable {
     }
 
     public String getDueTime() {
-        if (date != null) return "" + date.getHours() + ":" + date.getMinutes();
+        if (date != null && timeSet) return "" + date.getHours() + ":" + date.getMinutes();
         else return "";
     }
 
@@ -75,9 +75,13 @@ public class ToDoItem implements Serializable {
         return now.get(Calendar.MONTH);
     }
 
-    private  int getCurrentHour() { return now.get(Calendar.HOUR_OF_DAY);}
+    private int getCurrentHour() {
+        return now.get(Calendar.HOUR_OF_DAY);
+    }
 
-    private int getCurrentMin() { return now.get(Calendar.MINUTE); }
+    private int getCurrentMin() {
+        return now.get(Calendar.MINUTE);
+    }
 
     private int getCurrentDay() {
         return now.get(Calendar.DAY_OF_WEEK);
@@ -108,7 +112,7 @@ public class ToDoItem implements Serializable {
     }
 
     public int getYear() {
-            return date.getYear();
+        return date.getYear();
     }
 
     public int getMonth() {
