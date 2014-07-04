@@ -153,7 +153,7 @@ public class SimpleDo extends Activity {
         long endDate = startDate + 1000 * 60 * 60;
         event.put("dtstart", startDate);
         event.put("dtend", endDate);
-//        event.put("hasAlarm", 1);
+        event.put("hasAlarm", 1);
         //If it is bithday alarm or such kind (which should remind me for whole day) 0 for false, 1 for true
         // values.put("allDay", 1);
 
@@ -161,6 +161,15 @@ public class SimpleDo extends Activity {
         Uri eventUri = cr.insert(Uri.parse(eventUriStr), event);
         long eventID = Long.parseLong(eventUri.getLastPathSegment());
         toDoItem.setEventID(eventID);
+
+        String reminderUriString = "content://com.android.calendar/reminders";
+        ContentValues reminderValues = new ContentValues();
+        reminderValues.put("event_id", eventID);
+        // Default value of the system. Minutes is a integer
+        reminderValues.put("minutes", 5);
+        // Alert Methods: Default(0), Alert(1), Email(2), SMS(3)
+        reminderValues.put("method", 1);
+        cr.insert(Uri.parse(reminderUriString), reminderValues); //Uri reminderUri =
     }
 
     /**
@@ -168,7 +177,7 @@ public class SimpleDo extends Activity {
      *
      * @param toDoItem The item to the delete the calendar event for.
      */
-    private void deleteCalendarEvent(ToDoItem toDoItem){
+    private void deleteCalendarEvent(ToDoItem toDoItem) {
         ContentValues values = new ContentValues();
         Uri deleteUri = null;
         deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, toDoItem.getEventID());
@@ -220,6 +229,12 @@ public class SimpleDo extends Activity {
                     linearLayoutFuture.removeView(ch);
                 }
                 toDoItem.setComplete(((CheckBox) view).isChecked());
+
+                if (toDoItem.isComplete()) {
+                    deleteCalendarEvent(toDoItem);
+                } else if (toDoItem.isReminder()) {
+                    addReminder(toDoItem);
+                }
             }
         });
         ch.setOnLongClickListener(new View.OnLongClickListener() {
