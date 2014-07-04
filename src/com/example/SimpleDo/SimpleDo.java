@@ -41,6 +41,7 @@ public class SimpleDo extends Activity {
     private String[] mPlanetTitles;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
+    private DrawerItemClickListener test;
 
     /**
      * Called when the activity is first created.
@@ -56,7 +57,9 @@ public class SimpleDo extends Activity {
         // Set the adapter for the list view
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mPlanetTitles));
         // Set the list's click listener
-        drawerList.setOnItemClickListener(new DrawerItemClickListener());
+        test = new DrawerItemClickListener();
+        drawerList.setItemChecked(0, true);
+        drawerList.setOnItemClickListener(test);
 
         toDoName = (EditText) findViewById(R.id.toDoName);
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
@@ -117,7 +120,8 @@ public class SimpleDo extends Activity {
                     addReminder(toDoItem);
                 }
                 toDoList.add(toDoItem);
-                addItem(toDoItem);
+                test.filter(drawerList.getCheckedItemPosition());
+//                addItem(toDoItem);
             }
         }
     }
@@ -146,11 +150,14 @@ public class SimpleDo extends Activity {
         // id, We need to choose from our mobile for primary its 1
         event.put("calendar_id", 1);
         event.put("title", toDoItem.getName());
-        event.put("eventTimezone", "UTC/GMT +2:00");
+        event.put("eventTimezone", "GMT");
 
         long startDate = cal.getTimeInMillis();
         // For next 1hr
         long endDate = startDate + 1000 * 60 * 60;
+        System.out.println("Current time in millis: " + cal.getTimeInMillis());
+        System.out.println("Item time in millis: " + toDoItem.getDate().getTime());
+        System.out.println("Difference: " + (toDoItem.getDate().getTime() - cal.getTimeInMillis()));
         event.put("dtstart", startDate);
         event.put("dtend", endDate);
         event.put("hasAlarm", 1);
@@ -302,6 +309,7 @@ public class SimpleDo extends Activity {
 
     private boolean isPastDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
+            Calendar cal = Calendar.getInstance();
             return toDoItem.getYear() < getCurrentYear() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() < getCurrentMonth() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() < getCurrentDay();
         } else return false;
     }
@@ -339,7 +347,7 @@ public class SimpleDo extends Activity {
     }
 
     private int getCurrentDay() {
-        return now.get(Calendar.DAY_OF_WEEK);
+        return now.get(Calendar.DAY_OF_MONTH);
     }
 
     private class DrawerItemClickListener implements AdapterView.OnItemClickListener {
@@ -359,7 +367,7 @@ public class SimpleDo extends Activity {
          *
          * @param position The filter selected
          */
-        private void filter(int position) {
+        public void filter(int position) {
 
             linearLayoutToday.removeAllViews();
             linearLayoutTomorrow.removeAllViews();
