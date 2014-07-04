@@ -1,16 +1,23 @@
 package com.example.SimpleDo;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import android.provider.CalendarContract;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Main Activity.
@@ -104,11 +111,13 @@ public class SimpleDo extends Activity {
             Bundle bundle = data.getExtras();
             if (resultCode == 100 && bundle != null) {
 
+                ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
+
                 if (bundle.getBoolean("reminder")) {
-                    addReminder((ToDoItem) data.getSerializableExtra("newToDoItem"));
+                    addReminder(toDoItem);
                 }
-                toDoList.add((ToDoItem) data.getSerializableExtra("newToDoItem"));
-                addItem((ToDoItem) data.getSerializableExtra("newToDoItem"));
+                toDoList.add(toDoItem);
+                addItem(toDoItem);
             }
         }
     }
@@ -119,15 +128,53 @@ public class SimpleDo extends Activity {
      * @param toDoItem The item to set a reminder for.
      */
     private void addReminder(ToDoItem toDoItem) {
+
         Calendar cal = Calendar.getInstance();
-        Intent intent = new Intent(Intent.ACTION_EDIT);
-        intent.setType("vnd.android.cursor.item/event");
-        intent.putExtra("beginTime", cal.getTimeInMillis());
-        intent.putExtra("allDay", false);
-//        intent.putExtra("rrule", "FREQ=DAILY");
-        intent.putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000);
-        intent.putExtra("title", toDoItem.getName());
-        startActivity(intent);
+
+//        Intent intent = new Intent(Intent.ACTION_EDIT);
+////        intent.setData(CalendarContract.Events.CONTENT_URI);
+//        intent.setType("vnd.android.cursor.item/event");
+//        intent.putExtra("beginTime", cal.getTimeInMillis());
+//        intent.putExtra("allDay", false);
+////        intent.putExtra("rrule", "FREQ=DAILY");
+//        intent.putExtra("endTime", cal.getTimeInMillis() + 60 * 60 * 1000);
+//        intent.putExtra("title", toDoItem.getName());
+//        startActivity(intent);
+
+        String eventUriStr = "content://com.android.calendar/events";
+        ContentValues event = new ContentValues();
+        // id, We need to choose from our mobile for primary its 1
+        event.put("calendar_id", 1);
+        event.put("title", toDoItem.getName());
+        event.put("eventTimezone", "UTC/GMT +2:00");
+
+        long startDate = cal.getTimeInMillis();
+        // For next 1hr
+        long endDate = startDate + 1000 * 60 * 60;
+        event.put("dtstart", startDate);
+        event.put("dtend", endDate);
+//        event.put("hasAlarm", 1);
+        //If it is bithday alarm or such kind (which should remind me for whole day) 0 for false, 1 for true
+        // values.put("allDay", 1);
+
+        ContentResolver cr = getContentResolver();
+        Uri eventUri = cr.insert(Uri.parse(eventUriStr), event);
+        long eventID = Long.parseLong(eventUri.getLastPathSegment());
+        toDoItem.setEventID(eventID);
+    }
+
+    /**
+     * Deletes the calendar event for a toDoItem.
+     *
+     * @param toDoItem The item to the delete the calendar event for.
+     */
+    private void deleteCalendarEvent(ToDoItem toDoItem){
+        ContentValues values = new ContentValues();
+        Uri deleteUri = null;
+        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, toDoItem.getEventID());
+        int rows = getContentResolver().delete(deleteUri, null, null);
+        final String DEBUG_TAG = "MyActivity";
+        Log.i(DEBUG_TAG, "Rows deleted: " + rows);
     }
 
     /**

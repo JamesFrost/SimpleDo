@@ -23,6 +23,17 @@ public class ToDoItem implements Serializable {
     private String priority;
     //Is a reminder set
     private boolean reminder;
+
+    public long getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(long eventID) {
+        this.eventID = eventID;
+    }
+
+    //The eventID of the reminder - this will only be set if reminder == true
+    private long eventID;
     //Has the user specified a time
     private boolean timeSet;
 
