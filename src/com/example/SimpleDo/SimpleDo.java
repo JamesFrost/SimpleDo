@@ -13,10 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
+import org.joda.time.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -327,20 +324,17 @@ public class SimpleDo extends Activity {
     private boolean isTodaysDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
 
-            LocalDate lt = new LocalDate();
+            if (toDoItem.getDate() instanceof LocalDate) {
+                LocalDate lt = new LocalDate();
+                return lt.equals(toDoItem.getDate());
+            } else {
+                LocalDateTime ldt = new LocalDateTime();
+                LocalDate ld = new LocalDate();
+                LocalDate test = new LocalDate(toDoItem.getDate().get(DateTimeFieldType.year()), toDoItem.getDate().get(DateTimeFieldType.monthOfYear()), toDoItem.getDate().get(DateTimeFieldType.dayOfMonth()));
+//                return lt.equals(test);
+                return toDoItem.getDate().isAfter(ldt) && test.isBefore(ld.plusDays(1));
+            }
 
-            return lt.equals(toDoItem.getDate());
-//            return lt.compareTo(ltTwo) == -1;
-
-
-//            return toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() == getCurrentDay();
-//
-
-//        Date test = new Date(getCurrentYear(),getCurrentMonth(),getCurrentDay());
-//            System.out.println("Test date: " + test);
-//            System.out.println("ToDoItem Date: " + toDoItem.getDate());
-//            System.out.println("True or false: " + toDoItem.getDate().equals(test));
-//            return toDoItem.getDate().equals(test);
         } else return false;
     }
 
@@ -353,20 +347,25 @@ public class SimpleDo extends Activity {
     private boolean isTomorrowsDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
 
-            LocalDate lt = new LocalDate();
-
-            return toDoItem.getDate().equals(lt.plusDays(1));
-
+            if (toDoItem.getDate() instanceof LocalDate) {
+                LocalDate lt = new LocalDate();
+                return toDoItem.getDate().equals(lt.plusDays(1));
+            } else {
+                LocalDate lt = new LocalDate();
+                LocalDate test = new LocalDate(toDoItem.getDate().get(DateTimeFieldType.year()), toDoItem.getDate().get(DateTimeFieldType.monthOfYear()), toDoItem.getDate().get(DateTimeFieldType.dayOfMonth()));
+                return test.equals(lt.plusDays(1));
+            }
         } else return false;
     }
 
     private boolean isOverDue(ToDoItem toDoItem) {
-        LocalDate lt = new LocalDate();
-
         if (toDoItem.getDate() instanceof LocalDate) {
+            LocalDate lt = new LocalDate();
             return toDoItem.getDate().isBefore(lt);
         } else {
-            return false;
+            LocalDateTime ldt = new LocalDateTime();
+            System.out.println("Overdue comparison: " + toDoItem.getDate().isBefore(ldt));
+            return toDoItem.getDate().isBefore(ldt);
         }
     }
 
