@@ -7,6 +7,9 @@ import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.base.BaseLocal;
 
 import java.util.Date;
 
@@ -143,19 +146,38 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
      *
      * @return date
      */
-    private Date createDate() {
+    private BaseLocal createDate() {
         if (dateToggleButton.isChecked()) {
-            Date date = new Date();
-            date.setDate(datePicker.getDayOfMonth());
-            date.setMonth(datePicker.getMonth());
-            date.setYear(datePicker.getYear());
+            //Old JDK Date
+//            Date date = new Date();
+//
+//            if (timeToggleButton.isChecked()) {
+//                date.setSeconds(0);
+//                date.setMinutes(timePicker.getCurrentMinute());
+//                date.setHours(timePicker.getCurrentHour());
+//            } else {
+//                date.setHours(0);
+//                date.setMinutes(0);
+//                date.setSeconds(0);
+//            }
+//
+//            date.setYear(datePicker.getYear());
+//            date.setMonth(datePicker.getMonth());
+//            date.setDate(datePicker.getDayOfMonth());
+//
+//            return date;
 
-            if (timeToggleButton.isChecked()) {
-                date.setMinutes(timePicker.getCurrentMinute());
-                date.setHours(timePicker.getCurrentHour());
-                date.setSeconds(0);
+            //New Joda Time
+
+            if(timeToggleButton.isChecked()) {
+                LocalDateTime ldt = new LocalDateTime(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
+                return ldt;
+            } else {
+                LocalDate ld = new LocalDate(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
+                System.out.println("DatePickerMonth: " + datePicker.getMonth());
+                return ld;
             }
-            return date;
+
         } else return null;
     }
 

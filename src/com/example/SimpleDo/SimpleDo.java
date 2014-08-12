@@ -13,6 +13,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -41,7 +45,7 @@ public class SimpleDo extends Activity {
     private String[] mPlanetTitles;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
-    private DrawerItemClickListener test;
+    private DrawerItemClickListener drawerItemClickListener;
 
     /**
      * Called when the activity is first created.
@@ -57,9 +61,9 @@ public class SimpleDo extends Activity {
         // Set the adapter for the list view
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mPlanetTitles));
         // Set the list's click listener
-        test = new DrawerItemClickListener();
+        drawerItemClickListener = new DrawerItemClickListener();
         drawerList.setItemChecked(0, true);
-        drawerList.setOnItemClickListener(test);
+        drawerList.setOnItemClickListener(drawerItemClickListener);
 
         toDoName = (EditText) findViewById(R.id.toDoName);
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
@@ -120,7 +124,7 @@ public class SimpleDo extends Activity {
                     addReminder(toDoItem);
                 }
                 toDoList.add(toDoItem);
-                test.filter(drawerList.getCheckedItemPosition());
+                drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 //                addItem(toDoItem);
             }
         }
@@ -155,9 +159,6 @@ public class SimpleDo extends Activity {
         long startDate = cal.getTimeInMillis();
         // For next 1hr
         long endDate = startDate + 1000 * 60 * 60;
-        System.out.println("Current time in millis: " + cal.getTimeInMillis());
-        System.out.println("Item time in millis: " + toDoItem.getDate().getTime());
-        System.out.println("Difference: " + (toDoItem.getDate().getTime() - cal.getTimeInMillis()));
         event.put("dtstart", startDate);
         event.put("dtend", endDate);
         event.put("hasAlarm", 1);
@@ -202,7 +203,7 @@ public class SimpleDo extends Activity {
         now = Calendar.getInstance();
         final CheckBox ch = new CheckBox(this);
 
-        ch.setText(toDoItem.getName() + " " + toDoItem.getDueTime());
+        ch.setText(toDoItem.getName() + " " + toDoItem.getDate());
 //        registerForContextMenu(ch);
 
         if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
@@ -219,7 +220,7 @@ public class SimpleDo extends Activity {
                 ch.setChecked(true);
             }
 
-        } else if (toDoItem.isOverDue() && !toDoItem.isComplete()) {
+        } else if (isOverDue(toDoItem) && !toDoItem.isComplete()) {
             linearLayoutOverdue.addView(ch);
         } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
             linearLayoutFuture.addView(ch);
@@ -228,7 +229,7 @@ public class SimpleDo extends Activity {
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (toDoItem.isOverDue()) {
+                if (isOverDue(toDoItem)) {
                     linearLayoutOverdue.removeView(ch);
                 } else if (toDoItem.getDate() == null) {
                     linearLayoutSomeday.removeView(ch);
@@ -310,7 +311,10 @@ public class SimpleDo extends Activity {
     private boolean isPastDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
             Calendar cal = Calendar.getInstance();
-            return toDoItem.getYear() < getCurrentYear() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() < getCurrentMonth() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() < getCurrentDay();
+//            return toDoItem.getYear() < getCurrentYear() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() < getCurrentMonth() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() < getCurrentDay();
+            Date test = new Date(getCurrentYear(), getCurrentMonth(), getCurrentDay());
+//            return toDoItem.getDate().before(test);
+            return false;
         } else return false;
     }
 
@@ -322,7 +326,21 @@ public class SimpleDo extends Activity {
      */
     private boolean isTodaysDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
-            return toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() == getCurrentDay();
+
+            LocalDate lt = new LocalDate();
+
+            return lt.equals(toDoItem.getDate());
+//            return lt.compareTo(ltTwo) == -1;
+
+
+//            return toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() == getCurrentDay();
+//
+
+//        Date test = new Date(getCurrentYear(),getCurrentMonth(),getCurrentDay());
+//            System.out.println("Test date: " + test);
+//            System.out.println("ToDoItem Date: " + toDoItem.getDate());
+//            System.out.println("True or false: " + toDoItem.getDate().equals(test));
+//            return toDoItem.getDate().equals(test);
         } else return false;
     }
 
@@ -334,8 +352,22 @@ public class SimpleDo extends Activity {
      */
     private boolean isTomorrowsDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
-            return toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() == getCurrentDay() + 1;
+
+            LocalDate lt = new LocalDate();
+
+            return toDoItem.getDate().equals(lt.plusDays(1));
+
         } else return false;
+    }
+
+    private boolean isOverDue(ToDoItem toDoItem) {
+        LocalDate lt = new LocalDate();
+
+        if (toDoItem.getDate() instanceof LocalDate) {
+            return toDoItem.getDate().isBefore(lt);
+        } else {
+            return false;
+        }
     }
 
     private int getCurrentYear() {
