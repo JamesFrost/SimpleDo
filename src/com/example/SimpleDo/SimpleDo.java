@@ -141,7 +141,6 @@ public class SimpleDo extends Activity {
                 }
 
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
-//                addItem(toDoItem);
             }
         }
     }
@@ -228,7 +227,7 @@ public class SimpleDo extends Activity {
 
         } else if (isOverDue(toDoItem) && !toDoItem.isComplete()) {
             linearLayoutOverdue.addView(ch);
-        } else if (!isPastDate(toDoItem) && !toDoItem.isComplete()) {
+        } else if (!toDoItem.isComplete()) {
             linearLayoutFuture.addView(ch);
         }
 
@@ -312,16 +311,6 @@ public class SimpleDo extends Activity {
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-    }
-
-    private boolean isPastDate(ToDoItem toDoItem) {
-        if (toDoItem.getDate() != null) {
-            Calendar cal = Calendar.getInstance();
-//            return toDoItem.getYear() < getCurrentYear() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() < getCurrentMonth() || toDoItem.getYear() == getCurrentYear() && toDoItem.getMonth() == getCurrentMonth() && toDoItem.getDay() < getCurrentDay();
-            Date test = new Date(getCurrentYear(), getCurrentMonth(), getCurrentDay());
-//            return toDoItem.getDate().before(test);
-            return false;
-        } else return false;
     }
 
     /**
