@@ -1,6 +1,7 @@
 package com.example.SimpleDo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -111,7 +112,19 @@ public class ItemsDataSource {
             } else {
                 split = cursor.getString(2).split(" ");
                 //need better solution
-                date = new LocalDate(split[0].replace("/", "-").replace("20", ""));
+                split = split[0].split("/");
+
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = split.length - 1; i > -1; i--) {
+                    stringBuilder.append(split[i]);
+                    if (i != 0) {
+                        stringBuilder.append("-");
+                    }
+                }
+
+                String parseDate = stringBuilder.toString();
+
+                date = new LocalDate(parseDate);
             }
         }
 

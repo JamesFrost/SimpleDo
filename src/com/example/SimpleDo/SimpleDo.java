@@ -96,6 +96,10 @@ public class SimpleDo extends Activity {
         toDoList = dataSource.getAllItems();
         drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
+        for(ToDoItem a : toDoList) {
+            System.out.println("Name: " + a.getName() + " Date: " + a.getDate());
+        }
+
         getOverflowMenu();
     }
 
