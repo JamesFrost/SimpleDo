@@ -43,6 +43,7 @@ public class SimpleDo extends Activity {
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private DrawerItemClickListener drawerItemClickListener;
+    private ItemsDataSource dataSource;
 
     /**
      * Called when the activity is first created.
@@ -51,6 +52,10 @@ public class SimpleDo extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        dataSource = new ItemsDataSource(this);
+        dataSource.open();
+
 
         mPlanetTitles = getResources().getStringArray(R.array.filters);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -88,6 +93,8 @@ public class SimpleDo extends Activity {
         go.setOnClickListener(droidTapListener);
 
         toDoList = new ArrayList<ToDoItem>();
+        toDoList = dataSource.getAllItems();
+        drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
         getOverflowMenu();
     }
@@ -116,6 +123,7 @@ public class SimpleDo extends Activity {
             if (resultCode == 100 && bundle != null) {
 
                 ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
+                dataSource.createItem(toDoItem);
 
                 if (bundle.getBoolean("reminder")) {
                     addReminder(toDoItem);
@@ -248,6 +256,8 @@ public class SimpleDo extends Activity {
                 } else if (toDoItem.isReminder()) {
                     addReminder(toDoItem);
                 }
+
+                dataSource.deleteItem(toDoItem);
             }
         });
         ch.setOnLongClickListener(new View.OnLongClickListener() {
@@ -357,14 +367,15 @@ public class SimpleDo extends Activity {
     }
 
     private boolean isOverDue(ToDoItem toDoItem) {
-        if (toDoItem.getDate() instanceof LocalDate) {
-            LocalDate lt = new LocalDate();
-            return toDoItem.getDate().isBefore(lt);
-        } else {
-            LocalDateTime ldt = new LocalDateTime();
-            System.out.println("Overdue comparison: " + toDoItem.getDate().isBefore(ldt));
-            return toDoItem.getDate().isBefore(ldt);
-        }
+        if (toDoItem.getDate() != null) {
+            if (toDoItem.getDate() instanceof LocalDate) {
+                LocalDate lt = new LocalDate();
+                return toDoItem.getDate().isBefore(lt);
+            } else {
+                LocalDateTime ldt = new LocalDateTime();
+                return toDoItem.getDate().isBefore(ldt);
+            }
+        } else return false;
     }
 
     private int getCurrentYear() {

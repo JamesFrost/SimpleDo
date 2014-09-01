@@ -12,6 +12,7 @@
         <item>Medium</item>
         <item>High</item>
     </string-array>
+
     <string-array name="filters">
         <item>No Filter</item>
         <item>High Priority</item>
@@ -21,4 +22,19 @@
         <item>Work</item>
         <item>Personal</item>
     </string-array>
+
+    <string-array name="theme_list_preferences">
+        <item>Dark</item>
+        <item>Light</item>
+    </string-array>
+    <string name="theme_list_preferences_default">Dark</string>
+
+    <string-array name="auto_delete_list_preferences">
+        <item>Off</item>
+        <item>When Checked</item>
+        <item>After specified time</item>
+        <item>When task limit reached</item>
+    </string-array>
+    <string name="auto_delete_list_preferences_default">When Checked</string>
+
 </resources>

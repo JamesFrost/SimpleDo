@@ -2,10 +2,27 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-            android:key="pref_sync"
-            android:title="TEST"
-            android:summary="TEST"
-            android:defaultValue="true"/>
+    <PreferenceCategory
+            android:title="General">
+
+        <ListPreference
+                android:dialogTitle="Theme"
+                android:entries="@array/theme_list_preferences"
+                android:entryValues="@array/theme_list_preferences"
+                android:defaultValue="Dark"
+                android:title="Theme"
+                />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Storage">
+        <ListPreference
+                android:dialogTitle="Auto Delete"
+                android:entries="@array/auto_delete_list_preferences"
+                android:entryValues="@array/auto_delete_list_preferences"
+                android:defaultValue="When Checked"
+                android:title="Auto Delete"
+                />
+    </PreferenceCategory>
 
 </PreferenceScreen>

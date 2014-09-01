@@ -1,6 +1,8 @@
 package com.example.SimpleDo;
 
 import org.joda.time.base.BaseLocal;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -25,19 +27,12 @@ public class ToDoItem implements Serializable {
     private String priority;
     //Is a reminder set
     private boolean reminder;
-
-    public long getEventID() {
-        return eventID;
-    }
-
-    public void setEventID(long eventID) {
-        this.eventID = eventID;
-    }
-
     //The eventID of the reminder - this will only be set if reminder == true
     private long eventID;
     //Has the user specified a time
     private boolean timeSet;
+    //id used to SQLite Database
+    private long id;
 
     private Calendar now;
 
@@ -56,6 +51,30 @@ public class ToDoItem implements Serializable {
         this.timeSet = timeSet;
 
         complete = false;
+    }
+
+    public boolean isTimeSet() {
+        return timeSet;
+    }
+
+    public void setTimeSet(boolean timeSet) {
+        this.timeSet = timeSet;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(long eventID) {
+        this.eventID = eventID;
     }
 
     /**
