@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.base.BaseLocal;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -38,6 +39,12 @@ public class ItemsDataSource {
     public ItemsDataSource(Context context) {
         dbHelper = new DataBaseOpenHelper(context);
         formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+    }
+
+    public void updateItemCompleteStatus(ToDoItem toDoItem) {
+        ContentValues args = new ContentValues();
+        args.put(DataBaseOpenHelper.COLUMN_COMPLETE, toDoItem.isComplete());
+        database.update(DataBaseOpenHelper.TABLE_ITEMS, args, DataBaseOpenHelper.COLUMN_ID + "=" + toDoItem.getId(), null);
     }
 
     public void open() throws SQLException {
@@ -90,7 +97,38 @@ public class ItemsDataSource {
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             ToDoItem toDoItem = cursorToItem(cursor);
-            toDoItems.add(toDoItem);
+
+            //delete items from database after 1 day
+            if (toDoItem.getDate() != null && toDoItem.isComplete()) {
+                if (toDoItem.getDate() instanceof LocalDate) {
+
+                    LocalDate lt = new LocalDate();
+                    lt = lt.minusDays(1);
+
+                    if (toDoItem.getDate().isBefore(lt)) {
+                        deleteItem(toDoItem);
+                    } else {
+                        toDoItems.add(toDoItem);
+                    }
+
+                } else {
+
+                    LocalDateTime ldt = new LocalDateTime();
+                    ldt = ldt.minusDays(1);
+
+                    if (toDoItem.getDate().isBefore(ldt)) {
+                        deleteItem(toDoItem);
+                    } else {
+                        toDoItems.add(toDoItem);
+                    }
+                }
+
+            } else if (toDoItem.isComplete()) {
+                deleteItem(toDoItem);
+            } else {
+                toDoItems.add(toDoItem);
+            }
+
             cursor.moveToNext();
         }
         cursor.close();
@@ -128,7 +166,15 @@ public class ItemsDataSource {
             }
         }
 
-        boolean complete = Boolean.parseBoolean(cursor.getString(3));
+        System.out.println("Value of parse boolean: " + cursor.getString(3));
+        boolean complete;
+        if (cursor.getString(3).equals("0")) {
+            complete = false;
+        } else complete = true;
+        System.out.println("Value of complete boolean: " + complete);
+
+
+//        boolean complete = Boolean.parseBoolean(cursor.getString(3));
         String group = cursor.getString(4);
         String priority = cursor.getString(5);
         boolean reminder = Boolean.parseBoolean(cursor.getString(6));

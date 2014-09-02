@@ -97,8 +97,11 @@ public class SimpleDo extends Activity {
         drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
         for(ToDoItem a : toDoList) {
-            System.out.println("Name: " + a.getName() + " Date: " + a.getDate());
+            System.out.println("Name: " + a.getName() + " Complete: " + a.isComplete());
         }
+
+        boolean testing = true;
+        System.out.println("testing: " + testing);
 
         getOverflowMenu();
     }
@@ -172,6 +175,8 @@ public class SimpleDo extends Activity {
         event.put("calendar_id", 1);
         event.put("title", toDoItem.getName());
         event.put("eventTimezone", "GMT");
+
+        LocalDateTime java = new LocalDateTime(1970, 1, 1, 0, 0);
 
         long startDate = cal.getTimeInMillis();
         // For next 1hr
@@ -253,15 +258,15 @@ public class SimpleDo extends Activity {
                 } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
                     linearLayoutFuture.removeView(ch);
                 }
-                toDoItem.setComplete(((CheckBox) view).isChecked());
 
-                if (toDoItem.isComplete()) {
+                toDoItem.setComplete(((CheckBox) view).isChecked());
+                dataSource.updateItemCompleteStatus(toDoItem);
+
+                if (toDoItem.isComplete() && toDoItem.isReminder()) {
                     deleteCalendarEvent(toDoItem);
                 } else if (toDoItem.isReminder()) {
                     addReminder(toDoItem);
                 }
-
-                dataSource.deleteItem(toDoItem);
             }
         });
         ch.setOnLongClickListener(new View.OnLongClickListener() {
