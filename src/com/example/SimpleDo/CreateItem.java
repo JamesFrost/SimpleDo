@@ -13,6 +13,8 @@ import org.joda.time.base.BaseLocal;
 
 import java.util.Date;
 
+import static android.R.style.Theme_Holo_InputMethod;
+
 /**
  * Activity where the user enters the relevant information for a To Do item.
  *
@@ -42,7 +44,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_todo_item);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         toDoItemName = (EditText) findViewById(R.id.toDoItemName);
@@ -148,27 +150,6 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
      */
     private BaseLocal createDate() {
         if (dateToggleButton.isChecked()) {
-            //Old JDK Date
-//            Date date = new Date();
-//
-//            if (timeToggleButton.isChecked()) {
-//                date.setSeconds(0);
-//                date.setMinutes(timePicker.getCurrentMinute());
-//                date.setHours(timePicker.getCurrentHour());
-//            } else {
-//                date.setHours(0);
-//                date.setMinutes(0);
-//                date.setSeconds(0);
-//            }
-//
-//            date.setYear(datePicker.getYear());
-//            date.setMonth(datePicker.getMonth());
-//            date.setDate(datePicker.getDayOfMonth());
-//
-//            return date;
-
-            //New Joda Time
-
             if(timeToggleButton.isChecked()) {
                 LocalDateTime ldt = new LocalDateTime(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
                 return ldt;

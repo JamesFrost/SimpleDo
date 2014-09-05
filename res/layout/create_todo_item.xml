@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent" android:background="#000000">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:orientation="vertical"
                   android:layout_width="match_parent"
@@ -43,7 +43,8 @@
                     android:text="Date"
                     android:id="@+id/DateText"
                     android:singleLine="false" android:textSize="30dp"
-                    android:layout_alignTop="@+id/somedayToggleButton" android:layout_alignParentRight="true"/>
+                    android:layout_alignTop="@+id/somedayToggleButton" android:layout_alignParentRight="true"
+                    android:textColor="#ffffff"/>
             <RelativeLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -55,7 +56,7 @@
                         android:text="Reminder"
                         android:id="@+id/reminderText"
                         android:textSize="30dp"
-                        android:layout_below="@+id/timePicker"/>
+                        android:layout_below="@+id/timePicker" android:textColor="#ffffff"/>
                 <TimePicker
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -75,7 +76,7 @@
                         android:id="@+id/TimeText"
                         android:textSize="30dp"
                         android:layout_alignParentLeft="true"
-                        android:layout_below="@+id/datePicker"/>
+                        android:layout_below="@+id/datePicker" android:textColor="#ffffff"/>
                 <ToggleButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

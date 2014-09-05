@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,7 +19,6 @@ import org.joda.time.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Main Activity.
@@ -44,6 +44,12 @@ public class SimpleDo extends Activity {
     private ListView drawerList;
     private DrawerItemClickListener drawerItemClickListener;
     private ItemsDataSource dataSource;
+    private TextView textViewOverDue;
+    private TextView textViewToday;
+    private TextView textViewTomorrow;
+    private TextView textViewFuture;
+    private TextView textViewSomeday;
+    private LinearLayout mainLinearLayout;
 
     /**
      * Called when the activity is first created.
@@ -56,6 +62,12 @@ public class SimpleDo extends Activity {
         dataSource = new ItemsDataSource(this);
         dataSource.open();
 
+        textViewOverDue = (TextView) findViewById(R.id.overDue);
+        textViewToday = (TextView) findViewById(R.id.today);
+        textViewTomorrow = (TextView) findViewById(R.id.tomorrow);
+        textViewFuture = (TextView) findViewById(R.id.future);
+        textViewSomeday = (TextView) findViewById(R.id.someday);
+        mainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
         mPlanetTitles = getResources().getStringArray(R.array.filters);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -96,7 +108,7 @@ public class SimpleDo extends Activity {
         toDoList = dataSource.getAllItems();
         drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
-        for(ToDoItem a : toDoList) {
+        for (ToDoItem a : toDoList) {
             System.out.println("Name: " + a.getName() + " Complete: " + a.isComplete());
         }
 
@@ -225,32 +237,42 @@ public class SimpleDo extends Activity {
         now = Calendar.getInstance();
         final CheckBox ch = new CheckBox(this);
 
-        ch.setText(toDoItem.getName() + " " + toDoItem.getDate());
+//        ch.setText(toDoItem.getName() + " " + toDoItem.getDate());
+        ch.setTextColor(Color.LTGRAY);
 //        registerForContextMenu(ch);
 
         if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
+            ch.setText(toDoItem.getName());
             linearLayoutSomeday.addView(ch);
         } else if (isTodaysDate(toDoItem)) {
+            ch.setText(toDoItem.getName());
             linearLayoutToday.addView(ch);
             if (toDoItem.isComplete()) {
                 ch.setChecked(true);
             }
 
         } else if (isTomorrowsDate(toDoItem)) {
+            ch.setText(toDoItem.getName());
             linearLayoutTomorrow.addView(ch);
             if (toDoItem.isComplete()) {
                 ch.setChecked(true);
             }
 
         } else if (isOverDue(toDoItem) && !toDoItem.isComplete()) {
+            ch.setText(toDoItem.getName() + " - " + toDoItem.getDate());
             linearLayoutOverdue.addView(ch);
         } else if (!toDoItem.isComplete()) {
+            ch.setText(toDoItem.getName() + " - " + toDoItem.getDate());
             linearLayoutFuture.addView(ch);
         }
 
         ch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                toDoItem.setComplete(((CheckBox) view).isChecked());
+                dataSource.updateItemCompleteStatus(toDoItem);
+
                 if (isOverDue(toDoItem)) {
                     linearLayoutOverdue.removeView(ch);
                 } else if (toDoItem.getDate() == null) {
@@ -258,9 +280,6 @@ public class SimpleDo extends Activity {
                 } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
                     linearLayoutFuture.removeView(ch);
                 }
-
-                toDoItem.setComplete(((CheckBox) view).isChecked());
-                dataSource.updateItemCompleteStatus(toDoItem);
 
                 if (toDoItem.isComplete() && toDoItem.isReminder()) {
                     deleteCalendarEvent(toDoItem);
@@ -472,7 +491,46 @@ public class SimpleDo extends Activity {
                 }
                 setTitle("Personal");
             }
+
+//            updateTextViews();
         }
+
+        /**
+         *
+         */
+        public void updateTextViews() {
+
+            if (linearLayoutOverdue.getChildCount() == 0) {
+                textViewOverDue.setVisibility(View.GONE);
+            } else {
+                textViewOverDue.setVisibility(View.VISIBLE);
+            }
+
+            if (linearLayoutFuture.getChildCount() == 0) {
+                textViewFuture.setVisibility(View.GONE);
+            } else {
+                textViewFuture.setVisibility(View.VISIBLE);
+            }
+
+            if (linearLayoutSomeday.getChildCount() == 0) {
+                textViewSomeday.setVisibility(View.GONE);
+            } else {
+                textViewSomeday.setVisibility(View.VISIBLE);
+            }
+
+            if (linearLayoutTomorrow.getChildCount() == 0) {
+                textViewTomorrow.setVisibility(View.GONE);
+            } else {
+                textViewTomorrow.setVisibility(View.VISIBLE);
+            }
+
+            if (linearLayoutToday.getChildCount() == 0) {
+                textViewToday.setVisibility(View.GONE);
+            } else if (mainLinearLayout.findViewById(R.id.today) == null) {
+                textViewToday.setVisibility(View.VISIBLE);
+            }
+        }
+
     }
 }
 

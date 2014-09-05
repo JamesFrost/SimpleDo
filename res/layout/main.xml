@@ -30,70 +30,98 @@
                     android:orientation="vertical"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" android:layout_below="@+id/toDoName"
-                    android:layout_alignParentLeft="true">
+                    android:layout_alignParentLeft="true" android:id="@+id/mainLinearLayout">
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="OVERDUE"
-                        android:id="@+id/textView4" android:textSize="30dp"/>
+                        android:textStyle="bold"
+                        android:id="@+id/overDue"
+                        android:textSize="30sp"
+                        android:textColor="#ffffff" android:typeface="sans"/>
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" android:id="@+id/linearLayoutOverdue"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/linearLayoutOverdue"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
                         android:animateLayoutChanges="true">
                 </LinearLayout>
                 <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:text="TODAY"
-                        android:id="@+id/Today"
-                        android:textSize="30dp" android:layout_below="@+id/toDoName" android:layout_alignParentLeft="true"
-                        />
+                        android:id="@+id/today"
+                        android:textSize="30dp" android:layout_below="@+id/toDoName"
+                        android:layout_alignParentLeft="true"
+                        android:textColor="#ffffff" android:textStyle="bold"/>
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" android:layout_below="@+id/Today"
+                        android:layout_height="wrap_content" android:layout_below="@+id/today"
                         android:layout_alignParentLeft="true" android:id="@+id/linearLayoutToday"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
                         android:animateLayoutChanges="true">
                 </LinearLayout>
                 <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:text="TOMORROW"
-                        android:id="@+id/textView"
+                        android:id="@+id/tomorrow"
                         android:textSize="30dp"
-                        android:layout_below="@+id/linearLayoutToday" android:layout_alignParentLeft="true"/>
+                        android:layout_below="@+id/linearLayoutToday" android:layout_alignParentLeft="true"
+                        android:textStyle="bold" android:textColor="#ffffff"/>
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" android:layout_below="@+id/textView"
+                        android:layout_height="wrap_content" android:layout_below="@+id/tomorrow"
                         android:layout_alignParentRight="true" android:id="@+id/linearLayoutTommorw"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
                         android:animateLayoutChanges="true">
                 </LinearLayout>
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="FUTURE"
-                        android:id="@+id/textView2" android:layout_below="@+id/linearLayoutTommorw"
-                        android:layout_alignLeft="@+id/toDoName" android:textSize="30dp"/>
+                        android:id="@+id/future" android:layout_below="@+id/linearLayoutTommorw"
+                        android:layout_alignLeft="@+id/toDoName" android:textSize="30dp" android:textStyle="bold"
+                        android:textColor="#ffffff"/>
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" android:layout_below="@+id/textView2"
+                        android:layout_height="wrap_content" android:layout_below="@+id/future"
                         android:layout_alignParentLeft="true" android:id="@+id/linearLayoutFuture"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
                         android:animateLayoutChanges="true">
                 </LinearLayout>
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="SOMEDAY"
-                        android:id="@+id/textView3" android:layout_below="@+id/linearLayoutFuture"
-                        android:layout_alignParentLeft="true" android:textSize="30dp"/>
+                        android:id="@+id/someday" android:layout_below="@+id/linearLayoutFuture"
+                        android:layout_alignParentLeft="true" android:textSize="30dp" android:textStyle="bold"
+                        android:textColor="#ffffff"/>
                 <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" android:layout_below="@+id/textView3"
+                        android:layout_height="wrap_content" android:layout_below="@+id/someday"
                         android:layout_alignParentRight="true" android:id="@+id/linearLayoutSomeday"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
                         android:animateLayoutChanges="true">
                 </LinearLayout>
                 <ListView

@@ -77,27 +77,6 @@ public class ToDoItem implements Serializable {
         this.eventID = eventID;
     }
 
-    /**
-     * Checks if the item is overdue.
-     *
-     * @return
-     */
-//    public boolean isOverDue() {
-//        if (date != null && !complete) {
-//            now = Calendar.getInstance();
-//            return getYear() < getCurrentYear() ||
-//                    getYear() == getCurrentYear() && getMonth() < getCurrentMonth() ||
-//                    getYear() == getCurrentYear() && getMonth() == getCurrentMonth() && getDay() < getCurrentDay() ||
-//                    getYear() == getCurrentYear() && getMonth() == getCurrentMonth() && getDay() == getCurrentDay() && getHour() < getCurrentHour() ||
-//                    getYear() == getCurrentYear() && getMonth() == getCurrentMonth() && getDay() == getCurrentDay() && getHour() == getCurrentHour() && getMin() < getCurrentMin();
-//        } else return false;
-//    }
-
-//    public String getDueTime() {
-//        if (date != null && timeSet) return "" + date.getHours() + ":" + date.getMinutes();
-//        else return "";
-//    }
-
     private int getCurrentYear() {
         now = Calendar.getInstance();
         return now.get(Calendar.YEAR);
@@ -143,37 +122,9 @@ public class ToDoItem implements Serializable {
         this.group = group;
     }
 
-//    public int getYear() {
-//        return date.getYear();
-//    }
-//
-//    public int getMonth() {
-//        return date.getMonth();
-//    }
-//
-//    public int getDay() {
-//        return date.getDay();
-//    }
-//
-//    public int getHour() {
-//        return date.getHours();
-//    }
-//
-//    public int getMin() {
-//        return date.getMinutes();
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
     public BaseLocal getDate() {
         return date;
     }
-//
-//    public void setDate(Date date) {
-//        this.date = date;
-//    }
 
     public boolean isComplete() {
         return complete;
