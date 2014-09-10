@@ -1,5 +1,7 @@
 package com.example.SimpleDo;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -13,6 +15,7 @@ import android.provider.CalendarContract;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.*;
+import android.view.animation.Animation;
 import android.widget.*;
 import org.joda.time.*;
 
@@ -286,6 +289,9 @@ public class SimpleDo extends Activity {
                 } else if (toDoItem.isReminder()) {
                     addReminder(toDoItem);
                 }
+
+                drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
+
             }
         });
         ch.setOnLongClickListener(new View.OnLongClickListener() {
@@ -491,12 +497,11 @@ public class SimpleDo extends Activity {
                 }
                 setTitle("Personal");
             }
-
-//            updateTextViews();
+            updateTextViews();
         }
 
         /**
-         *
+         * Removes/Adds TextView headers depending on if there are views in relevant layout
          */
         public void updateTextViews() {
 
@@ -526,9 +531,16 @@ public class SimpleDo extends Activity {
 
             if (linearLayoutToday.getChildCount() == 0) {
                 textViewToday.setVisibility(View.GONE);
-            } else if (mainLinearLayout.findViewById(R.id.today) == null) {
+            } else {
                 textViewToday.setVisibility(View.VISIBLE);
             }
+
+            linearLayoutSomeday.requestLayout();
+            linearLayoutFuture.requestLayout();
+            linearLayoutTomorrow.requestLayout();
+            linearLayoutToday.requestLayout();
+            linearLayoutOverdue.requestLayout();
+
         }
 
     }

@@ -20,7 +20,6 @@
         </activity>
         <activity android:name=".CreateItem"
                   android:label="Create Item"
-                  android:theme="@android:style/Theme.Holo.InputMethod"
                   android:configChanges="keyboardHidden|orientation"
                   android:windowSoftInputMode="stateHidden">
             <meta-data
