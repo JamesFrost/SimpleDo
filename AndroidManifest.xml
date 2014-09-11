@@ -12,7 +12,8 @@
             android:allowBackup="true"
             >
         <activity android:name=".SimpleDo"
-                  android:label="@string/app_name">
+                  android:label="@string/app_name"
+                android:theme="@style/Theme.Actionbartheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -21,6 +22,7 @@
         <activity android:name=".CreateItem"
                   android:label="Create Item"
                   android:configChanges="keyboardHidden|orientation"
+                  android:theme="@style/Theme.Actionbartheme"
                   android:windowSoftInputMode="stateHidden">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"

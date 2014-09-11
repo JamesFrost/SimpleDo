@@ -1,7 +1,5 @@
 package com.example.SimpleDo;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -15,7 +13,6 @@ import android.provider.CalendarContract;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.*;
-import android.view.animation.Animation;
 import android.widget.*;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormat;
@@ -184,8 +181,6 @@ public class SimpleDo extends Activity {
      */
     private void addReminder(ToDoItem toDoItem) {
 
-        Calendar cal = Calendar.getInstance();
-
         String eventUriStr = "content://com.android.calendar/events";
         ContentValues event = new ContentValues();
         // id, We need to choose from our mobile for primary its 1
@@ -193,20 +188,12 @@ public class SimpleDo extends Activity {
         event.put("title", toDoItem.getName());
         event.put("eventTimezone", "GMT");
 
-        LocalDateTime java = new LocalDateTime(1970, 1, 1, 0, 0);
-
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
         String test = toDoItem.getDate().toString(formatter);
         LocalDateTime date = formatter.parseLocalDateTime(test).minusHours(1);
 
         long localMillis = date.toDateTime(DateTimeZone.UTC).getMillis();
 
-//        long startDate = cal.getTimeInMillis();
-        // For next 1hr
-//        long endDate = startDate + 1000 * 60 * 60;
-
-//        long endDate = localMillis + 1000 * 60 * 60;
-//        event.put("dtstart", startDate);
         event.put("dtstart", localMillis);
         event.put("dtend", localMillis);
         event.put("hasAlarm", 1);
@@ -225,7 +212,7 @@ public class SimpleDo extends Activity {
         reminderValues.put("minutes", 1);
         // Alert Methods: Default(0), Alert(1), Email(2), SMS(3)
         reminderValues.put("method", 1);
-        cr.insert(Uri.parse(reminderUriString), reminderValues); //Uri reminderUri =
+        cr.insert(Uri.parse(reminderUriString), reminderValues);
     }
 
     /**
@@ -563,7 +550,6 @@ public class SimpleDo extends Activity {
             linearLayoutOverdue.requestLayout();
 
         }
-
     }
 }
 
