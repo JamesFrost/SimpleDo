@@ -240,7 +240,6 @@ public class SimpleDo extends Activity {
         now = Calendar.getInstance();
         final CheckBox ch = new CheckBox(this);
 
-//        ch.setText(toDoItem.getName() + " " + toDoItem.getDate());
         ch.setTextColor(Color.LTGRAY);
 //        registerForContextMenu(ch);
 
@@ -278,10 +277,13 @@ public class SimpleDo extends Activity {
 
                 if (isOverDue(toDoItem)) {
                     linearLayoutOverdue.removeView(ch);
+                    drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
                 } else if (toDoItem.getDate() == null) {
                     linearLayoutSomeday.removeView(ch);
+                    drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
                 } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
                     linearLayoutFuture.removeView(ch);
+                    drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
                 }
 
                 if (toDoItem.isComplete() && toDoItem.isReminder()) {
@@ -289,8 +291,6 @@ public class SimpleDo extends Activity {
                 } else if (toDoItem.isReminder()) {
                     addReminder(toDoItem);
                 }
-
-                drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
             }
         });
@@ -507,32 +507,42 @@ public class SimpleDo extends Activity {
 
             if (linearLayoutOverdue.getChildCount() == 0) {
                 textViewOverDue.setVisibility(View.GONE);
+                linearLayoutOverdue.setVisibility(View.GONE);
             } else {
                 textViewOverDue.setVisibility(View.VISIBLE);
+                linearLayoutOverdue.setVisibility(View.VISIBLE);
             }
 
             if (linearLayoutFuture.getChildCount() == 0) {
                 textViewFuture.setVisibility(View.GONE);
+                linearLayoutFuture.setVisibility(View.GONE);
             } else {
                 textViewFuture.setVisibility(View.VISIBLE);
+                linearLayoutFuture.setVisibility(View.VISIBLE);
             }
 
             if (linearLayoutSomeday.getChildCount() == 0) {
                 textViewSomeday.setVisibility(View.GONE);
+                linearLayoutSomeday.setVisibility(View.GONE);
             } else {
                 textViewSomeday.setVisibility(View.VISIBLE);
+                linearLayoutSomeday.setVisibility(View.VISIBLE);
             }
 
             if (linearLayoutTomorrow.getChildCount() == 0) {
                 textViewTomorrow.setVisibility(View.GONE);
+                linearLayoutTomorrow.setVisibility(View.GONE);
             } else {
                 textViewTomorrow.setVisibility(View.VISIBLE);
+                linearLayoutTomorrow.setVisibility(View.VISIBLE);
             }
 
             if (linearLayoutToday.getChildCount() == 0) {
                 textViewToday.setVisibility(View.GONE);
+                linearLayoutToday.setVisibility(View.GONE);
             } else {
                 textViewToday.setVisibility(View.VISIBLE);
+                linearLayoutToday.setVisibility(View.VISIBLE);
             }
 
             linearLayoutSomeday.requestLayout();
