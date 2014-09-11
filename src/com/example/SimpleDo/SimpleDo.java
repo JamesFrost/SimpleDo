@@ -18,6 +18,8 @@ import android.view.*;
 import android.view.animation.Animation;
 import android.widget.*;
 import org.joda.time.*;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -193,11 +195,20 @@ public class SimpleDo extends Activity {
 
         LocalDateTime java = new LocalDateTime(1970, 1, 1, 0, 0);
 
-        long startDate = cal.getTimeInMillis();
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+        String test = toDoItem.getDate().toString(formatter);
+        LocalDateTime date = formatter.parseLocalDateTime(test).minusHours(1);
+
+        long localMillis = date.toDateTime(DateTimeZone.UTC).getMillis();
+
+//        long startDate = cal.getTimeInMillis();
         // For next 1hr
-        long endDate = startDate + 1000 * 60 * 60;
-        event.put("dtstart", startDate);
-        event.put("dtend", endDate);
+//        long endDate = startDate + 1000 * 60 * 60;
+
+//        long endDate = localMillis + 1000 * 60 * 60;
+//        event.put("dtstart", startDate);
+        event.put("dtstart", localMillis);
+        event.put("dtend", localMillis);
         event.put("hasAlarm", 1);
         //If it is bithday alarm or such kind (which should remind me for whole day) 0 for false, 1 for true
         // values.put("allDay", 1);
@@ -211,7 +222,7 @@ public class SimpleDo extends Activity {
         ContentValues reminderValues = new ContentValues();
         reminderValues.put("event_id", eventID);
         // Default value of the system. Minutes is a integer
-        reminderValues.put("minutes", 5);
+        reminderValues.put("minutes", 1);
         // Alert Methods: Default(0), Alert(1), Email(2), SMS(3)
         reminderValues.put("method", 1);
         cr.insert(Uri.parse(reminderUriString), reminderValues); //Uri reminderUri =

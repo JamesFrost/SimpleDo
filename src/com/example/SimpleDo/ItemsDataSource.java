@@ -164,15 +164,10 @@ public class ItemsDataSource {
             }
         }
 
-        System.out.println("Value of parse boolean: " + cursor.getString(3));
         boolean complete;
-        if (cursor.getString(3).equals("0")) {
-            complete = false;
-        } else complete = true;
-        System.out.println("Value of complete boolean: " + complete);
+        if (cursor.getString(3).equals("0")) complete = false;
+        else complete = true;
 
-
-//        boolean complete = Boolean.parseBoolean(cursor.getString(3));
         String group = cursor.getString(4);
         String priority = cursor.getString(5);
         boolean reminder = Boolean.parseBoolean(cursor.getString(6));
