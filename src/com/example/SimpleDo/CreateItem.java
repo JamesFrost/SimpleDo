@@ -44,7 +44,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_todo_item);
-//        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         toDoItemName = (EditText) findViewById(R.id.toDoItemName);

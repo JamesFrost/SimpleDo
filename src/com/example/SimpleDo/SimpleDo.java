@@ -1,11 +1,9 @@
 package com.example.SimpleDo;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Intent;
+import android.content.*;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -52,6 +50,7 @@ public class SimpleDo extends Activity {
     private TextView textViewFuture;
     private TextView textViewSomeday;
     private LinearLayout mainLinearLayout;
+    private TextView tv;
 
     /**
      * Called when the activity is first created.
@@ -60,6 +59,13 @@ public class SimpleDo extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        Context mContext;
+        mContext = getApplicationContext();
+         tv = new TextView(mContext);
+        tv.setText("Nothing to do, add something!");
+        tv.setTextSize(17);
+        tv.setTypeface(null, Typeface.ITALIC);
 
         dataSource = new ItemsDataSource(this);
         dataSource.open();
@@ -113,9 +119,6 @@ public class SimpleDo extends Activity {
         for (ToDoItem a : toDoList) {
             System.out.println("Name: " + a.getName() + " Complete: " + a.isComplete());
         }
-
-        boolean testing = true;
-        System.out.println("testing: " + testing);
 
         getOverflowMenu();
     }
@@ -543,11 +546,21 @@ public class SimpleDo extends Activity {
                 linearLayoutToday.setVisibility(View.VISIBLE);
             }
 
+
+
+            if (linearLayoutOverdue.getChildCount() == 0 && linearLayoutFuture.getChildCount() == 0 && linearLayoutSomeday.getChildCount() == 0 && linearLayoutTomorrow.getChildCount() == 0 && linearLayoutToday.getChildCount() == 0) {
+                mainLinearLayout.addView(tv);
+            } else if(tv.getParent() == mainLinearLayout){
+                System.out.println("Removing view...");
+                mainLinearLayout.removeView(tv);
+            }
+
             linearLayoutSomeday.requestLayout();
             linearLayoutFuture.requestLayout();
             linearLayoutTomorrow.requestLayout();
             linearLayoutToday.requestLayout();
             linearLayoutOverdue.requestLayout();
+            relativeLayout.requestLayout();
 
         }
     }
