@@ -62,7 +62,7 @@ public class SimpleDo extends Activity {
 
         Context mContext;
         mContext = getApplicationContext();
-         tv = new TextView(mContext);
+        tv = new TextView(mContext);
         tv.setText("Nothing to do, add something!");
         tv.setTextSize(17);
         tv.setTypeface(null, Typeface.ITALIC);
@@ -144,7 +144,7 @@ public class SimpleDo extends Activity {
         if (data != null) {
             super.onActivityResult(requestCode, resultCode, data);
             Bundle bundle = data.getExtras();
-            if (resultCode == 100 && bundle != null) {
+            if (resultCode == 100 && bundle != null) { //Add item
 
                 ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
                 dataSource.createItem(toDoItem);
@@ -174,6 +174,45 @@ public class SimpleDo extends Activity {
 
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
             }
+
+            if (resultCode == 200 && bundle != null) { //Edit item
+                ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
+
+                ToDoItem oldToDoItem = (ToDoItem) bundle.get("oldToDoItem");
+
+                dataSource.deleteItem(oldToDoItem);
+
+                if (bundle.getBoolean("reminder") != oldToDoItem.isReminder()) {
+                    if (bundle.getBoolean("reminder"))
+                        addReminder(toDoItem);
+                    else
+                        deleteCalendarEvent(toDoItem);
+                }
+
+                toDoList.remove(oldToDoItem);
+                toDoList.add(toDoItem);
+
+                //Bubble sort - sorts toDoList by date
+                for (int i = toDoList.size() - 1; i >= 0; i--) {
+                    for (int j = 0; j < i; j++) {
+                        if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
+                            if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
+                                ToDoItem temp = toDoList.get(j);
+                                toDoList.set(j, toDoList.get(j + 1));
+                                toDoList.set(j + 1, temp);
+                            }
+                        } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
+                            ToDoItem temp = toDoList.get(j);
+                            toDoList.set(j, toDoList.get(j + 1));
+                            toDoList.set(j + 1, temp);
+                        }
+                    }
+                }
+
+                drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
+
+            }
+
         }
     }
 
@@ -232,6 +271,8 @@ public class SimpleDo extends Activity {
         Log.i(DEBUG_TAG, "Rows deleted: " + rows);
     }
 
+    private CheckBox mLastViewTouched;
+
     /**
      * Class which adds a checkbox to the relevant layout and links it to the correct toDoItem object.
      *
@@ -242,7 +283,7 @@ public class SimpleDo extends Activity {
         final CheckBox ch = new CheckBox(this);
 
         ch.setTextColor(Color.LTGRAY);
-//        registerForContextMenu(ch);
+        registerForContextMenu(ch);
 
         if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
             ch.setText(toDoItem.getName());
@@ -295,13 +336,23 @@ public class SimpleDo extends Activity {
 
             }
         });
-        ch.setOnLongClickListener(new View.OnLongClickListener() {
+
+        ch.setOnTouchListener(new View.OnTouchListener() {
+
             @Override
-            public boolean onLongClick(View v) {
-                registerForContextMenu(ch);
-                return false;
+            public boolean onTouch(View v, MotionEvent event) {
+                mLastViewTouched = ch;        // Store a handle on the last view touched. This will be used to identify the view on which the Context Menu was launched
+
+                return false;       // We return false since this indicates that the touch was not handled and so it is passed down the stack to be handled appropriately
             }
         });
+//        ch.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                registerForContextMenu(ch);
+//                return false;
+//            }
+//        });
     }
 
     @Override
@@ -309,8 +360,22 @@ public class SimpleDo extends Activity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.edit:
-                if (info != null) {
-                    System.out.println("It works!" + info.targetView);
+                for (ToDoItem a : toDoList) {
+                    if (mLastViewTouched.getText().toString().contains(a.getName())) { //What if more than one checkbox share a name / have similar names?
+                        //create new edit item activity, pass details of ToDoItem 'a'
+
+                        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+
+                        Intent intent = new Intent(SimpleDo.this, EditItem.class);
+                        intent.putExtra("toDoItemName", a.getName());
+                        intent.putExtra("group", a.getGroup());
+                        intent.putExtra("priority", a.getPriority());
+                        intent.putExtra("reminder", a.isReminder());
+                        if (a.getDate() != null)
+                            intent.putExtra("date", a.getDate().toString(formatter));
+                        intent.putExtra("OldToDoItem", a);
+                        startActivityForResult(intent, 200);
+                    }
                 }
                 return true;
             case R.id.quick_reschedule:
@@ -547,10 +612,9 @@ public class SimpleDo extends Activity {
             }
 
 
-
             if (linearLayoutOverdue.getChildCount() == 0 && linearLayoutFuture.getChildCount() == 0 && linearLayoutSomeday.getChildCount() == 0 && linearLayoutTomorrow.getChildCount() == 0 && linearLayoutToday.getChildCount() == 0) {
                 mainLinearLayout.addView(tv);
-            } else if(tv.getParent() == mainLinearLayout){
+            } else if (tv.getParent() == mainLinearLayout) {
                 System.out.println("Removing view...");
                 mainLinearLayout.removeView(tv);
             }
