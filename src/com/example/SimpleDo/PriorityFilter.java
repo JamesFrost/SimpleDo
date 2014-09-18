@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by James on 16/06/2014.
+ * Created by James Frost on 16/06/2014.
  */
 public class PriorityFilter extends Fragment {
 

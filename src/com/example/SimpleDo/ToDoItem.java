@@ -41,7 +41,9 @@ public class ToDoItem implements Serializable {
      *
      * @param name  The name of the task.
      * @param date  The due date of the task.
-     * @param group The group of the task.
+     * @param group The group of the task (No Group, Work, Personal) .
+     * @param priority The priority of the task (No Priority, Low, Medium, High).
+     * @param timeSet
      */
     public ToDoItem(String name, BaseLocal date, String group, String priority, boolean timeSet) {
         this.name = name;
@@ -49,8 +51,16 @@ public class ToDoItem implements Serializable {
         this.group = group;
         this.priority = priority;
         this.timeSet = timeSet;
-
         complete = false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof ToDoItem) // check to make sure o isn't null, and that o is a Dummy object
+        {
+            if (((ToDoItem) o).getId() == id) return true;
+        }
+        return false; // either o is null or isn't a Dummy object
     }
 
     public boolean isTimeSet() {

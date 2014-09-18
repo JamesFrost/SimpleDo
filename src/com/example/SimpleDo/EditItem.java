@@ -14,6 +14,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 /**
+ * For editing ToDoItems.
+ *
  * Created by James Frost on 17/09/2014.
  */
 public class EditItem extends Activity implements AdapterView.OnItemSelectedListener {
@@ -33,6 +35,12 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
     private TextView time;
     private TextView reminder;
     private ToDoItem oldToDoItem;
+    private static final int GROUP_NO_GROUP_INDEX = 0;
+    private static final int GROUP_WORK_INDEX = 1;
+    private static final int GROUP_PERSONAL_INDEX = 2;
+    private static final int PRIORITY_LOW_INDEX = 1;
+    private static final int PRIORITY_MEDIUM_INDEX = 2;
+    private static final int PRIORITY_HIGH_INDEX = 3;
 
     /**
      * Called when the activity is first created.
@@ -127,38 +135,42 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
                             stringBuilder.append("-");
                         }
                     }
-
                     String parseDate = stringBuilder.toString();
-
                     date = new LocalDate(parseDate);
                 }
             }
 
-            if(date instanceof LocalDateTime) {
+            if (date instanceof LocalDateTime) {
                 dateToggleButton.setChecked(true);
                 timeToggleButton.setChecked(true);
-                datePicker.updateDate(((LocalDateTime) date).getYear(), ((LocalDateTime) date).getMonthOfYear()-1, ((LocalDateTime) date).getDayOfMonth());
+                datePicker.updateDate(((LocalDateTime) date).getYear(), ((LocalDateTime) date).getMonthOfYear() - 1, ((LocalDateTime) date).getDayOfMonth());
                 timePicker.setCurrentHour(((LocalDateTime) date).getHourOfDay());
                 timePicker.setCurrentMinute(((LocalDateTime) date).getMinuteOfHour());
+            } else if (date instanceof LocalDate) {
+                dateToggleButton.setChecked(true);
+                datePicker.updateDate(((LocalDate) date).getYear(), ((LocalDate) date).getMonthOfYear() - 1, ((LocalDate) date).getDayOfMonth());
             }
 
             reminderToggleButton.setChecked(bundle.getBoolean("reminder"));
 
             if (bundle.getString("group").equals("No Group")) //isn't no group default?
-                groupSpinner.setSelection(0);
+                groupSpinner.setSelection(GROUP_NO_GROUP_INDEX);
             else if (bundle.getString("group").equals("Work"))
-                groupSpinner.setSelection(1);
+                groupSpinner.setSelection(GROUP_WORK_INDEX);
             else if (bundle.getString("group").equals("Personal"))
-                groupSpinner.setSelection(2);
+                groupSpinner.setSelection(GROUP_PERSONAL_INDEX);
 
-            if(bundle.getString("priority").equals("Low"))
-                prioritySpinner.setSelection(1);
-            else if(bundle.getString("priority").equals("Medium"))
-                prioritySpinner.setSelection(2);
-            else if(bundle.getString("priority").equals("High"))
-                prioritySpinner.setSelection(3);
+            if (bundle.getString("priority").equals("Low"))
+                prioritySpinner.setSelection(PRIORITY_LOW_INDEX);
+            else if (bundle.getString("priority").equals("Medium"))
+                prioritySpinner.setSelection(PRIORITY_MEDIUM_INDEX);
+            else if (bundle.getString("priority").equals("High"))
+                prioritySpinner.setSelection(PRIORITY_HIGH_INDEX);
 
             oldToDoItem = (ToDoItem) bundle.get("oldToDoItem");
+
+            System.out.println("ToDoItem ID during editItem activity: " + oldToDoItem.getId());
+
         }
 
 
@@ -187,7 +199,7 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
     /**
      * A method that creates a date object from the user selected date and time information from the date and time pickers.
      *
-     * @return date
+     * @return BaseLocal
      */
     private BaseLocal createDate() {
         if (dateToggleButton.isChecked()) {

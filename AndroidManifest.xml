@@ -39,6 +39,26 @@
                     android:value="com.example.SimpleDo.SimpleDo"/>
         </activity>
 
+        <activity android:name=".QuickReschedule"
+                  android:label="Quick Reschedule"
+                  android:configChanges="keyboardHidden|orientation"
+                  android:theme="@android:style/Theme.Holo.Dialog"
+                  android:windowSoftInputMode="stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.example.SimpleDo.SimpleDo"/>
+        </activity>
+
+        <activity android:name=".AboutDialog"
+                  android:label="About"
+                  android:configChanges="keyboardHidden|orientation"
+                  android:theme="@android:style/Theme.Holo.Dialog"
+                  android:windowSoftInputMode="stateHidden">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="com.example.SimpleDo.SimpleDo"/>
+        </activity>
+
         <activity android:name=".SettingsActivity"
                   android:label="Settings">
         </activity>

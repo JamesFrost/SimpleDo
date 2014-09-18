@@ -1,6 +1,7 @@
 package com.example.SimpleDo;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.*;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -19,6 +20,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 
 /**
  * Main Activity.
@@ -39,7 +41,7 @@ public class SimpleDo extends Activity {
     private ArrayList<ToDoItem> toDoList;
     private Calendar now;
     private ListView testThree;
-    private String[] mPlanetTitles;
+    private String[] filterArray;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private DrawerItemClickListener drawerItemClickListener;
@@ -51,6 +53,7 @@ public class SimpleDo extends Activity {
     private TextView textViewSomeday;
     private LinearLayout mainLinearLayout;
     private TextView tv;
+    private DateTimeFormatter formatter;
 
     /**
      * Called when the activity is first created.
@@ -67,6 +70,8 @@ public class SimpleDo extends Activity {
         tv.setTextSize(17);
         tv.setTypeface(null, Typeface.ITALIC);
 
+        formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+
         dataSource = new ItemsDataSource(this);
         dataSource.open();
 
@@ -77,11 +82,11 @@ public class SimpleDo extends Activity {
         textViewSomeday = (TextView) findViewById(R.id.someday);
         mainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
-        mPlanetTitles = getResources().getStringArray(R.array.filters);
+        filterArray = getResources().getStringArray(R.array.filters);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) findViewById(R.id.left_drawer);
         // Set the adapter for the list view
-        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mPlanetTitles));
+        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, filterArray));
         // Set the list's click listener
         drawerItemClickListener = new DrawerItemClickListener();
         drawerList.setItemChecked(0, true);
@@ -144,7 +149,8 @@ public class SimpleDo extends Activity {
         if (data != null) {
             super.onActivityResult(requestCode, resultCode, data);
             Bundle bundle = data.getExtras();
-            if (resultCode == 100 && bundle != null) { //Add item
+
+            if (resultCode == 100 && bundle != null) { //Add item result
 
                 ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
                 dataSource.createItem(toDoItem);
@@ -173,20 +179,15 @@ public class SimpleDo extends Activity {
                 }
 
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
-            }
-
-            if (resultCode == 200 && bundle != null) { //Edit item
+            } else if (resultCode == 200 && bundle != null) { //Edit item result
                 ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
-
                 ToDoItem oldToDoItem = (ToDoItem) bundle.get("oldToDoItem");
-
-                dataSource.deleteItem(oldToDoItem);
 
                 if (bundle.getBoolean("reminder") != oldToDoItem.isReminder()) {
                     if (bundle.getBoolean("reminder"))
                         addReminder(toDoItem);
                     else
-                        deleteCalendarEvent(toDoItem);
+                        deleteReminder(toDoItem);
                 }
 
                 toDoList.remove(oldToDoItem);
@@ -209,10 +210,46 @@ public class SimpleDo extends Activity {
                     }
                 }
 
+                dataSource.deleteItem(oldToDoItem);
+                dataSource.createItem(toDoItem);
+
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
-            }
+            } else if (resultCode == 300 && bundle != null) { //Quick Reschedule
+                ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
+                ToDoItem oldToDoItem = (ToDoItem) bundle.get("oldToDoItem");
 
+                assert toDoItem != null;
+                if (oldToDoItem.isReminder() && toDoItem.getDate() != null && !(toDoItem.getDate() instanceof LocalDateTime)) {
+                    deleteReminder(oldToDoItem);
+                } else
+                    toDoItem.setEventID(oldToDoItem.getEventID());
+
+                toDoList.remove(oldToDoItem);
+                toDoList.add(toDoItem);
+
+                //Bubble sort - sorts toDoList by date
+                for (int i = toDoList.size() - 1; i >= 0; i--) {
+                    for (int j = 0; j < i; j++) {
+                        if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
+                            if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
+                                ToDoItem temp = toDoList.get(j);
+                                toDoList.set(j, toDoList.get(j + 1));
+                                toDoList.set(j + 1, temp);
+                            }
+                        } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
+                            ToDoItem temp = toDoList.get(j);
+                            toDoList.set(j, toDoList.get(j + 1));
+                            toDoList.set(j + 1, temp);
+                        }
+                    }
+                }
+
+                dataSource.deleteItem(oldToDoItem);
+                dataSource.createItem(toDoItem);
+
+                drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
+            }
         }
     }
 
@@ -262,7 +299,7 @@ public class SimpleDo extends Activity {
      *
      * @param toDoItem The item to the delete the calendar event for.
      */
-    private void deleteCalendarEvent(ToDoItem toDoItem) {
+    private void deleteReminder(ToDoItem toDoItem) {
         ContentValues values = new ContentValues();
         Uri deleteUri = null;
         deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, toDoItem.getEventID());
@@ -329,7 +366,7 @@ public class SimpleDo extends Activity {
                 }
 
                 if (toDoItem.isComplete() && toDoItem.isReminder()) {
-                    deleteCalendarEvent(toDoItem);
+                    deleteReminder(toDoItem);
                 } else if (toDoItem.isReminder()) {
                     addReminder(toDoItem);
                 }
@@ -341,18 +378,10 @@ public class SimpleDo extends Activity {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mLastViewTouched = ch;        // Store a handle on the last view touched. This will be used to identify the view on which the Context Menu was launched
-
-                return false;       // We return false since this indicates that the touch was not handled and so it is passed down the stack to be handled appropriately
+                mLastViewTouched = ch;
+                return false;
             }
         });
-//        ch.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                registerForContextMenu(ch);
-//                return false;
-//            }
-//        });
     }
 
     @Override
@@ -364,8 +393,6 @@ public class SimpleDo extends Activity {
                     if (mLastViewTouched.getText().toString().contains(a.getName())) { //What if more than one checkbox share a name / have similar names?
                         //create new edit item activity, pass details of ToDoItem 'a'
 
-                        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
-
                         Intent intent = new Intent(SimpleDo.this, EditItem.class);
                         intent.putExtra("toDoItemName", a.getName());
                         intent.putExtra("group", a.getGroup());
@@ -373,16 +400,35 @@ public class SimpleDo extends Activity {
                         intent.putExtra("reminder", a.isReminder());
                         if (a.getDate() != null)
                             intent.putExtra("date", a.getDate().toString(formatter));
-                        intent.putExtra("OldToDoItem", a);
+                        intent.putExtra("oldToDoItem", a);
                         startActivityForResult(intent, 200);
+                        break;
                     }
                 }
                 return true;
             case R.id.quick_reschedule:
-                System.out.println("It works!");
+                for (ToDoItem a : toDoList) {
+                    if (mLastViewTouched.getText().toString().contains(a.getName())) {
+                        Intent intent = new Intent(SimpleDo.this, QuickReschedule.class);
+                        if (a.getDate() != null)
+                            intent.putExtra("date", a.getDate().toString(formatter));
+                        intent.putExtra("oldToDoItem", a);
+                        startActivityForResult(intent, 300);
+                        break;
+                    }
+                }
                 return true;
             case R.id.delete:
-                System.out.println("It works!");
+                Iterator<ToDoItem> setIterator = toDoList.iterator();
+                while (setIterator.hasNext()) {
+                    ToDoItem currentElement = setIterator.next();
+                    if (mLastViewTouched.getText().toString().contains(currentElement.getName())) {
+                        dataSource.deleteItem(currentElement);
+                        setIterator.remove();
+                        drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
+                        break;
+                    }
+                }
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -399,18 +445,18 @@ public class SimpleDo extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         super.onOptionsItemSelected(item);
 
         switch (item.getItemId()) {
-            case R.id.settings:
-                Intent intent = new Intent(SimpleDo.this, SettingsActivity.class);
-                startActivity(intent);
+//            case R.id.settings:
+//                Intent intent = new Intent(SimpleDo.this, SettingsActivity.class);
+//                startActivity(intent);
             case R.id.help:
                 //start help activity
                 break;
             case R.id.about:
-                //start about activity
+                Intent intent = new Intent(SimpleDo.this, AboutDialog.class);
+                startActivity(intent);
                 break;
         }
         return true;
@@ -427,7 +473,7 @@ public class SimpleDo extends Activity {
      * Method which decides if a ToDoItem object falls on today's date.
      *
      * @param toDoItem The ToDoItem object.
-     * @return boolean
+     * @return boolean True if todays date.
      */
     private boolean isTodaysDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
@@ -450,7 +496,7 @@ public class SimpleDo extends Activity {
      * Method which decides if a ToDoItem object falls on tomorrows date.
      *
      * @param toDoItem The ToDoItem object.
-     * @return boolean True if date is today's date.
+     * @return boolean True if date is tomorrows's date.
      */
     private boolean isTomorrowsDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
@@ -466,6 +512,12 @@ public class SimpleDo extends Activity {
         } else return false;
     }
 
+    /**
+     * Method which checks if a ToDoItem object is over due.
+     *
+     * @param toDoItem
+     * @returns
+     */
     private boolean isOverDue(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
             if (toDoItem.getDate() instanceof LocalDate) {
@@ -629,4 +681,3 @@ public class SimpleDo extends Activity {
         }
     }
 }
-

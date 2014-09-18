@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" android:background="#000000">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent" android:id="@+id/mainLinearLayout">
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" android:weightSum="1">
+            <TextView
+                    android:layout_width="159dp"
+                    android:layout_height="wrap_content"
+                    android:text="Date"
+                    android:id="@+id/DateText"
+                    android:singleLine="false" android:textSize="30dp"
+                    android:layout_alignTop="@+id/somedayToggleButton" android:layout_alignParentRight="true"
+                    android:textColor="#ffffff" android:layout_weight="0.68"/>
+            <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="New ToggleButton"
+                    android:id="@+id/somedayToggleButton"
+                    android:layout_below="@+id/prioritySpinner" android:layout_alignRight="@+id/prioritySpinner"
+                    />
+        </LinearLayout>
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true" android:layout_below="@+id/DateText"
+                android:id="@+id/relativeLayout">
+            <TimePicker
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/timePicker"
+                    android:layout_weight="3.58"
+                    android:layout_alignParentLeft="true" android:layout_below="@+id/TimeText"/>
+            <DatePicker
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/datePicker"
+                    android:calendarViewShown="false" android:spinnersShown="true"
+                    android:layout_alignParentLeft="true"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Time"
+                    android:id="@+id/TimeText"
+                    android:textSize="30dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/datePicker" android:textColor="#ffffff"/>
+            <ToggleButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/timeToggleButton"
+                    android:layout_below="@+id/datePicker" android:layout_alignParentRight="true"
+                    android:layout_marginRight="51dp"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" android:weightSum="1">
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel"
+                    android:id="@+id/buttonCancel" android:layout_weight="0.5"/>
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Done"
+                    android:id="@+id/buttonDone" android:layout_weight="0.5"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
