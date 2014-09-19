@@ -1,7 +1,6 @@
 package com.example.SimpleDo;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.*;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -35,13 +34,9 @@ public class SimpleDo extends Activity {
     private LinearLayout linearLayoutTomorrow;
     private LinearLayout linearLayoutFuture;
     private LinearLayout linearLayoutSomeday;
-    private Button go;
     private EditText toDoName;
-    private View.OnClickListener droidTapListener;
     private ArrayList<ToDoItem> toDoList;
     private Calendar now;
-    private ListView testThree;
-    private String[] filterArray;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private DrawerItemClickListener drawerItemClickListener;
@@ -52,7 +47,7 @@ public class SimpleDo extends Activity {
     private TextView textViewFuture;
     private TextView textViewSomeday;
     private LinearLayout mainLinearLayout;
-    private TextView tv;
+    private TextView textViewNoItems;
     private DateTimeFormatter formatter;
 
     /**
@@ -65,10 +60,11 @@ public class SimpleDo extends Activity {
 
         Context mContext;
         mContext = getApplicationContext();
-        tv = new TextView(mContext);
-        tv.setText("Nothing to do, add something!");
-        tv.setTextSize(17);
-        tv.setTypeface(null, Typeface.ITALIC);
+        assert mContext != null;
+        textViewNoItems = new TextView(mContext);
+        textViewNoItems.setText("Nothing to do, add something!");
+        textViewNoItems.setTextSize(17);
+        textViewNoItems.setTypeface(null, Typeface.ITALIC);
 
         formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
 
@@ -82,7 +78,7 @@ public class SimpleDo extends Activity {
         textViewSomeday = (TextView) findViewById(R.id.someday);
         mainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
 
-        filterArray = getResources().getStringArray(R.array.filters);
+        String[] filterArray = getResources().getStringArray(R.array.filters);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) findViewById(R.id.left_drawer);
         // Set the adapter for the list view
@@ -99,11 +95,11 @@ public class SimpleDo extends Activity {
         linearLayoutTomorrow = (LinearLayout) findViewById(R.id.linearLayoutTommorw);
         linearLayoutFuture = (LinearLayout) findViewById(R.id.linearLayoutFuture);
         linearLayoutSomeday = (LinearLayout) findViewById(R.id.linearLayoutSomeday);
-        testThree = (ListView) findViewById(R.id.listView);
-        testThree.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        go = (Button) findViewById(R.id.go);
-        droidTapListener = new View.OnClickListener() {
+        Button go = (Button) findViewById(R.id.go);
+        View.OnClickListener droidTapListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
@@ -399,12 +395,11 @@ public class SimpleDo extends Activity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
         switch (item.getItemId()) {
             case R.id.edit:
                 for (ToDoItem a : toDoList) {
                     if (mLastViewTouched.getText().toString().contains(a.getName())) { //What if more than one checkbox share a name / have similar names?
-                        //create new edit item activity, pass details of ToDoItem 'a'
-
                         Intent intent = new Intent(SimpleDo.this, EditItem.class);
                         intent.putExtra("toDoItemName", a.getName());
                         intent.putExtra("group", a.getGroup());
@@ -497,7 +492,6 @@ public class SimpleDo extends Activity {
                 LocalDateTime ldt = new LocalDateTime();
                 LocalDate ld = new LocalDate();
                 LocalDate test = new LocalDate(toDoItem.getDate().get(DateTimeFieldType.year()), toDoItem.getDate().get(DateTimeFieldType.monthOfYear()), toDoItem.getDate().get(DateTimeFieldType.dayOfMonth()));
-//                return lt.equals(test);
                 return toDoItem.getDate().isAfter(ldt) && test.isBefore(ld.plusDays(1));
             }
 
@@ -677,10 +671,11 @@ public class SimpleDo extends Activity {
 
 
             if (linearLayoutOverdue.getChildCount() == 0 && linearLayoutFuture.getChildCount() == 0 && linearLayoutSomeday.getChildCount() == 0 && linearLayoutTomorrow.getChildCount() == 0 && linearLayoutToday.getChildCount() == 0) {
-                mainLinearLayout.addView(tv);
-            } else if (tv.getParent() == mainLinearLayout) {
+                if(textViewNoItems.getParent() == null)
+                mainLinearLayout.addView(textViewNoItems);
+            } else if (textViewNoItems.getParent() == mainLinearLayout) {
                 System.out.println("Removing view...");
-                mainLinearLayout.removeView(tv);
+                mainLinearLayout.removeView(textViewNoItems);
             }
 
             linearLayoutSomeday.requestLayout();

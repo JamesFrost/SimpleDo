@@ -20,11 +20,8 @@ public class QuickReschedule extends Activity {
 
     private DatePicker datePicker;
     private TimePicker timePicker;
-    private Button buttonCancel;
-    private Button buttonDone;
     private ToggleButton dateToggleButton;
     private ToggleButton timeToggleButton;
-    private LinearLayout mainLinearLayout;
     private RelativeLayout relativeLayout;
     private TextView timeTextView;
     private ToDoItem oldToDoItem;
@@ -35,14 +32,13 @@ public class QuickReschedule extends Activity {
         setContentView(R.layout.quick_reschedule);
 
         timeTextView = (TextView) findViewById(R.id.TimeText);
-        mainLinearLayout = (LinearLayout) findViewById(R.id.mainLinearLayout);
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         dateToggleButton = (ToggleButton) findViewById(R.id.somedayToggleButton);
         timeToggleButton = (ToggleButton) findViewById(R.id.timeToggleButton);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
         datePicker = (DatePicker) findViewById(R.id.datePicker);
-        buttonCancel = (Button) findViewById(R.id.buttonCancel);
-        buttonDone = (Button) findViewById(R.id.buttonDone);
+        Button buttonCancel = (Button) findViewById(R.id.buttonCancel);
+        Button buttonDone = (Button) findViewById(R.id.buttonDone);
 
         relativeLayout.removeView(datePicker);
         relativeLayout.removeView(timeToggleButton);
@@ -145,12 +141,9 @@ public class QuickReschedule extends Activity {
     private BaseLocal createDate() {
         if (dateToggleButton.isChecked()) {
             if (timeToggleButton.isChecked()) {
-                LocalDateTime ldt = new LocalDateTime(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
-                return ldt;
+                return new LocalDateTime(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
             } else {
-                LocalDate ld = new LocalDate(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
-                System.out.println("DatePickerMonth: " + datePicker.getMonth());
-                return ld;
+                return new LocalDate(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
             }
 
         } else return null;

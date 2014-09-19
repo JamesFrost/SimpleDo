@@ -11,10 +11,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.base.BaseLocal;
 
-import java.util.Date;
-
-import static android.R.style.Theme_Holo_InputMethod;
-
 /**
  * Activity where the user enters the relevant information for a To Do item.
  *
@@ -23,8 +19,6 @@ import static android.R.style.Theme_Holo_InputMethod;
 public class CreateItem extends Activity implements AdapterView.OnItemSelectedListener {
 
     private EditText toDoItemName;
-    private Button button;
-    private View.OnClickListener droidTapListener;
     private DatePicker datePicker;
     private TimePicker timePicker;
     private Spinner groupSpinner;
@@ -33,7 +27,6 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
     private ToggleButton timeToggleButton;
     private ToggleButton reminderToggleButton;
     private RelativeLayout relativeLayout;
-    private TextView date;
     private TextView time;
     private TextView reminder;
 
@@ -48,13 +41,12 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
 
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         toDoItemName = (EditText) findViewById(R.id.toDoItemName);
-        button = (Button) findViewById(R.id.button);
+        Button button = (Button) findViewById(R.id.button);
         datePicker = (DatePicker) findViewById(R.id.datePicker);
         timePicker = (TimePicker) findViewById(R.id.timePicker);
         dateToggleButton = (ToggleButton) findViewById(R.id.somedayToggleButton);
         timeToggleButton = (ToggleButton) findViewById(R.id.timeToggleButton);
         reminderToggleButton = (ToggleButton) findViewById(R.id.reminderToggleButton);
-        date = (TextView) findViewById(R.id.DateText);
         time = (TextView) findViewById(R.id.TimeText);
         reminder = (TextView) findViewById(R.id.reminderText);
 
@@ -106,7 +98,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
         prioritySpinner.setAdapter(adapterTwo);
         prioritySpinner.setOnItemSelectedListener(this);
 
-        droidTapListener = new View.OnClickListener() {
+        View.OnClickListener droidTapListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
@@ -150,13 +142,10 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
      */
     private BaseLocal createDate() {
         if (dateToggleButton.isChecked()) {
-            if(timeToggleButton.isChecked()) {
-                LocalDateTime ldt = new LocalDateTime(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
-                return ldt;
+            if (timeToggleButton.isChecked()) {
+                return new LocalDateTime(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), 0);
             } else {
-                LocalDate ld = new LocalDate(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
-                System.out.println("DatePickerMonth: " + datePicker.getMonth());
-                return ld;
+                return new LocalDate(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
             }
 
         } else return null;

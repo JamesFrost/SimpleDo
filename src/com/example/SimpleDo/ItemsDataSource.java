@@ -39,6 +39,11 @@ public class ItemsDataSource {
         formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
     }
 
+    /**
+     * Method that updates a toDoItems complete status in the database.
+     *
+     * @param toDoItem The item to update the complete status for.
+     */
     public void updateItemCompleteStatus(ToDoItem toDoItem) {
         ContentValues args = new ContentValues();
         args.put(DataBaseOpenHelper.COLUMN_COMPLETE, toDoItem.isComplete());
@@ -53,8 +58,12 @@ public class ItemsDataSource {
         dbHelper.close();
     }
 
+    /**
+     * Method that saves a toDoItem in the database.
+     *
+     * @param toDoItem The item to be saved in the database.
+     */
     public void createItem(ToDoItem toDoItem) {
-
         ContentValues values = new ContentValues();
         values.put(DataBaseOpenHelper.COLUMN_NAME, toDoItem.getName());
 
@@ -79,13 +88,22 @@ public class ItemsDataSource {
         cursor.close();
     }
 
+    /**
+     * Method that deletes an item from the database.
+     *
+     * @param toDoItem The item to be deleted from the database.
+     */
     public void deleteItem(ToDoItem toDoItem) {
         long id = toDoItem.getId();
-        System.out.println("Comment deleted with id: " + id);
         database.delete(DataBaseOpenHelper.TABLE_ITEMS, DataBaseOpenHelper.COLUMN_ID
                 + " = " + id, null);
     }
 
+    /**
+     * Method that returns an array list of all ToDoItems in the database.
+     *
+     * @return
+     */
     public ArrayList<ToDoItem> getAllItems() {
         ArrayList<ToDoItem> toDoItems = new ArrayList<ToDoItem>();
 
@@ -133,6 +151,12 @@ public class ItemsDataSource {
         return toDoItems;
     }
 
+    /**
+     * Method that converts data from the database into ToDoItem objects.
+     *
+     * @param cursor
+     * @return
+     */
     private ToDoItem cursorToItem(Cursor cursor) {
         long id = cursor.getLong(0);
         String name = cursor.getString(1);

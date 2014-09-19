@@ -1,12 +1,9 @@
 package com.example.SimpleDo;
 
 import org.joda.time.base.BaseLocal;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Class for To Do items.
@@ -39,9 +36,9 @@ public class ToDoItem implements Serializable {
     /**
      * Constructor for the ToDoItem class.
      *
-     * @param name  The name of the task.
-     * @param date  The due date of the task.
-     * @param group The group of the task (No Group, Work, Personal) .
+     * @param name     The name of the task.
+     * @param date     The due date of the task.
+     * @param group    The group of the task (No Group, Work, Personal) .
      * @param priority The priority of the task (No Priority, Low, Medium, High).
      * @param timeSet
      */
