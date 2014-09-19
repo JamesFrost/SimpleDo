@@ -31,8 +31,6 @@ public class ToDoItem implements Serializable {
     //id used to SQLite Database
     private long id;
 
-    private Calendar now;
-
     /**
      * Constructor for the ToDoItem class.
      *
@@ -76,33 +74,16 @@ public class ToDoItem implements Serializable {
         this.id = id;
     }
 
+    /**
+     * Returns null if no reminder has been set.
+     * @return
+     */
     public long getEventID() {
         return eventID;
     }
 
     public void setEventID(long eventID) {
         this.eventID = eventID;
-    }
-
-    private int getCurrentYear() {
-        now = Calendar.getInstance();
-        return now.get(Calendar.YEAR);
-    }
-
-    private int getCurrentMonth() {
-        return now.get(Calendar.MONTH);
-    }
-
-    private int getCurrentHour() {
-        return now.get(Calendar.HOUR_OF_DAY);
-    }
-
-    private int getCurrentMin() {
-        return now.get(Calendar.MINUTE);
-    }
-
-    private int getCurrentDay() {
-        return now.get(Calendar.DAY_OF_WEEK);
     }
 
     public boolean isReminder() {
@@ -129,6 +110,10 @@ public class ToDoItem implements Serializable {
         this.group = group;
     }
 
+    /**
+     * Returns null if no date has been set.
+     * @return
+     */
     public BaseLocal getDate() {
         return date;
     }

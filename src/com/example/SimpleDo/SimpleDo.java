@@ -394,11 +394,15 @@ public class SimpleDo extends Activity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
+        DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
+        DateTimeFormatter formatterCheckBoxDate = DateTimeFormat.forPattern("dd/MM/yyyy");
 
         switch (item.getItemId()) {
             case R.id.edit:
                 for (ToDoItem a : toDoList) {
+                    // && ((mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDateTime)) || mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDate)) || mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxTime))   ) || (mLastViewTouched.getParent()==linearLayoutSomeday || mLastViewTouched.getParent()==linearLayoutToday || mLastViewTouched.getParent()==linearLayoutTomorrow))
                     if (mLastViewTouched.getText().toString().contains(a.getName())) { //What if more than one checkbox share a name / have similar names?
                         Intent intent = new Intent(SimpleDo.this, EditItem.class);
                         intent.putExtra("toDoItemName", a.getName());
@@ -669,12 +673,10 @@ public class SimpleDo extends Activity {
                 linearLayoutToday.setVisibility(View.VISIBLE);
             }
 
-
             if (linearLayoutOverdue.getChildCount() == 0 && linearLayoutFuture.getChildCount() == 0 && linearLayoutSomeday.getChildCount() == 0 && linearLayoutTomorrow.getChildCount() == 0 && linearLayoutToday.getChildCount() == 0) {
                 if(textViewNoItems.getParent() == null)
                 mainLinearLayout.addView(textViewNoItems);
             } else if (textViewNoItems.getParent() == mainLinearLayout) {
-                System.out.println("Removing view...");
                 mainLinearLayout.removeView(textViewNoItems);
             }
 

@@ -11,17 +11,5 @@ import java.util.Date;
  */
 public class ToDoItemTest extends TestCase {
 
-    public void testGetDueTime() throws Exception {
-        System.out.println("Testing ToDoItem getDueTime()");
-        Date date = null;
-        ToDoItem toDoItem = new ToDoItem("Test", date, "No group", "Not set");
-        assertEquals("", toDoItem.getDueTime());
-    }
 
-    public void testIsOverDue() throws Exception {
-        System.out.println("Testing ToDoItem getDueTime()");
-        Date date = new Date();
-        ToDoItem toDoItem = new ToDoItem("Test", date, "No group", "Not set");
-        assertEquals(true, toDoItem.isOverDue());
-    }
 }
