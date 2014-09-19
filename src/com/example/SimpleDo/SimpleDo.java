@@ -322,28 +322,40 @@ public class SimpleDo extends Activity {
         ch.setTextColor(Color.LTGRAY);
         registerForContextMenu(ch);
 
+        DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
+        DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
+        DateTimeFormatter formatterCheckBoxDate = DateTimeFormat.forPattern("dd/MM/yyyy");
+
         if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
             ch.setText(toDoItem.getName());
             linearLayoutSomeday.addView(ch);
         } else if (isTodaysDate(toDoItem)) {
-            ch.setText(toDoItem.getName());
+            if (toDoItem.getDate() instanceof LocalDateTime)
+                ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
+            else ch.setText(toDoItem.getName());
             linearLayoutToday.addView(ch);
             if (toDoItem.isComplete()) {
                 ch.setChecked(true);
             }
 
         } else if (isTomorrowsDate(toDoItem)) {
-            ch.setText(toDoItem.getName());
+            if (toDoItem.getDate() instanceof LocalDateTime)
+                ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
+            else ch.setText(toDoItem.getName());
             linearLayoutTomorrow.addView(ch);
             if (toDoItem.isComplete()) {
                 ch.setChecked(true);
             }
 
         } else if (isOverDue(toDoItem) && !toDoItem.isComplete()) {
-            ch.setText(toDoItem.getName() + " - " + toDoItem.getDate());
+            if (toDoItem.getDate() instanceof LocalDateTime)
+                ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDateTime));
+            else ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDate));
             linearLayoutOverdue.addView(ch);
         } else if (!toDoItem.isComplete()) {
-            ch.setText(toDoItem.getName() + " - " + toDoItem.getDate());
+            if (toDoItem.getDate() instanceof LocalDateTime)
+                ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDateTime));
+            else ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDate));
             linearLayoutFuture.addView(ch);
         }
 
