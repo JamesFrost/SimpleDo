@@ -18,7 +18,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
 
 /**
@@ -36,7 +35,6 @@ public class SimpleDo extends Activity {
     private LinearLayout linearLayoutSomeday;
     private EditText toDoName;
     private ArrayList<ToDoItem> toDoList;
-    private Calendar now;
     private DrawerLayout drawerLayout;
     private ListView drawerList;
     private DrawerItemClickListener drawerItemClickListener;
@@ -49,6 +47,12 @@ public class SimpleDo extends Activity {
     private LinearLayout mainLinearLayout;
     private TextView textViewNoItems;
     private DateTimeFormatter formatter;
+    private CheckBox mLastViewTouched;
+
+    private static final String noItemsText = "Nothing to do, add something!";
+    private static final DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
+    private static final DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
+    private static final DateTimeFormatter formatterCheckBoxDate = DateTimeFormat.forPattern("dd/MM/yyyy");
 
     /**
      * Called when the activity is first created.
@@ -62,7 +66,7 @@ public class SimpleDo extends Activity {
         mContext = getApplicationContext();
         assert mContext != null;
         textViewNoItems = new TextView(mContext);
-        textViewNoItems.setText("Nothing to do, add something!");
+        textViewNoItems.setText(noItemsText);
         textViewNoItems.setTextSize(17);
         textViewNoItems.setTypeface(null, Typeface.ITALIC);
 
@@ -263,7 +267,7 @@ public class SimpleDo extends Activity {
         event.put("title", toDoItem.getName());
         event.put("eventTimezone", "GMT");
 
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+//        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
         String test = toDoItem.getDate().toString(formatter);
         LocalDateTime date = formatter.parseLocalDateTime(test).minusHours(1);
 
@@ -304,23 +308,20 @@ public class SimpleDo extends Activity {
         Log.i(DEBUG_TAG, "Rows deleted: " + rows);
     }
 
-    private CheckBox mLastViewTouched;
-
     /**
      * Class which adds a checkbox to the relevant layout and links it to the correct toDoItem object.
      *
      * @param toDoItem The ToDoItem to add.
      */
     private void addItem(final ToDoItem toDoItem) {
-        now = Calendar.getInstance();
         final CheckBox ch = new CheckBox(this);
 
         ch.setTextColor(Color.LTGRAY);
         registerForContextMenu(ch);
 
-        DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
-        DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
-        DateTimeFormatter formatterCheckBoxDate = DateTimeFormat.forPattern("dd/MM/yyyy");
+//        DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
+//        DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
+//        DateTimeFormatter formatterCheckBoxDate = DateTimeFormat.forPattern("dd/MM/yyyy");
 
         if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
             ch.setText(toDoItem.getName());
@@ -395,9 +396,9 @@ public class SimpleDo extends Activity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
-        DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
-        DateTimeFormatter formatterCheckBoxDate = DateTimeFormat.forPattern("dd/MM/yyyy");
+//        DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
+//        DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
+//        DateTimeFormatter formatterCheckBoxDate = DateTimeFormat.forPattern("dd/MM/yyyy");
 
         switch (item.getItemId()) {
             case R.id.edit:
@@ -484,7 +485,7 @@ public class SimpleDo extends Activity {
      * Method which decides if a ToDoItem object falls on today's date.
      *
      * @param toDoItem The ToDoItem object.
-     * @return boolean True if todays date.
+     * @return boolean True if today's date.
      */
     private boolean isTodaysDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
@@ -540,19 +541,32 @@ public class SimpleDo extends Activity {
         } else return false;
     }
 
-    private int getCurrentYear() {
-        return now.get(Calendar.YEAR);
-    }
-
-    private int getCurrentMonth() {
-        return now.get(Calendar.MONTH);
-    }
-
-    private int getCurrentDay() {
-        return now.get(Calendar.DAY_OF_MONTH);
+    public ListView getDrawerList() {
+        return drawerList;
     }
 
     private class DrawerItemClickListener implements AdapterView.OnItemClickListener {
+
+        private static final String FILTER_TITLE_NO_FILTER = "Simple Do";
+        private static final String FILTER_TITLE_HIGH_PRIORITY = "High Priority";
+        private static final String FILTER_TITLE_MEDIUM_PRIORITY = "Medium Priority";
+        private static final String FILTER_TITLE_LOW_PRIORITY = "Low Priority";
+        private static final String FILTER_TITLE_NOT_COMPLETED = "Not Completed";
+
+        private static final String FILTER_WORK = "Work";
+        private static final String FILTER_PERSONAL = "Personal";
+        private static final String FILTER_HIGH_PRIORITY = "High";
+        private static final String FILTER_MEDIUM_PRIORITY = "Medium";
+        private static final String FILTER_LOW_PRIORITY = "Low";
+
+        private static final int POSITION_OF_NO_FILTER = 0;
+        private static final int POSITION_OF_HIGH_PRIORITY = 1;
+        private static final int POSITION_OF_MEDIUM_PRIORITY = 2;
+        private static final int POSITION_OF_LOW_PRIORITY = 3;
+        private static final int POSITION_OF_NOT_COMPLETE = 4;
+        private static final int POSITION_OF_WORK = 5;
+        private static final int POSITION_OF_PERSONAL = 6;
+
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);
@@ -577,53 +591,53 @@ public class SimpleDo extends Activity {
             linearLayoutSomeday.removeAllViews();
             linearLayoutOverdue.removeAllViews();
 
-            if (position == 0) { // No Filter
+            if (position == POSITION_OF_NO_FILTER) { // No Filter
                 for (ToDoItem toDoItem : toDoList) {
                     addItem(toDoItem);
                 }
-                setTitle("Simple Do");
-            } else if (position == 1) { //Only show high priority
+                setTitle(FILTER_TITLE_NO_FILTER);
+            } else if (position == POSITION_OF_HIGH_PRIORITY) { //Only show high priority
                 for (ToDoItem toDoItem : toDoList) {
-                    if (toDoItem.getPriority().equals("High")) {
+                    if (toDoItem.getPriority().equals(FILTER_HIGH_PRIORITY)) {
                         addItem(toDoItem);
                     }
                 }
-                setTitle("High Priority");
-            } else if (position == 2) { //Only show medium priority
+                setTitle(FILTER_TITLE_HIGH_PRIORITY);
+            } else if (position == POSITION_OF_MEDIUM_PRIORITY) { //Only show medium priority
                 for (ToDoItem toDoItem : toDoList) {
-                    if (toDoItem.getPriority().equals("Medium")) {
+                    if (toDoItem.getPriority().equals(FILTER_MEDIUM_PRIORITY)) {
                         addItem(toDoItem);
                     }
                 }
-                setTitle("Medium Priority");
-            } else if (position == 3) { //Only show low priority
+                setTitle(FILTER_TITLE_MEDIUM_PRIORITY);
+            } else if (position == POSITION_OF_LOW_PRIORITY) { //Only show low priority
                 for (ToDoItem toDoItem : toDoList) {
-                    if (toDoItem.getPriority().equals("Low")) {
+                    if (toDoItem.getPriority().equals(FILTER_LOW_PRIORITY)) {
                         addItem(toDoItem);
                     }
                 }
-                setTitle("Low Priority");
-            } else if (position == 4) { //Only show not completed items
+                setTitle(FILTER_TITLE_LOW_PRIORITY);
+            } else if (position == POSITION_OF_NOT_COMPLETE) { //Only show not completed items
                 for (ToDoItem toDoItem : toDoList) {
                     if (!toDoItem.isComplete()) {
                         addItem(toDoItem);
                     }
                 }
-                setTitle("Not Completed");
-            } else if (position == 5) { //Filter by work
+                setTitle(FILTER_TITLE_NOT_COMPLETED);
+            } else if (position == POSITION_OF_WORK) { //Filter by work
                 for (ToDoItem toDoItem : toDoList) {
-                    if (toDoItem.getGroup().equals("Work")) {
+                    if (toDoItem.getGroup().equals(FILTER_WORK)) {
                         addItem(toDoItem);
                     }
                 }
-                setTitle("Work");
-            } else if (position == 6) { //Filter by personal
+                setTitle(FILTER_WORK);
+            } else if (position == POSITION_OF_PERSONAL) { //Filter by personal
                 for (ToDoItem toDoItem : toDoList) {
-                    if (toDoItem.getGroup().equals("Personal")) {
+                    if (toDoItem.getGroup().equals(FILTER_PERSONAL)) {
                         addItem(toDoItem);
                     }
                 }
-                setTitle("Personal");
+                setTitle(FILTER_PERSONAL);
             }
             updateTextViews();
         }
@@ -674,8 +688,8 @@ public class SimpleDo extends Activity {
             }
 
             if (linearLayoutOverdue.getChildCount() == 0 && linearLayoutFuture.getChildCount() == 0 && linearLayoutSomeday.getChildCount() == 0 && linearLayoutTomorrow.getChildCount() == 0 && linearLayoutToday.getChildCount() == 0) {
-                if(textViewNoItems.getParent() == null)
-                mainLinearLayout.addView(textViewNoItems);
+                if (textViewNoItems.getParent() == null)
+                    mainLinearLayout.addView(textViewNoItems);
             } else if (textViewNoItems.getParent() == mainLinearLayout) {
                 mainLinearLayout.removeView(textViewNoItems);
             }

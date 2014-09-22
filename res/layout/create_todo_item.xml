@@ -88,7 +88,7 @@
                         android:layout_height="wrap_content"
                         android:text="New ToggleButton"
                         android:id="@+id/reminderToggleButton" android:layout_below="@+id/timePicker"
-                        android:layout_alignLeft="@+id/timeToggleButton"/>
+                        android:layout_alignLeft="@+id/timeToggleButton" android:checked="false"/>
             </RelativeLayout>
             <Button
                     android:layout_width="wrap_content"

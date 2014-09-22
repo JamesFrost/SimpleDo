@@ -29,6 +29,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
     private RelativeLayout relativeLayout;
     private TextView time;
     private TextView reminder;
+    private static final String TOAST_EMPTY_NAME_WARNING = "The task name is empty!";
 
     /**
      * Called when the activity is first created.
@@ -38,6 +39,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_todo_item);
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         toDoItemName = (EditText) findViewById(R.id.toDoItemName);
@@ -110,7 +112,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
                             setResult(100, intent);
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), "The task name is empty!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), TOAST_EMPTY_NAME_WARNING, Toast.LENGTH_SHORT).show();
                         }
                 }
             }

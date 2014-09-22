@@ -1,8 +1,12 @@
 package com.example.SimpleDo;
 
 import android.annotation.TargetApi;
+import android.app.Instrumentation;
 import android.os.Build;
 import android.test.ActivityInstrumentationTestCase2;
+import android.test.TouchUtils;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -24,7 +28,7 @@ public class SimpleDoTest extends ActivityInstrumentationTestCase2<SimpleDo> {
     private TextView textViewTomorrow;
     private TextView textViewFuture;
     private TextView textViewSomeday;
-
+    private Button buttonGo;
 
     public SimpleDoTest() {
         super("com.example.SimpleDo", SimpleDo.class);
@@ -39,6 +43,7 @@ public class SimpleDoTest extends ActivityInstrumentationTestCase2<SimpleDo> {
         textViewTomorrow = (TextView) simpleDo.findViewById(R.id.tomorrow);
         textViewFuture = (TextView) simpleDo.findViewById(R.id.future);
         textViewSomeday = (TextView) simpleDo.findViewById(R.id.someday);
+        buttonGo = (Button) simpleDo.findViewById(R.id.go);
     }
 
     public void testPreconditions() {
@@ -50,6 +55,49 @@ public class SimpleDoTest extends ActivityInstrumentationTestCase2<SimpleDo> {
         assertNotNull("textViewTomorrow is null", textViewTomorrow);
         assertNotNull("textViewFuture is null", textViewFuture);
         assertNotNull("textViewSomeday is null", textViewSomeday);
+    }
+
+    public void testFilters() throws Exception {
+
+        final String FILTER_TITLE_NO_FILTER = "Simple Do";
+        final String FILTER_TITLE_HIGH_PRIORITY = "High Priority";
+        final String FILTER_TITLE_MEDIUM_PRIORITY = "Medium Priority";
+        final String FILTER_TITLE_LOW_PRIORITY = "Low Priority";
+        final String FILTER_TITLE_NOT_COMPLETED = "Not Completed";
+
+        final String FILTER_WORK = "Work";
+        final String FILTER_PERSONAL = "Personal";
+
+        final int POSITION_OF_NO_FILTER = 0;
+        final int POSITION_OF_HIGH_PRIORITY = 1;
+        final int POSITION_OF_MEDIUM_PRIORITY = 2;
+        final int POSITION_OF_LOW_PRIORITY = 3;
+        final int POSITION_OF_NOT_COMPLETE = 4;
+        final int POSITION_OF_WORK = 5;
+        final int POSITION_OF_PERSONAL = 6;
+
+        ListView drawerList = simpleDo.getDrawerList();
+
+        drawerList.setSelection(POSITION_OF_NO_FILTER);
+        assertEquals(simpleDo.getTitle().toString(), FILTER_TITLE_NO_FILTER);
+
+        drawerList.setSelection(POSITION_OF_HIGH_PRIORITY);
+        assertEquals(simpleDo.getTitle().toString(), FILTER_TITLE_HIGH_PRIORITY);
+
+        drawerList.setSelection(POSITION_OF_MEDIUM_PRIORITY);
+        assertEquals(simpleDo.getTitle().toString(), FILTER_TITLE_MEDIUM_PRIORITY);
+
+        drawerList.setSelection(POSITION_OF_LOW_PRIORITY);
+        assertEquals(simpleDo.getTitle().toString(), FILTER_TITLE_LOW_PRIORITY);
+
+        drawerList.setSelection(POSITION_OF_NOT_COMPLETE);
+        assertEquals(simpleDo.getTitle().toString(), FILTER_TITLE_NOT_COMPLETED);
+
+        drawerList.setSelection(POSITION_OF_WORK);
+        assertEquals(simpleDo.getTitle().toString(), FILTER_WORK);
+
+        drawerList.setSelection(POSITION_OF_PERSONAL);
+        assertEquals(simpleDo.getTitle().toString(), FILTER_PERSONAL);
     }
 
     public void testTextViewText() throws Exception {
