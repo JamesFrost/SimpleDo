@@ -14,6 +14,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 /**
+ * Loads ToDoItems from the database.
+ *
  * Created by James Frost on 01/09/2014.
  */
 public class ItemsDataSource {

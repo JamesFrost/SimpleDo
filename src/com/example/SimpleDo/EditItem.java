@@ -2,6 +2,7 @@ package com.example.SimpleDo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -35,6 +36,8 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
     private TextView reminder;
     private ToDoItem oldToDoItem;
     private ArrayList<ToDoItem> toDoList;
+
+    //Index of selections on spinners
     private static final int GROUP_NO_GROUP_INDEX = 0;
     private static final int GROUP_WORK_INDEX = 1;
     private static final int GROUP_PERSONAL_INDEX = 2;
@@ -152,22 +155,26 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
 
             reminderToggleButton.setChecked(bundle.getBoolean(KEY_REMINDER));
 
-            if (bundle.getString(KEY_GROUP).equals("No Group")) //isn't no group default?
+            Resources res = getResources();
+            String[] groupNames = res.getStringArray(R.array.group_array);
+            String[] priorities = res.getStringArray(R.array.priority_array);
+
+            if (bundle.getString(KEY_GROUP).equals(groupNames[0])) //isn't no group default?
                 groupSpinner.setSelection(GROUP_NO_GROUP_INDEX);
-            else if (bundle.getString(KEY_GROUP).equals("Work"))
+            else if (bundle.getString(KEY_GROUP).equals(groupNames[1]))
                 groupSpinner.setSelection(GROUP_WORK_INDEX);
-            else if (bundle.getString(KEY_GROUP).equals("Personal"))
+            else if (bundle.getString(KEY_GROUP).equals(groupNames[2]))
                 groupSpinner.setSelection(GROUP_PERSONAL_INDEX);
 
-            if (bundle.getString(KEY_PRIORITY).equals("Low"))
+            if (bundle.getString(KEY_PRIORITY).equals(priorities[1]))
                 prioritySpinner.setSelection(PRIORITY_LOW_INDEX);
-            else if (bundle.getString(KEY_PRIORITY).equals("Medium"))
+            else if (bundle.getString(KEY_PRIORITY).equals(priorities[2]))
                 prioritySpinner.setSelection(PRIORITY_MEDIUM_INDEX);
-            else if (bundle.getString(KEY_PRIORITY).equals("High"))
+            else if (bundle.getString(KEY_PRIORITY).equals(priorities[3]))
                 prioritySpinner.setSelection(PRIORITY_HIGH_INDEX);
 
             oldToDoItem = (ToDoItem) bundle.get(KEY_OLDTODOITEM);
-            toDoList = (ArrayList<ToDoItem>) bundle.get("toDoList");
+            toDoList = (ArrayList<ToDoItem>) bundle.get(KEY_TODOLIST);
 
         }
 
@@ -199,7 +206,7 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
                             intent.putExtra(KEY_NEWTODOITEM, new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString(), timeToggleButton.isChecked()));
                             intent.putExtra(KEY_REMINDER, reminderToggleButton.isChecked());
                             intent.putExtra(KEY_OLDTODOITEM, oldToDoItem);
-                            setResult(200, intent);
+                            setResult(REQUEST_CODE_EDIT_ITEM, intent);
                             finish();
                         }
                 }

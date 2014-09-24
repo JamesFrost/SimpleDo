@@ -3,7 +3,6 @@ package com.example.SimpleDo;
 import org.joda.time.base.BaseLocal;
 
 import java.io.Serializable;
-import java.util.Calendar;
 
 /**
  * Represents a task.
@@ -37,7 +36,7 @@ public class ToDoItem implements Serializable {
      * @param name     The name
      * @param date     The due date (Null if no due date set)
      * @param group    The group (No Group, Work, Personal)
-     * @param priority The priority (No Priority, Low, Medium, High)
+     * @param priority The priority (Not Set, Low, Medium, High)
      * @param timeSet
      */
     public ToDoItem(String name, BaseLocal date, String group, String priority, boolean timeSet) {
@@ -48,17 +47,18 @@ public class ToDoItem implements Serializable {
         this.timeSet = timeSet;
         complete = false;
 
-        if (!(this.group.equals("No Group") || this.group.equals("Work") || this.group.equals("Personal"))) throw new IllegalArgumentException("No such group exists.");
-        if (!(this.priority.equals("No Priority") || this.priority.equals("Low") || this.priority.equals("Medium") || this.priority.equals("High"))) throw new IllegalArgumentException("No such priority exists.");
+        if (!(this.group.equals("No Group") || this.group.equals("Work") || this.group.equals("Personal")))
+            throw new IllegalArgumentException("No such group exists.");
+        if (!(this.priority.equals("Not Set") || this.priority.equals("Low") || this.priority.equals("Medium") || this.priority.equals("High")))
+            throw new IllegalArgumentException("No such priority exists.");
     }
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ToDoItem) // check to make sure o isn't null, and that o is a Dummy object
-        {
+        if (o instanceof ToDoItem) {
             if (((ToDoItem) o).getId() == id) return true;
         }
-        return false; // either o is null or isn't a Dummy object
+        return false;
     }
 
     public boolean isTimeSet() {
@@ -79,6 +79,7 @@ public class ToDoItem implements Serializable {
 
     /**
      * Returns null if no reminder has been set.
+     *
      * @return eventID
      */
     public long getEventID() {
@@ -115,6 +116,7 @@ public class ToDoItem implements Serializable {
 
     /**
      * Returns null if no date has been set.
+     *
      * @return date
      */
     public BaseLocal getDate() {

@@ -112,7 +112,7 @@ public class SimpleDo extends Activity implements Constants {
                         intent.putExtra(KEY_NAME, toDoName.getText().toString().trim());
                         intent.putExtra(KEY_TODOLIST, toDoList);
                         toDoName.setText("");
-                        startActivityForResult(intent, 100);
+                        startActivityForResult(intent, REQUEST_CODE_ADD_ITEM);
                 }
             }
         };
@@ -146,20 +146,40 @@ public class SimpleDo extends Activity implements Constants {
     }
 
     /**
-     * @param requestCode 100 for adding a new item, 200 for editing an item and 300 for quick reschedule
-     * @param resultCode
-     * @param data
+     * Sorts an ArrayList of ToDoItems by date using a bubble sort algorithm.
+     *
+     * @param toDoList The list to sort
+     */
+    private void sortToDoList(ArrayList<ToDoItem> toDoList) {
+        for (int i = toDoList.size() - 1; i >= 0; i--) {
+            for (int j = 0; j < i; j++) {
+                if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
+                    if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
+                        ToDoItem temp = toDoList.get(j);
+                        toDoList.set(j, toDoList.get(j + 1));
+                        toDoList.set(j + 1, temp);
+                    }
+                } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
+                    ToDoItem temp = toDoList.get(j);
+                    toDoList.set(j, toDoList.get(j + 1));
+                    toDoList.set(j + 1, temp);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param requestCode
+     * @param resultCode  100 for adding a new item, 200 for editing an item and 300 for quick reschedule
+     * @param data        Date sent from activity returning a result
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
         if (data != null) {
             super.onActivityResult(requestCode, resultCode, data);
             Bundle bundle = data.getExtras();
 
-            if (resultCode == 100 && bundle != null) { //Add item result
-
+            if (resultCode == REQUEST_CODE_ADD_ITEM && bundle != null) { //Add item result
                 ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra(KEY_NEWTODOITEM);
                 dataSource.createItem(toDoItem);
 
@@ -168,26 +188,10 @@ public class SimpleDo extends Activity implements Constants {
                 }
 
                 toDoList.add(toDoItem);
-
-                //Bubble sort - sorts toDoList by date
-                for (int i = toDoList.size() - 1; i >= 0; i--) {
-                    for (int j = 0; j < i; j++) {
-                        if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-                            if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
-                                ToDoItem temp = toDoList.get(j);
-                                toDoList.set(j, toDoList.get(j + 1));
-                                toDoList.set(j + 1, temp);
-                            }
-                        } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-                            ToDoItem temp = toDoList.get(j);
-                            toDoList.set(j, toDoList.get(j + 1));
-                            toDoList.set(j + 1, temp);
-                        }
-                    }
-                }
-
+                sortToDoList(toDoList);
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
-            } else if (resultCode == 200 && bundle != null) { //Edit item result
+
+            } else if (resultCode == REQUEST_CODE_EDIT_ITEM && bundle != null) { //Edit item result
                 ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra(KEY_NEWTODOITEM);
                 ToDoItem oldToDoItem = (ToDoItem) bundle.get(KEY_OLDTODOITEM);
 
@@ -200,30 +204,13 @@ public class SimpleDo extends Activity implements Constants {
 
                 toDoList.remove(oldToDoItem);
                 toDoList.add(toDoItem);
-
-                //Bubble sort - sorts toDoList by date
-                for (int i = toDoList.size() - 1; i >= 0; i--) {
-                    for (int j = 0; j < i; j++) {
-                        if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-                            if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
-                                ToDoItem temp = toDoList.get(j);
-                                toDoList.set(j, toDoList.get(j + 1));
-                                toDoList.set(j + 1, temp);
-                            }
-                        } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-                            ToDoItem temp = toDoList.get(j);
-                            toDoList.set(j, toDoList.get(j + 1));
-                            toDoList.set(j + 1, temp);
-                        }
-                    }
-                }
+                sortToDoList(toDoList);
 
                 dataSource.deleteItem(oldToDoItem);
                 dataSource.createItem(toDoItem);
-
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
-            } else if (resultCode == 300 && bundle != null) { //Quick Reschedule
+            } else if (resultCode == REQUEST_CODE_QUICK_RESCHEDULE && bundle != null) { //Quick Reschedule
                 ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra(KEY_NEWTODOITEM);
                 ToDoItem oldToDoItem = (ToDoItem) bundle.get(KEY_OLDTODOITEM);
 
@@ -235,28 +222,12 @@ public class SimpleDo extends Activity implements Constants {
 
                 toDoList.remove(oldToDoItem);
                 toDoList.add(toDoItem);
-
-                //Bubble sort - sorts toDoList by date
-                for (int i = toDoList.size() - 1; i >= 0; i--) {
-                    for (int j = 0; j < i; j++) {
-                        if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-                            if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
-                                ToDoItem temp = toDoList.get(j);
-                                toDoList.set(j, toDoList.get(j + 1));
-                                toDoList.set(j + 1, temp);
-                            }
-                        } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-                            ToDoItem temp = toDoList.get(j);
-                            toDoList.set(j, toDoList.get(j + 1));
-                            toDoList.set(j + 1, temp);
-                        }
-                    }
-                }
+                sortToDoList(toDoList);
 
                 dataSource.deleteItem(oldToDoItem);
                 dataSource.createItem(toDoItem);
-
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
+
             }
         }
     }
@@ -419,7 +390,7 @@ public class SimpleDo extends Activity implements Constants {
                                 intent.putExtra(KEY_DATE, a.getDate().toString(formatter));
                             intent.putExtra(KEY_OLDTODOITEM, a);
                             intent.putExtra(KEY_TODOLIST, toDoList);
-                            startActivityForResult(intent, 200);
+                            startActivityForResult(intent, REQUEST_CODE_EDIT_ITEM);
                             break;
                         }
                     }
@@ -438,7 +409,7 @@ public class SimpleDo extends Activity implements Constants {
                                 intent.putExtra(KEY_DATE, a.getDate().toString(formatter));
                             intent.putExtra(KEY_OLDTODOITEM, a);
                             intent.putExtra(KEY_TODOLIST, toDoList);
-                            startActivityForResult(intent, 300);
+                            startActivityForResult(intent, REQUEST_CODE_QUICK_RESCHEDULE);
                             break;
                         }
                     }
@@ -547,7 +518,7 @@ public class SimpleDo extends Activity implements Constants {
      * Checks if a task is over due.
      *
      * @param toDoItem The task to perform the check for
-     * @returns True if over due
+     * @return True if over due
      */
     private boolean isOverDue(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
@@ -720,7 +691,6 @@ public class SimpleDo extends Activity implements Constants {
             linearLayoutToday.requestLayout();
             linearLayoutOverdue.requestLayout();
             relativeLayout.requestLayout();
-
         }
     }
 }

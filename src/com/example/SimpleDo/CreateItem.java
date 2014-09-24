@@ -128,7 +128,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
                             Intent intent = new Intent(CreateItem.this, SimpleDo.class);
                             intent.putExtra(KEY_NEWTODOITEM, new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString(), timeToggleButton.isChecked()));
                             intent.putExtra(KEY_REMINDER, reminderToggleButton.isChecked());
-                            setResult(100, intent);
+                            setResult(REQUEST_CODE_ADD_ITEM, intent);
                             finish();
                         }
 

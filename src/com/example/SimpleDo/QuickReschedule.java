@@ -77,7 +77,7 @@ public class QuickReschedule extends Activity implements Constants {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
 
-            toDoList = (ArrayList<ToDoItem>) bundle.get("toDoList");
+            toDoList = (ArrayList<ToDoItem>) bundle.get(KEY_TODOLIST);
 
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
             BaseLocal date;
@@ -144,7 +144,7 @@ public class QuickReschedule extends Activity implements Constants {
                     Intent intent = new Intent(QuickReschedule.this, SimpleDo.class);
                     intent.putExtra(KEY_NEWTODOITEM, new ToDoItem(oldToDoItem.getName(), createDate(), oldToDoItem.getGroup(), oldToDoItem.getPriority(), timeToggleButton.isChecked()));
                     intent.putExtra(KEY_OLDTODOITEM, oldToDoItem);
-                    setResult(300, intent);
+                    setResult(REQUEST_CODE_QUICK_RESCHEDULE, intent);
                     finish();
                 }
             }
@@ -155,7 +155,7 @@ public class QuickReschedule extends Activity implements Constants {
      * Creates a date object using the user selected date and time from the date and time pickers.
      * Null if no date selected.
      *
-     * @return a date object with user selected date/time
+     * @return a date object with user selected date/time or null if no date selected
      */
     private BaseLocal createDate() {
         if (dateToggleButton.isChecked()) {
