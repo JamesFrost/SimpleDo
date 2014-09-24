@@ -18,7 +18,7 @@
                     android:id="@+id/toDoItemName"
                     android:width="250dp"
                     android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
-                    android:paddingTop="16dp" android:layout_alignParentRight="true" android:hint="I want too..."
+                    android:paddingTop="16dp" android:layout_alignParentRight="true" android:hint="@string/editText_hint"
                     android:editable="true"/>
             <Spinner
                     android:layout_width="fill_parent"
@@ -33,16 +33,15 @@
             <ToggleButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New ToggleButton"
                     android:id="@+id/somedayToggleButton"
                     android:layout_below="@+id/prioritySpinner" android:layout_alignRight="@+id/prioritySpinner"
                     android:layout_marginRight="53dp"/>
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Date"
+                    android:text="@string/date_header"
                     android:id="@+id/DateText"
-                    android:singleLine="false" android:textSize="30dp"
+                    android:singleLine="false" android:textSize="30sp"
                     android:layout_alignTop="@+id/somedayToggleButton" android:layout_alignParentRight="true"
                     android:textColor="#ffffff"/>
             <RelativeLayout
@@ -53,9 +52,9 @@
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Reminder"
+                        android:text="@string/reminder_header"
                         android:id="@+id/reminderText"
-                        android:textSize="30dp"
+                        android:textSize="30sp"
                         android:layout_below="@+id/timePicker" android:textColor="#ffffff"/>
                 <TimePicker
                         android:layout_width="fill_parent"
@@ -72,9 +71,9 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Time"
+                        android:text="@string/time_header"
                         android:id="@+id/TimeText"
-                        android:textSize="30dp"
+                        android:textSize="30sp"
                         android:layout_alignParentLeft="true"
                         android:layout_below="@+id/datePicker" android:textColor="#ffffff"/>
                 <ToggleButton
@@ -86,16 +85,15 @@
                 <ToggleButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New ToggleButton"
                         android:id="@+id/reminderToggleButton" android:layout_below="@+id/timePicker"
                         android:layout_alignLeft="@+id/timeToggleButton" android:checked="false"/>
             </RelativeLayout>
             <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Done"
+                    android:text="@string/button_done"
                     android:id="@+id/button"
-                    android:textSize="30dp"
+                    android:textSize="30sp"
                     android:layout_gravity="center_horizontal"
                     android:layout_centerHorizontal="true" android:layout_alignParentBottom="false"
                     android:layout_below="@+id/relativeLayout"/>

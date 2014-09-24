@@ -13,9 +13,11 @@ import org.joda.time.base.BaseLocal;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+
 /**
  * For editing ToDoItems.
- * <p/>
+ *
  * Created by James Frost on 17/09/2014.
  */
 public class EditItem extends Activity implements AdapterView.OnItemSelectedListener {
@@ -32,6 +34,7 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
     private TextView time;
     private TextView reminder;
     private ToDoItem oldToDoItem;
+    private ArrayList<ToDoItem> toDoList;
     private static final int GROUP_NO_GROUP_INDEX = 0;
     private static final int GROUP_WORK_INDEX = 1;
     private static final int GROUP_PERSONAL_INDEX = 2;
@@ -109,19 +112,19 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            toDoItemName.setText(bundle.getString("toDoItemName"));
+            toDoItemName.setText(bundle.getString(SimpleDo.KEY_NAME));
 
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
             BaseLocal date;
 
-            if (bundle.getString("date") == (null)) {
+            if (bundle.getString(SimpleDo.KEY_DATE) == (null)) {
                 date = null;
             } else {
-                String split[] = bundle.getString("date").split(":");
+                String split[] = bundle.getString(SimpleDo.KEY_DATE).split(":");
                 if (split[split.length - 1].equals("00")) {
-                    date = formatter.parseLocalDateTime(bundle.getString("date"));
+                    date = formatter.parseLocalDateTime(bundle.getString(SimpleDo.KEY_DATE));
                 } else {
-                    split = bundle.getString("date").split(" ");
+                    split = bundle.getString(SimpleDo.KEY_DATE).split(" ");
                     split = split[0].split("/");
 
                     StringBuilder stringBuilder = new StringBuilder();
@@ -147,25 +150,24 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
                 datePicker.updateDate(((LocalDate) date).getYear(), ((LocalDate) date).getMonthOfYear() - 1, ((LocalDate) date).getDayOfMonth());
             }
 
-            reminderToggleButton.setChecked(bundle.getBoolean("reminder"));
+            reminderToggleButton.setChecked(bundle.getBoolean(SimpleDo.KEY_REMINDER));
 
-            if (bundle.getString("group").equals("No Group")) //isn't no group default?
+            if (bundle.getString(SimpleDo.KEY_GROUP).equals("No Group")) //isn't no group default?
                 groupSpinner.setSelection(GROUP_NO_GROUP_INDEX);
-            else if (bundle.getString("group").equals("Work"))
+            else if (bundle.getString(SimpleDo.KEY_GROUP).equals("Work"))
                 groupSpinner.setSelection(GROUP_WORK_INDEX);
-            else if (bundle.getString("group").equals("Personal"))
+            else if (bundle.getString(SimpleDo.KEY_GROUP).equals("Personal"))
                 groupSpinner.setSelection(GROUP_PERSONAL_INDEX);
 
-            if (bundle.getString("priority").equals("Low"))
+            if (bundle.getString(SimpleDo.KEY_PRIORITY).equals("Low"))
                 prioritySpinner.setSelection(PRIORITY_LOW_INDEX);
-            else if (bundle.getString("priority").equals("Medium"))
+            else if (bundle.getString(SimpleDo.KEY_PRIORITY).equals("Medium"))
                 prioritySpinner.setSelection(PRIORITY_MEDIUM_INDEX);
-            else if (bundle.getString("priority").equals("High"))
+            else if (bundle.getString(SimpleDo.KEY_PRIORITY).equals("High"))
                 prioritySpinner.setSelection(PRIORITY_HIGH_INDEX);
 
-            oldToDoItem = (ToDoItem) bundle.get("oldToDoItem");
-
-            System.out.println("ToDoItem ID during editItem activity: " + oldToDoItem.getId());
+            oldToDoItem = (ToDoItem) bundle.get(SimpleDo.KEY_OLDTODOITEM);
+            toDoList = (ArrayList<ToDoItem>) bundle.get("toDoList");
 
         }
 
@@ -174,15 +176,31 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.button:
-                        if (!toDoItemName.getText().toString().matches("")) { //if the name field is not empty
+
+                        boolean notFailed = true;
+
+                        if (toDoItemName.getText().toString().matches("")) { //if the name field is empty
+                            Toast.makeText(getApplicationContext(), CreateItem.TOAST_EMPTY_NAME_WARNING, Toast.LENGTH_SHORT).show();
+                            notFailed = false;
+                        }
+
+                        if (notFailed) {
+                            for (ToDoItem a : toDoList) {
+                                if (!(a.equals(oldToDoItem)) && a.getName().equals(toDoItemName.getText().toString().trim()) && ((a.getDate() == null && createDate() == null) || (a.getDate() != null && createDate() != null && a.getDate().isEqual(createDate())))) {
+                                    Toast.makeText(getApplicationContext(), CreateItem.TOAST_DUPLICATE_ITEM_WARNING, Toast.LENGTH_SHORT).show();
+                                    notFailed = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (notFailed) {
                             Intent intent = new Intent(EditItem.this, SimpleDo.class);
-                            intent.putExtra("newToDoItem", new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString(), timeToggleButton.isChecked()));
-                            intent.putExtra("reminder", reminderToggleButton.isChecked());
-                            intent.putExtra("oldToDoItem", oldToDoItem);
+                            intent.putExtra(SimpleDo.KEY_NEWTODOITEM, new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString(), timeToggleButton.isChecked()));
+                            intent.putExtra(SimpleDo.KEY_REMINDER, reminderToggleButton.isChecked());
+                            intent.putExtra(SimpleDo.KEY_OLDTODOITEM, oldToDoItem);
                             setResult(200, intent);
                             finish();
-                        } else {
-                            Toast.makeText(getApplicationContext(), "The task name is empty!", Toast.LENGTH_SHORT).show();
                         }
                 }
             }

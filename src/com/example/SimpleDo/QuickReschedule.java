@@ -11,9 +11,11 @@ import org.joda.time.base.BaseLocal;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+
 /**
  * For quick rescheduling of ToDoItems.
- * <p/>
+ *
  * Created by James Frost on 18/09/2014.
  */
 public class QuickReschedule extends Activity {
@@ -25,6 +27,7 @@ public class QuickReschedule extends Activity {
     private RelativeLayout relativeLayout;
     private TextView timeTextView;
     private ToDoItem oldToDoItem;
+    private ArrayList<ToDoItem> toDoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,17 +77,19 @@ public class QuickReschedule extends Activity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
 
+            toDoList = (ArrayList<ToDoItem>) bundle.get("toDoList");
+
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
             BaseLocal date;
 
-            if (bundle.getString("date") == (null)) {
+            if (bundle.getString(SimpleDo.KEY_DATE) == (null)) {
                 date = null;
             } else {
-                String split[] = bundle.getString("date").split(":");
+                String split[] = bundle.getString(SimpleDo.KEY_DATE).split(":");
                 if (split[split.length - 1].equals("00")) {
-                    date = formatter.parseLocalDateTime(bundle.getString("date"));
+                    date = formatter.parseLocalDateTime(bundle.getString(SimpleDo.KEY_DATE));
                 } else {
-                    split = bundle.getString("date").split(" ");
+                    split = bundle.getString(SimpleDo.KEY_DATE).split(" ");
                     split = split[0].split("/");
 
                     StringBuilder stringBuilder = new StringBuilder();
@@ -110,7 +115,7 @@ public class QuickReschedule extends Activity {
                 datePicker.updateDate(((LocalDate) date).getYear(), ((LocalDate) date).getMonthOfYear() - 1, ((LocalDate) date).getDayOfMonth());
             }
 
-            oldToDoItem = (ToDoItem) bundle.get("oldToDoItem");
+            oldToDoItem = (ToDoItem) bundle.get(SimpleDo.KEY_OLDTODOITEM);
 
         }
 
@@ -124,11 +129,24 @@ public class QuickReschedule extends Activity {
         buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(QuickReschedule.this, SimpleDo.class);
-                intent.putExtra("newToDoItem", new ToDoItem(oldToDoItem.getName(), createDate(), oldToDoItem.getGroup(), oldToDoItem.getPriority(), timeToggleButton.isChecked()));
-                intent.putExtra("oldToDoItem", oldToDoItem);
-                setResult(300, intent);
-                finish();
+
+                boolean notFailed = true;
+
+                for (ToDoItem a : toDoList) {
+                    if (a.getName().equals(oldToDoItem.getName()) && ((a.getDate() == null && createDate() == null) || (a.getDate() != null && createDate() != null && a.getDate().isEqual(createDate())))) {
+                        Toast.makeText(getApplicationContext(), CreateItem.TOAST_DUPLICATE_ITEM_WARNING, Toast.LENGTH_SHORT).show();
+                        notFailed = false;
+                        break;
+                    }
+                }
+
+                if (notFailed) {
+                    Intent intent = new Intent(QuickReschedule.this, SimpleDo.class);
+                    intent.putExtra(SimpleDo.KEY_NEWTODOITEM, new ToDoItem(oldToDoItem.getName(), createDate(), oldToDoItem.getGroup(), oldToDoItem.getPriority(), timeToggleButton.isChecked()));
+                    intent.putExtra(SimpleDo.KEY_OLDTODOITEM, oldToDoItem);
+                    setResult(300, intent);
+                    finish();
+                }
             }
         });
     }

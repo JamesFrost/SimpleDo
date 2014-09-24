@@ -18,11 +18,11 @@
                     android:layout_alignParentTop="true"
                     android:paddingTop="16dp" android:width="285dp" android:layout_toLeftOf="@+id/go"
                     android:editable="true" android:selectAllOnFocus="false" android:autoText="false"
-                    android:hint="I want too..."/>
+                    android:hint="@string/editText_hint"/>
             <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Go"
+                    android:text="@string/button_go"
                     android:id="@+id/go" android:layout_alignBottom="@+id/toDoName"
                     android:layout_alignParentRight="true"
                     android:width="65dp"/>
@@ -34,7 +34,7 @@
                 <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="OVERDUE"
+                        android:text="@string/layout_header_overdue"
                         android:textStyle="bold"
                         android:id="@+id/overDue"
                         android:textSize="30sp"
@@ -53,9 +53,9 @@
                 <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:text="TODAY"
+                        android:text="@string/layout_header_today"
                         android:id="@+id/today"
-                        android:textSize="30dp" android:layout_below="@+id/toDoName"
+                        android:textSize="30sp" android:layout_below="@+id/toDoName"
                         android:layout_alignParentLeft="true"
                         android:textColor="#ffffff" android:textStyle="bold"/>
                 <LinearLayout
@@ -72,9 +72,9 @@
                 <TextView
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:text="TOMORROW"
+                        android:text="@string/layout_header_tomorrow"
                         android:id="@+id/tomorrow"
-                        android:textSize="30dp"
+                        android:textSize="30sp"
                         android:layout_below="@+id/linearLayoutToday" android:layout_alignParentLeft="true"
                         android:textStyle="bold" android:textColor="#ffffff"/>
                 <LinearLayout
@@ -91,9 +91,9 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="FUTURE"
+                        android:text="@string/layout_header_future"
                         android:id="@+id/future" android:layout_below="@+id/linearLayoutTommorw"
-                        android:layout_alignLeft="@+id/toDoName" android:textSize="30dp" android:textStyle="bold"
+                        android:layout_alignLeft="@+id/toDoName" android:textSize="30sp" android:textStyle="bold"
                         android:textColor="#ffffff"/>
                 <LinearLayout
                         android:orientation="vertical"
@@ -109,9 +109,9 @@
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SOMEDAY"
+                        android:text="@string/layout_header_someday"
                         android:id="@+id/someday" android:layout_below="@+id/linearLayoutFuture"
-                        android:layout_alignParentLeft="true" android:textSize="30dp" android:textStyle="bold"
+                        android:layout_alignParentLeft="true" android:textSize="30sp" android:textStyle="bold"
                         android:textColor="#ffffff"/>
                 <LinearLayout
                         android:orientation="vertical"

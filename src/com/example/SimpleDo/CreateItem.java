@@ -11,6 +11,8 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.base.BaseLocal;
 
+import java.util.ArrayList;
+
 /**
  * Activity where the user enters the relevant information for a To Do item.
  *
@@ -29,7 +31,9 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
     private RelativeLayout relativeLayout;
     private TextView time;
     private TextView reminder;
-    private static final String TOAST_EMPTY_NAME_WARNING = "The task name is empty!";
+    private ArrayList<ToDoItem> toDoList;
+    public static final String TOAST_EMPTY_NAME_WARNING = "The task name is empty!";
+    public static final String TOAST_DUPLICATE_ITEM_WARNING = "Task with that name and date already exists!";
 
     /**
      * Called when the activity is first created.
@@ -105,15 +109,32 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
             public void onClick(View view) {
                 switch (view.getId()) {
                     case R.id.button:
-                        if (!toDoItemName.getText().toString().matches("")) { //if the name field is not empty
+
+                        boolean notFailed = true;
+
+                        if (toDoItemName.getText().toString().matches("")) { //if the name field is empty
+                            Toast.makeText(getApplicationContext(), TOAST_EMPTY_NAME_WARNING, Toast.LENGTH_SHORT).show();
+                            notFailed = false;
+                        }
+
+                        if (notFailed) {
+                            for (ToDoItem a : toDoList) {
+                                if (a.getName().equals(toDoItemName.getText().toString().trim()) && ((a.getDate() == null && createDate() == null) || (a.getDate() != null && createDate() != null && a.getDate().isEqual(createDate())))) {
+                                    Toast.makeText(getApplicationContext(), TOAST_DUPLICATE_ITEM_WARNING, Toast.LENGTH_SHORT).show();
+                                    notFailed = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (notFailed) {
                             Intent intent = new Intent(CreateItem.this, SimpleDo.class);
-                            intent.putExtra("newToDoItem", new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString(), timeToggleButton.isChecked()));
-                            intent.putExtra("reminder", reminderToggleButton.isChecked());
+                            intent.putExtra(SimpleDo.KEY_NEWTODOITEM, new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString(), timeToggleButton.isChecked()));
+                            intent.putExtra(SimpleDo.KEY_REMINDER, reminderToggleButton.isChecked());
                             setResult(100, intent);
                             finish();
-                        } else {
-                            Toast.makeText(getApplicationContext(), TOAST_EMPTY_NAME_WARNING, Toast.LENGTH_SHORT).show();
                         }
+
                 }
             }
         };
@@ -122,7 +143,8 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            toDoItemName.setText(bundle.getString("toDoItemName"));
+            toDoItemName.setText(bundle.getString(SimpleDo.KEY_NAME));
+            toDoList = (ArrayList<ToDoItem>) bundle.get(SimpleDo.KEY_TODOLIST);
         }
     }
 

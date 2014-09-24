@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SimpleDo</string>
+
+    <string name="layout_header_overdue">OVERDUE</string>
+    <string name="layout_header_today">TODAY</string>
+    <string name="layout_header_tomorrow">TOMORROW</string>
+    <string name="layout_header_future">FUTURE</string>
+    <string name="layout_header_someday">SOMEDAY</string>
+    <string name="editText_hint">I want to…</string>
+    <string name="button_go">Go</string>
+    <string name="button_done">Done</string>
+    <string name="button_cancel">Cancel</string>
+
+    <string name="date_header">Date</string>
+    <string name="time_header">Time</string>
+    <string name="reminder_header">Reminder</string>
+
     <string-array name="group_array">
         <item>No Group</item>
         <item>Work</item>
         <item>Personal</item>
     </string-array>
+
     <string-array name="priority_array">
         <item>Not Set</item>
         <item>Low</item>

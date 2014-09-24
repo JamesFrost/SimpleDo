@@ -49,6 +49,14 @@ public class SimpleDo extends Activity {
     private DateTimeFormatter formatter;
     private CheckBox mLastViewTouched;
 
+    public static final String KEY_NEWTODOITEM = "newToDoItem";
+    public static final String KEY_OLDTODOITEM = "oldToDoItem";
+    public static final String KEY_REMINDER = "reminder";
+    public static final String KEY_TODOLIST = "toDoList";
+    public static final String KEY_GROUP = "group";
+    public static final String KEY_PRIORITY = "priority";
+    public static final String KEY_DATE = "date";
+    public static final String KEY_NAME = "toDoItemName";
     private static final String noItemsText = "Nothing to do, add something!";
     private static final DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
     private static final DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
@@ -109,7 +117,8 @@ public class SimpleDo extends Activity {
                 switch (view.getId()) {
                     case R.id.go:
                         Intent intent = new Intent(SimpleDo.this, CreateItem.class);
-                        intent.putExtra("toDoItemName", toDoName.getText().toString().trim());
+                        intent.putExtra(KEY_NAME, toDoName.getText().toString().trim());
+                        intent.putExtra(KEY_TODOLIST, toDoList);
                         toDoName.setText("");
                         startActivityForResult(intent, 100);
                 }
@@ -146,16 +155,18 @@ public class SimpleDo extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
         if (data != null) {
             super.onActivityResult(requestCode, resultCode, data);
             Bundle bundle = data.getExtras();
 
             if (resultCode == 100 && bundle != null) { //Add item result
 
-                ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
+                ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra(KEY_NEWTODOITEM);
                 dataSource.createItem(toDoItem);
 
-                if (bundle.getBoolean("reminder")) {
+                if (bundle.getBoolean(KEY_REMINDER)) {
                     addReminder(toDoItem);
                 }
 
@@ -180,11 +191,11 @@ public class SimpleDo extends Activity {
 
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
             } else if (resultCode == 200 && bundle != null) { //Edit item result
-                ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
-                ToDoItem oldToDoItem = (ToDoItem) bundle.get("oldToDoItem");
+                ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra(KEY_NEWTODOITEM);
+                ToDoItem oldToDoItem = (ToDoItem) bundle.get(KEY_OLDTODOITEM);
 
-                if (bundle.getBoolean("reminder") != oldToDoItem.isReminder()) {
-                    if (bundle.getBoolean("reminder"))
+                if (bundle.getBoolean(KEY_REMINDER) != oldToDoItem.isReminder()) {
+                    if (bundle.getBoolean(KEY_REMINDER))
                         addReminder(toDoItem);
                     else
                         deleteReminder(toDoItem);
@@ -216,8 +227,8 @@ public class SimpleDo extends Activity {
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
             } else if (resultCode == 300 && bundle != null) { //Quick Reschedule
-                ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra("newToDoItem");
-                ToDoItem oldToDoItem = (ToDoItem) bundle.get("oldToDoItem");
+                ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra(KEY_NEWTODOITEM);
+                ToDoItem oldToDoItem = (ToDoItem) bundle.get(KEY_OLDTODOITEM);
 
                 assert toDoItem != null;
                 if (oldToDoItem.isReminder() && toDoItem.getDate() != null && !(toDoItem.getDate() instanceof LocalDateTime)) {
@@ -319,10 +330,6 @@ public class SimpleDo extends Activity {
         ch.setTextColor(Color.LTGRAY);
         registerForContextMenu(ch);
 
-//        DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
-//        DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
-//        DateTimeFormatter formatterCheckBoxDate = DateTimeFormat.forPattern("dd/MM/yyyy");
-
         if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
             ch.setText(toDoItem.getName());
             linearLayoutSomeday.addView(ch);
@@ -396,37 +403,47 @@ public class SimpleDo extends Activity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-//        DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
-//        DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
-//        DateTimeFormatter formatterCheckBoxDate = DateTimeFormat.forPattern("dd/MM/yyyy");
-
         switch (item.getItemId()) {
             case R.id.edit:
                 for (ToDoItem a : toDoList) {
-                    // && ((mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDateTime)) || mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDate)) || mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxTime))   ) || (mLastViewTouched.getParent()==linearLayoutSomeday || mLastViewTouched.getParent()==linearLayoutToday || mLastViewTouched.getParent()==linearLayoutTomorrow))
+
                     if (mLastViewTouched.getText().toString().contains(a.getName())) { //What if more than one checkbox share a name / have similar names?
-                        Intent intent = new Intent(SimpleDo.this, EditItem.class);
-                        intent.putExtra("toDoItemName", a.getName());
-                        intent.putExtra("group", a.getGroup());
-                        intent.putExtra("priority", a.getPriority());
-                        intent.putExtra("reminder", a.isReminder());
-                        if (a.getDate() != null)
-                            intent.putExtra("date", a.getDate().toString(formatter));
-                        intent.putExtra("oldToDoItem", a);
-                        startActivityForResult(intent, 200);
-                        break;
+
+                        if ((a.getDate() instanceof LocalDateTime && (mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDateTime)) || ((mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow) && mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxTime))))) ||
+                                (a.getDate() instanceof LocalDate && (mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDate)) || (mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow))) ||
+                                (a.getDate() == null)) {
+
+                            Intent intent = new Intent(SimpleDo.this, EditItem.class);
+                            intent.putExtra(KEY_NAME, a.getName());
+                            intent.putExtra(KEY_GROUP, a.getGroup());
+                            intent.putExtra(KEY_PRIORITY, a.getPriority());
+                            intent.putExtra(KEY_REMINDER, a.isReminder());
+                            if (a.getDate() != null)
+                                intent.putExtra(KEY_DATE, a.getDate().toString(formatter));
+                            intent.putExtra(KEY_OLDTODOITEM, a);
+                            intent.putExtra(KEY_TODOLIST, toDoList);
+                            startActivityForResult(intent, 200);
+                            break;
+                        }
                     }
                 }
                 return true;
             case R.id.quick_reschedule:
                 for (ToDoItem a : toDoList) {
                     if (mLastViewTouched.getText().toString().contains(a.getName())) {
-                        Intent intent = new Intent(SimpleDo.this, QuickReschedule.class);
-                        if (a.getDate() != null)
-                            intent.putExtra("date", a.getDate().toString(formatter));
-                        intent.putExtra("oldToDoItem", a);
-                        startActivityForResult(intent, 300);
-                        break;
+
+                        if ((a.getDate() instanceof LocalDateTime && (mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDateTime)) || ((mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow) && mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxTime))))) ||
+                                (a.getDate() instanceof LocalDate && (mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDate)) || (mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow))) ||
+                                (a.getDate() == null)) {
+
+                            Intent intent = new Intent(SimpleDo.this, QuickReschedule.class);
+                            if (a.getDate() != null)
+                                intent.putExtra(KEY_DATE, a.getDate().toString(formatter));
+                            intent.putExtra(KEY_OLDTODOITEM, a);
+                            intent.putExtra(KEY_TODOLIST, toDoList);
+                            startActivityForResult(intent, 300);
+                            break;
+                        }
                     }
                 }
                 return true;
@@ -435,10 +452,16 @@ public class SimpleDo extends Activity {
                 while (setIterator.hasNext()) {
                     ToDoItem currentElement = setIterator.next();
                     if (mLastViewTouched.getText().toString().contains(currentElement.getName())) {
-                        dataSource.deleteItem(currentElement);
-                        setIterator.remove();
-                        drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
-                        break;
+
+                        if ((currentElement.getDate() instanceof LocalDateTime && (mLastViewTouched.getText().toString().contains(currentElement.getDate().toString(formatterCheckBoxDateTime)) || ((mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow) && mLastViewTouched.getText().toString().contains(currentElement.getDate().toString(formatterCheckBoxTime))))) ||
+                                (currentElement.getDate() instanceof LocalDate && (mLastViewTouched.getText().toString().contains(currentElement.getDate().toString(formatterCheckBoxDate)) || (mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow))) ||
+                                (currentElement.getDate() == null)) {
+
+                            dataSource.deleteItem(currentElement);
+                            setIterator.remove();
+                            drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
+                            break;
+                        }
                     }
                 }
                 return true;
@@ -553,7 +576,7 @@ public class SimpleDo extends Activity {
         private static final String FILTER_TITLE_LOW_PRIORITY = "Low Priority";
         private static final String FILTER_TITLE_NOT_COMPLETED = "Not Completed";
 
-        private static final String FILTER_WORK = "Work";
+        public static final String FILTER_WORK = "Work";
         private static final String FILTER_PERSONAL = "Personal";
         private static final String FILTER_HIGH_PRIORITY = "High";
         private static final String FILTER_MEDIUM_PRIORITY = "Medium";
