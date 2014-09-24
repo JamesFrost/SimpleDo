@@ -14,11 +14,11 @@ import org.joda.time.base.BaseLocal;
 import java.util.ArrayList;
 
 /**
- * Activity where the user enters the relevant information for a To Do item.
+ * Activity where the user creates a ToDoItem.
  *
  * @author James Frost
  */
-public class CreateItem extends Activity implements AdapterView.OnItemSelectedListener {
+public class CreateItem extends Activity implements AdapterView.OnItemSelectedListener, Constants {
 
     private EditText toDoItemName;
     private DatePicker datePicker;
@@ -32,8 +32,6 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
     private TextView time;
     private TextView reminder;
     private ArrayList<ToDoItem> toDoList;
-    public static final String TOAST_EMPTY_NAME_WARNING = "The task name is empty!";
-    public static final String TOAST_DUPLICATE_ITEM_WARNING = "Task with that name and date already exists!";
 
     /**
      * Called when the activity is first created.
@@ -43,7 +41,6 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_todo_item);
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         toDoItemName = (EditText) findViewById(R.id.toDoItemName);
@@ -129,8 +126,8 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
 
                         if (notFailed) {
                             Intent intent = new Intent(CreateItem.this, SimpleDo.class);
-                            intent.putExtra(SimpleDo.KEY_NEWTODOITEM, new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString(), timeToggleButton.isChecked()));
-                            intent.putExtra(SimpleDo.KEY_REMINDER, reminderToggleButton.isChecked());
+                            intent.putExtra(KEY_NEWTODOITEM, new ToDoItem(toDoItemName.getText().toString().trim(), createDate(), groupSpinner.getSelectedItem().toString(), prioritySpinner.getSelectedItem().toString(), timeToggleButton.isChecked()));
+                            intent.putExtra(KEY_REMINDER, reminderToggleButton.isChecked());
                             setResult(100, intent);
                             finish();
                         }
@@ -143,8 +140,8 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            toDoItemName.setText(bundle.getString(SimpleDo.KEY_NAME));
-            toDoList = (ArrayList<ToDoItem>) bundle.get(SimpleDo.KEY_TODOLIST);
+            toDoItemName.setText(bundle.getString(KEY_NAME));
+            toDoList = (ArrayList<ToDoItem>) bundle.get(KEY_TODOLIST);
         }
     }
 
@@ -160,9 +157,10 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
     }
 
     /**
-     * A method that creates a date object from the user selected date and time information from the date and time pickers.
+     * Creates a date object using the user selected date and time from the date and time pickers.
+     * Null if no date selected.
      *
-     * @return date
+     * @return a date object with user selected date/time
      */
     private BaseLocal createDate() {
         if (dateToggleButton.isChecked()) {
@@ -171,7 +169,6 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
             } else {
                 return new LocalDate(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
             }
-
         } else return null;
     }
 

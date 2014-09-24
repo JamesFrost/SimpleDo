@@ -14,11 +14,11 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
- * For quick rescheduling of ToDoItems.
- *
+ * Activity for quick rescheduling of ToDoItems.
+ * <p/>
  * Created by James Frost on 18/09/2014.
  */
-public class QuickReschedule extends Activity {
+public class QuickReschedule extends Activity implements Constants {
 
     private DatePicker datePicker;
     private TimePicker timePicker;
@@ -82,14 +82,14 @@ public class QuickReschedule extends Activity {
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
             BaseLocal date;
 
-            if (bundle.getString(SimpleDo.KEY_DATE) == (null)) {
+            if (bundle.getString(KEY_DATE) == (null)) {
                 date = null;
             } else {
-                String split[] = bundle.getString(SimpleDo.KEY_DATE).split(":");
+                String split[] = bundle.getString(KEY_DATE).split(":");
                 if (split[split.length - 1].equals("00")) {
-                    date = formatter.parseLocalDateTime(bundle.getString(SimpleDo.KEY_DATE));
+                    date = formatter.parseLocalDateTime(bundle.getString(KEY_DATE));
                 } else {
-                    split = bundle.getString(SimpleDo.KEY_DATE).split(" ");
+                    split = bundle.getString(KEY_DATE).split(" ");
                     split = split[0].split("/");
 
                     StringBuilder stringBuilder = new StringBuilder();
@@ -115,7 +115,7 @@ public class QuickReschedule extends Activity {
                 datePicker.updateDate(((LocalDate) date).getYear(), ((LocalDate) date).getMonthOfYear() - 1, ((LocalDate) date).getDayOfMonth());
             }
 
-            oldToDoItem = (ToDoItem) bundle.get(SimpleDo.KEY_OLDTODOITEM);
+            oldToDoItem = (ToDoItem) bundle.get(KEY_OLDTODOITEM);
 
         }
 
@@ -134,7 +134,7 @@ public class QuickReschedule extends Activity {
 
                 for (ToDoItem a : toDoList) {
                     if (a.getName().equals(oldToDoItem.getName()) && ((a.getDate() == null && createDate() == null) || (a.getDate() != null && createDate() != null && a.getDate().isEqual(createDate())))) {
-                        Toast.makeText(getApplicationContext(), CreateItem.TOAST_DUPLICATE_ITEM_WARNING, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), TOAST_DUPLICATE_ITEM_WARNING, Toast.LENGTH_SHORT).show();
                         notFailed = false;
                         break;
                     }
@@ -142,8 +142,8 @@ public class QuickReschedule extends Activity {
 
                 if (notFailed) {
                     Intent intent = new Intent(QuickReschedule.this, SimpleDo.class);
-                    intent.putExtra(SimpleDo.KEY_NEWTODOITEM, new ToDoItem(oldToDoItem.getName(), createDate(), oldToDoItem.getGroup(), oldToDoItem.getPriority(), timeToggleButton.isChecked()));
-                    intent.putExtra(SimpleDo.KEY_OLDTODOITEM, oldToDoItem);
+                    intent.putExtra(KEY_NEWTODOITEM, new ToDoItem(oldToDoItem.getName(), createDate(), oldToDoItem.getGroup(), oldToDoItem.getPriority(), timeToggleButton.isChecked()));
+                    intent.putExtra(KEY_OLDTODOITEM, oldToDoItem);
                     setResult(300, intent);
                     finish();
                 }
@@ -152,9 +152,10 @@ public class QuickReschedule extends Activity {
     }
 
     /**
-     * A method that creates a date object from the user selected date and time information from the date and time pickers.
+     * Creates a date object using the user selected date and time from the date and time pickers.
+     * Null if no date selected.
      *
-     * @return BaseLocal
+     * @return a date object with user selected date/time
      */
     private BaseLocal createDate() {
         if (dateToggleButton.isChecked()) {

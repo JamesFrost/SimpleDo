@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
+ * About activity that shows information about the app.
+ *
  * Created by James Frost on 18/09/2014.
  */
 public class AboutDialog extends Activity {

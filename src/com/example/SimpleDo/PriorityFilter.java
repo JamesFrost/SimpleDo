@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
+ * Activity for the priority filter.
+ *
  * Created by James Frost on 16/06/2014.
  */
 public class PriorityFilter extends Fragment {

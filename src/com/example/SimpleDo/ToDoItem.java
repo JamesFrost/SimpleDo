@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 
 /**
- * Class for To Do items.
+ * Represents a task.
  *
  * @author James Frost
  */
@@ -32,12 +32,12 @@ public class ToDoItem implements Serializable {
     private long id;
 
     /**
-     * Constructor for the ToDoItem class.
+     * Constructs an instance.
      *
-     * @param name     The name of the task.
-     * @param date     The due date of the task.
-     * @param group    The group of the task (No Group, Work, Personal) .
-     * @param priority The priority of the task (No Priority, Low, Medium, High).
+     * @param name     The name
+     * @param date     The due date (Null if no due date set)
+     * @param group    The group (No Group, Work, Personal)
+     * @param priority The priority (No Priority, Low, Medium, High)
      * @param timeSet
      */
     public ToDoItem(String name, BaseLocal date, String group, String priority, boolean timeSet) {
@@ -47,6 +47,9 @@ public class ToDoItem implements Serializable {
         this.priority = priority;
         this.timeSet = timeSet;
         complete = false;
+
+        if (!(this.group.equals("No Group") || this.group.equals("Work") || this.group.equals("Personal"))) throw new IllegalArgumentException("No such group exists.");
+        if (!(this.priority.equals("No Priority") || this.priority.equals("Low") || this.priority.equals("Medium") || this.priority.equals("High"))) throw new IllegalArgumentException("No such priority exists.");
     }
 
     @Override
@@ -76,7 +79,7 @@ public class ToDoItem implements Serializable {
 
     /**
      * Returns null if no reminder has been set.
-     * @return
+     * @return eventID
      */
     public long getEventID() {
         return eventID;
@@ -112,7 +115,7 @@ public class ToDoItem implements Serializable {
 
     /**
      * Returns null if no date has been set.
-     * @return
+     * @return date
      */
     public BaseLocal getDate() {
         return date;

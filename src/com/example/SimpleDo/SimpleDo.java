@@ -25,7 +25,7 @@ import java.util.Iterator;
  *
  * @author James Frost
  */
-public class SimpleDo extends Activity {
+public class SimpleDo extends Activity implements Constants {
 
     private RelativeLayout relativeLayout;
     private LinearLayout linearLayoutOverdue;
@@ -49,14 +49,6 @@ public class SimpleDo extends Activity {
     private DateTimeFormatter formatter;
     private CheckBox mLastViewTouched;
 
-    public static final String KEY_NEWTODOITEM = "newToDoItem";
-    public static final String KEY_OLDTODOITEM = "oldToDoItem";
-    public static final String KEY_REMINDER = "reminder";
-    public static final String KEY_TODOLIST = "toDoList";
-    public static final String KEY_GROUP = "group";
-    public static final String KEY_PRIORITY = "priority";
-    public static final String KEY_DATE = "date";
-    public static final String KEY_NAME = "toDoItemName";
     private static final String noItemsText = "Nothing to do, add something!";
     private static final DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
     private static final DateTimeFormatter formatterCheckBoxTime = DateTimeFormat.forPattern("HH:mm");
@@ -138,7 +130,7 @@ public class SimpleDo extends Activity {
     }
 
     /**
-     * Method that makes sure the action overflow button is always shown, even on devices with a menu button.
+     * Makes the action overflow button visible, even on devices with a menu button.
      */
     private void getOverflowMenu() {
         try {
@@ -153,6 +145,11 @@ public class SimpleDo extends Activity {
         }
     }
 
+    /**
+     * @param requestCode 100 for adding a new item, 200 for editing an item and 300 for quick reschedule
+     * @param resultCode
+     * @param data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -267,7 +264,7 @@ public class SimpleDo extends Activity {
     /**
      * Set a reminder for an item using the phones native calendar.
      *
-     * @param toDoItem The item to set a reminder for.
+     * @param toDoItem The item to set a reminder for
      */
     private void addReminder(ToDoItem toDoItem) {
 
@@ -308,7 +305,7 @@ public class SimpleDo extends Activity {
     /**
      * Deletes the calendar event for a toDoItem.
      *
-     * @param toDoItem The item to the delete the calendar event for.
+     * @param toDoItem The item to the delete the calendar event for
      */
     private void deleteReminder(ToDoItem toDoItem) {
         ContentValues values = new ContentValues();
@@ -320,9 +317,9 @@ public class SimpleDo extends Activity {
     }
 
     /**
-     * Class which adds a checkbox to the relevant layout and links it to the correct toDoItem object.
+     * Adds a checkbox to the relevant layout.
      *
-     * @param toDoItem The ToDoItem to add.
+     * @param toDoItem The ToDoItem to add
      */
     private void addItem(final ToDoItem toDoItem) {
         final CheckBox ch = new CheckBox(this);
@@ -505,10 +502,10 @@ public class SimpleDo extends Activity {
     }
 
     /**
-     * Method which decides if a ToDoItem object falls on today's date.
+     * Checks if a task falls on today's date.
      *
-     * @param toDoItem The ToDoItem object.
-     * @return boolean True if today's date.
+     * @param toDoItem The task to perform the check for
+     * @return True if today's date
      */
     private boolean isTodaysDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
@@ -527,10 +524,10 @@ public class SimpleDo extends Activity {
     }
 
     /**
-     * Method which decides if a ToDoItem object falls on tomorrows date.
+     * Checks if a task falls on tomorrows date.
      *
-     * @param toDoItem The ToDoItem object.
-     * @return boolean True if date is tomorrows's date.
+     * @param toDoItem The task to perform the check for
+     * @return True if tomorrows's date
      */
     private boolean isTomorrowsDate(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
@@ -547,10 +544,10 @@ public class SimpleDo extends Activity {
     }
 
     /**
-     * Method which checks if a ToDoItem object is over due.
+     * Checks if a task is over due.
      *
-     * @param toDoItem
-     * @returns
+     * @param toDoItem The task to perform the check for
+     * @returns True if over due
      */
     private boolean isOverDue(ToDoItem toDoItem) {
         if (toDoItem.getDate() != null) {
@@ -602,9 +599,9 @@ public class SimpleDo extends Activity {
         }
 
         /**
-         * Method which applies user selected filter.
+         * Applies the user selected filter.
          *
-         * @param position The filter selected
+         * @param position The position of the filter selected
          */
         public void filter(int position) {
 

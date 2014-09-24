@@ -14,7 +14,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 /**
- * Created by James on 01/09/2014.
+ * Created by James Frost on 01/09/2014.
  */
 public class ItemsDataSource {
 
@@ -40,9 +40,9 @@ public class ItemsDataSource {
     }
 
     /**
-     * Method that updates a toDoItems complete status in the database.
+     * Updates a items complete status in the database.
      *
-     * @param toDoItem The item to update the complete status for.
+     * @param toDoItem The item to update the complete status for
      */
     public void updateItemCompleteStatus(ToDoItem toDoItem) {
         ContentValues args = new ContentValues();
@@ -59,9 +59,9 @@ public class ItemsDataSource {
     }
 
     /**
-     * Method that saves a toDoItem in the database.
+     * Saves a item in the database.
      *
-     * @param toDoItem The item to be saved in the database.
+     * @param toDoItem The item to be saved in the database
      */
     public void createItem(ToDoItem toDoItem) {
         ContentValues values = new ContentValues();
@@ -89,9 +89,9 @@ public class ItemsDataSource {
     }
 
     /**
-     * Method that deletes an item from the database.
+     * Deletes an item from the database.
      *
-     * @param toDoItem The item to be deleted from the database.
+     * @param toDoItem The item to be deleted from the database
      */
     public void deleteItem(ToDoItem toDoItem) {
         long id = toDoItem.getId();
@@ -100,9 +100,9 @@ public class ItemsDataSource {
     }
 
     /**
-     * Method that returns an array list of all ToDoItems in the database.
+     * Returns an array list of all ToDoItems in the database.
      *
-     * @return
+     * @return an array list of all ToDoItems in the database
      */
     public ArrayList<ToDoItem> getAllItems() {
         ArrayList<ToDoItem> toDoItems = new ArrayList<ToDoItem>();
@@ -152,10 +152,10 @@ public class ItemsDataSource {
     }
 
     /**
-     * Method that converts data from the database into ToDoItem objects.
+     * Converts data from the database into ToDoItem objects.
      *
-     * @param cursor
-     * @return
+     * @param cursor To be converted into a ToDoItem
+     * @return ToDoItem with values from the cursor
      */
     private ToDoItem cursorToItem(Cursor cursor) {
         long id = cursor.getLong(0);
