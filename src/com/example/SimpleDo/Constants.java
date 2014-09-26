@@ -15,6 +15,7 @@ public interface Constants {
     public static final String KEY_PRIORITY = "priority";
     public static final String KEY_DATE = "date";
     public static final String KEY_NAME = "toDoItemName";
+    public static final String KEY_CHECKBOXTOBODELETEDNAME = "checkBoxToBeDeletedName";
     //Warning messages
     public static final String TOAST_EMPTY_NAME_WARNING = "The task name is empty!";
     public static final String TOAST_DUPLICATE_ITEM_WARNING = "Task with that name already exists!";
@@ -22,4 +23,8 @@ public interface Constants {
     public static final int REQUEST_CODE_ADD_ITEM = 100;
     public static final int REQUEST_CODE_EDIT_ITEM = 200;
     public static final int REQUEST_CODE_QUICK_RESCHEDULE = 300;
+    //Delete Dialog
+    public static final String DELETE_CONFORMATION_MESSAGE = "It will be gone forever!";
+    public  static final String POSITIVE_BUTTON_TEXT = "Confirm";
+    public static final String NEGATIVE_BUTTON_TEXT = "Cancel";
 }

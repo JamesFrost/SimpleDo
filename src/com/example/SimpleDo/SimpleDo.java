@@ -1,18 +1,21 @@
 package com.example.SimpleDo;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.*;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.provider.CalendarContract;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import org.joda.time.*;
+import org.joda.time.DateTimeFieldType;
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -25,7 +28,7 @@ import java.util.Iterator;
  *
  * @author James Frost
  */
-public class SimpleDo extends Activity implements Constants {
+public class SimpleDo extends Activity implements Constants, DeleteDialog.NoticeDialogListener {
 
     private RelativeLayout relativeLayout;
     private LinearLayout linearLayoutOverdue;
@@ -48,6 +51,7 @@ public class SimpleDo extends Activity implements Constants {
     private TextView textViewNoItems;
     private DateTimeFormatter formatter;
     private CheckBox mLastViewTouched;
+    private CheckBox checkBoxToBeDeleted;
 
     private static final String noItemsText = "Nothing to do, add something!";
     private static final DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
@@ -120,6 +124,7 @@ public class SimpleDo extends Activity implements Constants {
 
         toDoList = new ArrayList<ToDoItem>();
         toDoList = dataSource.getAllItems();
+        sortToDoList(toDoList);
         drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
         for (ToDoItem a : toDoList) {
@@ -416,22 +421,15 @@ public class SimpleDo extends Activity implements Constants {
                 }
                 return true;
             case R.id.delete:
-                Iterator<ToDoItem> setIterator = toDoList.iterator();
-                while (setIterator.hasNext()) {
-                    ToDoItem currentElement = setIterator.next();
-                    if (mLastViewTouched.getText().toString().contains(currentElement.getName())) {
 
-                        if ((currentElement.getDate() instanceof LocalDateTime && (mLastViewTouched.getText().toString().contains(currentElement.getDate().toString(formatterCheckBoxDateTime)) || ((mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow) && mLastViewTouched.getText().toString().contains(currentElement.getDate().toString(formatterCheckBoxTime))))) ||
-                                (currentElement.getDate() instanceof LocalDate && (mLastViewTouched.getText().toString().contains(currentElement.getDate().toString(formatterCheckBoxDate)) || (mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow))) ||
-                                (currentElement.getDate() == null)) {
+                checkBoxToBeDeleted = mLastViewTouched;
+                DialogFragment newFragment = new DeleteDialog();
+                Bundle bundle = new Bundle();
+                bundle.putString(KEY_CHECKBOXTOBODELETEDNAME, checkBoxToBeDeleted.getText().toString());
 
-                            dataSource.deleteItem(currentElement);
-                            setIterator.remove();
-                            drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
-                            break;
-                        }
-                    }
-                }
+                newFragment.setArguments(bundle);
+                newFragment.show(getFragmentManager(), "delete");
+
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -536,6 +534,31 @@ public class SimpleDo extends Activity implements Constants {
         return drawerList;
     }
 
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        Iterator<ToDoItem> setIterator = toDoList.iterator();
+        while (setIterator.hasNext()) {
+            ToDoItem currentElement = setIterator.next();
+            if (checkBoxToBeDeleted.getText().toString().contains(currentElement.getName())) {
+
+                if ((currentElement.getDate() instanceof LocalDateTime && (checkBoxToBeDeleted.getText().toString().contains(currentElement.getDate().toString(formatterCheckBoxDateTime)) || ((checkBoxToBeDeleted.getParent() == linearLayoutToday || checkBoxToBeDeleted.getParent() == linearLayoutTomorrow) && checkBoxToBeDeleted.getText().toString().contains(currentElement.getDate().toString(formatterCheckBoxTime))))) ||
+                        (currentElement.getDate() instanceof LocalDate && (checkBoxToBeDeleted.getText().toString().contains(currentElement.getDate().toString(formatterCheckBoxDate)) || (checkBoxToBeDeleted.getParent() == linearLayoutToday || checkBoxToBeDeleted.getParent() == linearLayoutTomorrow))) ||
+                        (currentElement.getDate() == null)) {
+
+                    dataSource.deleteItem(currentElement);
+                    setIterator.remove();
+                    drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+
+    }
+
     private class DrawerItemClickListener implements AdapterView.OnItemClickListener {
 
         private static final String FILTER_TITLE_NO_FILTER = "SimpleDo";
@@ -543,6 +566,7 @@ public class SimpleDo extends Activity implements Constants {
         private static final String FILTER_TITLE_MEDIUM_PRIORITY = "Medium Priority";
         private static final String FILTER_TITLE_LOW_PRIORITY = "Low Priority";
         private static final String FILTER_TITLE_NOT_COMPLETED = "Not Completed";
+        private static final String FILTER_TITLE_COMPLETED = "Completed";
 
         public static final String FILTER_WORK = "Work";
         private static final String FILTER_PERSONAL = "Personal";
@@ -554,9 +578,10 @@ public class SimpleDo extends Activity implements Constants {
         private static final int POSITION_OF_HIGH_PRIORITY = 1;
         private static final int POSITION_OF_MEDIUM_PRIORITY = 2;
         private static final int POSITION_OF_LOW_PRIORITY = 3;
-        private static final int POSITION_OF_NOT_COMPLETE = 4;
-        private static final int POSITION_OF_WORK = 5;
-        private static final int POSITION_OF_PERSONAL = 6;
+        private static final int POSITION_OF_COMPLETED = 4;
+        private static final int POSITION_OF_NOT_COMPLETE = 5;
+        private static final int POSITION_OF_WORK = 6;
+        private static final int POSITION_OF_PERSONAL = 7;
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -608,6 +633,13 @@ public class SimpleDo extends Activity implements Constants {
                     }
                 }
                 setTitle(FILTER_TITLE_LOW_PRIORITY);
+            } else if (position == POSITION_OF_COMPLETED) {
+                for (ToDoItem toDoItem : toDoList) {
+                    if (toDoItem.isComplete()) {
+                        addItem(toDoItem);
+                    }
+                }
+                setTitle(FILTER_TITLE_COMPLETED);
             } else if (position == POSITION_OF_NOT_COMPLETE) { //Only show not completed items
                 for (ToDoItem toDoItem : toDoList) {
                     if (!toDoItem.isComplete()) {
@@ -630,6 +662,7 @@ public class SimpleDo extends Activity implements Constants {
                 }
                 setTitle(FILTER_PERSONAL);
             }
+
             updateTextViews();
         }
 
