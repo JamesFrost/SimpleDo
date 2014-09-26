@@ -129,24 +129,11 @@ public class QuickReschedule extends Activity implements Constants {
         buttonDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                boolean notFailed = true;
-
-                for (ToDoItem a : toDoList) {
-                    if (a.getName().equals(oldToDoItem.getName()) && ((a.getDate() == null && createDate() == null) || (a.getDate() != null && createDate() != null && a.getDate().isEqual(createDate())))) {
-                        Toast.makeText(getApplicationContext(), TOAST_DUPLICATE_ITEM_WARNING, Toast.LENGTH_SHORT).show();
-                        notFailed = false;
-                        break;
-                    }
-                }
-
-                if (notFailed) {
-                    Intent intent = new Intent(QuickReschedule.this, SimpleDo.class);
-                    intent.putExtra(KEY_NEWTODOITEM, new ToDoItem(oldToDoItem.getName(), createDate(), oldToDoItem.getGroup(), oldToDoItem.getPriority(), timeToggleButton.isChecked()));
-                    intent.putExtra(KEY_OLDTODOITEM, oldToDoItem);
-                    setResult(REQUEST_CODE_QUICK_RESCHEDULE, intent);
-                    finish();
-                }
+                Intent intent = new Intent(QuickReschedule.this, SimpleDo.class);
+                intent.putExtra(KEY_NEWTODOITEM, new ToDoItem(oldToDoItem.getName(), createDate(), oldToDoItem.getGroup(), oldToDoItem.getPriority(), timeToggleButton.isChecked()));
+                intent.putExtra(KEY_OLDTODOITEM, oldToDoItem);
+                setResult(REQUEST_CODE_QUICK_RESCHEDULE, intent);
+                finish();
             }
         });
     }

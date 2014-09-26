@@ -17,7 +17,7 @@ public interface Constants {
     public static final String KEY_NAME = "toDoItemName";
     //Warning messages
     public static final String TOAST_EMPTY_NAME_WARNING = "The task name is empty!";
-    public static final String TOAST_DUPLICATE_ITEM_WARNING = "Task with that name and date already exists!";
+    public static final String TOAST_DUPLICATE_ITEM_WARNING = "Task with that name already exists!";
     //Activity results codes
     public static final int REQUEST_CODE_ADD_ITEM = 100;
     public static final int REQUEST_CODE_EDIT_ITEM = 200;

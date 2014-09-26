@@ -116,7 +116,7 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
 
                         if (notFailed) {
                             for (ToDoItem a : toDoList) {
-                                if (a.getName().equals(toDoItemName.getText().toString().trim()) && ((a.getDate() == null && createDate() == null) || (a.getDate() != null && createDate() != null && a.getDate().isEqual(createDate())))) {
+                                if (a.getName().equals(toDoItemName.getText().toString().trim())) {
                                     Toast.makeText(getApplicationContext(), TOAST_DUPLICATE_ITEM_WARNING, Toast.LENGTH_SHORT).show();
                                     notFailed = false;
                                     break;

@@ -538,7 +538,7 @@ public class SimpleDo extends Activity implements Constants {
 
     private class DrawerItemClickListener implements AdapterView.OnItemClickListener {
 
-        private static final String FILTER_TITLE_NO_FILTER = "Simple Do";
+        private static final String FILTER_TITLE_NO_FILTER = "SimpleDo";
         private static final String FILTER_TITLE_HIGH_PRIORITY = "High Priority";
         private static final String FILTER_TITLE_MEDIUM_PRIORITY = "Medium Priority";
         private static final String FILTER_TITLE_LOW_PRIORITY = "Low Priority";

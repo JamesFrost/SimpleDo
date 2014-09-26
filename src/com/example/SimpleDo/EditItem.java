@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 /**
  * Activity where the user can edit ToDoItems.
- *
+ * <p/>
  * Created by James Frost on 17/09/2014.
  */
 public class EditItem extends Activity implements AdapterView.OnItemSelectedListener, Constants {
@@ -193,7 +193,7 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
 
                         if (notFailed) {
                             for (ToDoItem a : toDoList) {
-                                if (!(a.equals(oldToDoItem)) && a.getName().equals(toDoItemName.getText().toString().trim()) && ((a.getDate() == null && createDate() == null) || (a.getDate() != null && createDate() != null && a.getDate().isEqual(createDate())))) {
+                                if (!(a.equals(oldToDoItem)) && a.getName().equals(toDoItemName.getText().toString().trim())) {
                                     Toast.makeText(getApplicationContext(), TOAST_DUPLICATE_ITEM_WARNING, Toast.LENGTH_SHORT).show();
                                     notFailed = false;
                                     break;
