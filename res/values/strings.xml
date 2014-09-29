@@ -11,7 +11,6 @@
     <string name="button_go">Go</string>
     <string name="button_done">Done</string>
     <string name="button_cancel">Cancel</string>
-    <string name="delete_question">Sure you want to delete </string>
 
     <string name="date_header">Date</string>
     <string name="time_header">Time</string>

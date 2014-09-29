@@ -55,6 +55,5 @@ public class DeleteDialog extends DialogFragment implements Constants {
                     + " must implement NoticeDialogListener");
         }
     }
-
 }
 
