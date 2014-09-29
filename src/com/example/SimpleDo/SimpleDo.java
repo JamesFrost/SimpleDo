@@ -165,9 +165,21 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                         toDoList.set(j + 1, temp);
                     }
                 } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-                    ToDoItem temp = toDoList.get(j);
-                    toDoList.set(j, toDoList.get(j + 1));
-                    toDoList.set(j + 1, temp);
+                    if (toDoList.get(j).getDate().isAfter(((LocalDateTime) toDoList.get(j + 1).getDate()).toLocalDate())) {
+                        ToDoItem temp = toDoList.get(j);
+                        toDoList.set(j, toDoList.get(j + 1));
+                        toDoList.set(j + 1, temp);
+                    } else if (toDoList.get(j).getDate().isEqual(((LocalDateTime) toDoList.get(j + 1).getDate()).toLocalDate())) {
+                        ToDoItem temp = toDoList.get(j);
+                        toDoList.set(j, toDoList.get(j + 1));
+                        toDoList.set(j + 1, temp);
+                    }
+                } else if (toDoList.get(j).getDate() instanceof LocalDate && toDoList.get(j + 1).getDate() instanceof LocalDate) {
+                    if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
+                        ToDoItem temp = toDoList.get(j);
+                        toDoList.set(j, toDoList.get(j + 1));
+                        toDoList.set(j + 1, temp);
+                    }
                 }
             }
         }
@@ -340,6 +352,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
             if (toDoItem.getDate() == null && toDoItem.isComplete()) {
                 ch.setText(toDoItem.getName());
                 linearLayoutSomeday.addView(ch);
+                ch.setChecked(true);
             } else if (isTodaysDate(toDoItem) && toDoItem.isComplete()) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
                     ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
@@ -349,7 +362,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     ch.setChecked(true);
                 }
 
-            } else if (isTomorrowsDate(toDoItem)&& toDoItem.isComplete()) {
+            } else if (isTomorrowsDate(toDoItem) && toDoItem.isComplete()) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
                     ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
                 else ch.setText(toDoItem.getName());
