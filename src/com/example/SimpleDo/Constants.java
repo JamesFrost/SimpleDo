@@ -23,7 +23,7 @@ public interface Constants {
     public static final int REQUEST_CODE_ADD_ITEM = 100;
     public static final int REQUEST_CODE_EDIT_ITEM = 200;
     public static final int REQUEST_CODE_QUICK_RESCHEDULE = 300;
-    //Delete Dialog
+    //Delete dialog text
     public static final String DELETE_CONFORMATION_MESSAGE = "It will be gone forever!";
     public  static final String POSITIVE_BUTTON_TEXT = "Confirm";
     public static final String NEGATIVE_BUTTON_TEXT = "Cancel";

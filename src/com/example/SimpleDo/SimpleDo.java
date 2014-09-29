@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import org.joda.time.DateTimeFieldType;
@@ -65,6 +64,8 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        new SimpleEula(this).show();
 
         Context mContext;
         mContext = getApplicationContext();
@@ -300,8 +301,8 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         Uri deleteUri = null;
         deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, toDoItem.getEventID());
         int rows = getContentResolver().delete(deleteUri, null, null);
-        final String DEBUG_TAG = "MyActivity";
-        Log.i(DEBUG_TAG, "Rows deleted: " + rows);
+//        final String DEBUG_TAG = "MyActivity";
+//        Log.i(DEBUG_TAG, "Rows deleted: " + rows);
     }
 
     /**

@@ -159,7 +159,7 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
             String[] groupNames = res.getStringArray(R.array.group_array);
             String[] priorities = res.getStringArray(R.array.priority_array);
 
-            if (bundle.getString(KEY_GROUP).equals(groupNames[0])) //isn't no group default?
+            if (bundle.getString(KEY_GROUP).equals(groupNames[0]))
                 groupSpinner.setSelection(GROUP_NO_GROUP_INDEX);
             else if (bundle.getString(KEY_GROUP).equals(groupNames[1]))
                 groupSpinner.setSelection(GROUP_WORK_INDEX);

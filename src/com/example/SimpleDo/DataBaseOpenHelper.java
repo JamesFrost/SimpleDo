@@ -3,7 +3,6 @@ package com.example.SimpleDo;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * Class to help open the database.
@@ -50,10 +49,10 @@ public class DataBaseOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(DataBaseOpenHelper.class.getName(),
-                "Upgrading database from version " + oldVersion + " to "
-                        + newVersion + ", which will destroy all old data"
-        );
+//        Log.w(DataBaseOpenHelper.class.getName(),
+//                "Upgrading database from version " + oldVersion + " to "
+//                        + newVersion + ", which will destroy all old data"
+//        );
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS);
         onCreate(db);
     }
