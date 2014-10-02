@@ -1,7 +1,7 @@
 SimpleDo
 ========
 
-A simple 'To-Do' application for Android, with an emphasis on minimalism. Available for Android 4.0.1 and up.
+A 'To-Do' application for Android, with an emphasis on minimalism. Available for Android 4.0.1 and up.
 
 <a href="http://jamesfrost.me/simpleDo/simple-do.htm">Website</a><br>
 <a href="https://sourceforge.net/projects/simpledo/">Source Forge</a>
