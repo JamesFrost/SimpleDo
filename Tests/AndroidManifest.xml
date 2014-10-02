@@ -12,8 +12,8 @@
     </application>
     <!--
     This declares that this application uses the instrumentation test runner targeting
-    the package of com.example.SimpleDo.  To run the tests use the command:
-    "adb shell am instrument -w com.example.SimpleDo.tests/android.test.InstrumentationTestRunner"
+    the package of com.SimpleDo.  To run the tests use the command:
+    "adb shell am instrument -w com.SimpleDo.tests/android.test.InstrumentationTestRunner"
     -->
     <instrumentation android:name="android.test.InstrumentationTestRunner"
                      android:targetPackage="com.example.SimpleDo"
