@@ -52,34 +52,7 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="app: com.SimpleDo" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f09d6395-24c0-4653-b76d-477062264ae5" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Tests/gen/com/example/SimpleDo/tests/Manifest.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Tests/gen/com/example/SimpleDo/tests/R.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\gen\com\example\SimpleDo\BuildConfig.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\gen\com\example\SimpleDo\Manifest.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\gen\com\example\SimpleDo\R.java" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/Tests/gen/com/example/SimpleDo/tests/BuildConfig.java" afterPath="$PROJECT_DIR$/Tests/gen/com/SimpleDo/tests/BuildConfig.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\Tests\src\com\example\SimpleDo\CreateItemTest.java" afterPath="$PROJECT_DIR$/Tests/src/com/SimpleDo/CreateItemTest.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\Tests\src\com\example\SimpleDo\DataBaseOpenHelperTest.java" afterPath="$PROJECT_DIR$/Tests/src/com/SimpleDo/DataBaseOpenHelperTest.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\Tests\src\com\example\SimpleDo\SimpleDoTest.java" afterPath="$PROJECT_DIR$/Tests/src/com/SimpleDo/SimpleDoTest.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\Tests\src\com\example\SimpleDo\ToDoItemTest.java" afterPath="$PROJECT_DIR$/Tests/src/com/SimpleDo/ToDoItemTest.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\AboutDialog.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/AboutDialog.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\Constants.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/Constants.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\CreateItem.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/CreateItem.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\DataBaseOpenHelper.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/DataBaseOpenHelper.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\DeleteDialog.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/DeleteDialog.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\EditItem.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/EditItem.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\ItemsDataSource.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/ItemsDataSource.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\QuickReschedule.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/QuickReschedule.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\SettingsActivity.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/SettingsActivity.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\SimpleDo.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/SimpleDo.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\SimpleEula.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/SimpleEula.java" />
-      <change type="MOVED" beforePath="C:\Users\James\IdeaProjects\SimpleDo\src\com\example\SimpleDo\ToDoItem.java" afterPath="$PROJECT_DIR$/src/com/SimpleDo/ToDoItem.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Tests/AndroidManifest.xml" afterPath="$PROJECT_DIR$/Tests/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/menu/action_bar.xml" afterPath="$PROJECT_DIR$/res/menu/action_bar.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="f09d6395-24c0-4653-b76d-477062264ae5" name="Default" comment="" />
     <ignored path="SimpleDo.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -724,7 +697,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="784" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -746,7 +719,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24963397" sideWeight="0.49925926" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24963397" sideWeight="0.49925926" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32740742" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
