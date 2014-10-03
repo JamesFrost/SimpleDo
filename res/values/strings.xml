@@ -11,7 +11,7 @@
     <string name="button_go">Go</string>
     <string name="button_done">Done</string>
     <string name="button_cancel">Cancel</string>
-    <string name="updates">Updates: First Release!</string>
+    <string name="updates">Updates:\n - Bug fixes</string>
     <string name="eula">Thank you for downloading SimpleDo!\n\nThis application is licensed under the GNU GPL
         v3.0.\n\nBy using this application, you agree to these terms and conditions.
     </string>

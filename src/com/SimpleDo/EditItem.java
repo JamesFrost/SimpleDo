@@ -189,6 +189,9 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
                         if (toDoItemName.getText().toString().matches("")) { //if the name field is empty
                             Toast.makeText(getApplicationContext(), TOAST_EMPTY_NAME_WARNING, Toast.LENGTH_SHORT).show();
                             notFailed = false;
+                        } else if (toDoItemName.getText().toString().contains("-")) {
+                            Toast.makeText(getApplicationContext(), TOAST_HYPHEN_WARNING, Toast.LENGTH_SHORT).show();
+                            notFailed = false;
                         }
 
                         if (notFailed) {
