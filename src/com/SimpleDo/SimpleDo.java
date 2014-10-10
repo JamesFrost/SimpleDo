@@ -318,7 +318,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         ch.setTextColor(Color.LTGRAY);
         registerForContextMenu(ch);
 
-        if (drawerList.getCheckedItemPosition() != 4) {
+        if (drawerList.getCheckedItemPosition() != DrawerItemClickListener.POSITION_OF_COMPLETED) {
             if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
                 ch.setText(toDoItem.getName());
                 linearLayoutSomeday.addView(ch);
@@ -610,6 +610,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         private static final String FILTER_TITLE_HIGH_PRIORITY = "High Priority";
         private static final String FILTER_TITLE_MEDIUM_PRIORITY = "Medium Priority";
         private static final String FILTER_TITLE_LOW_PRIORITY = "Low Priority";
+        private static final String FILTER_TITLE_NO_PRIORITY = "No Priority";
         private static final String FILTER_TITLE_NOT_COMPLETED = "Not Completed";
         private static final String FILTER_TITLE_COMPLETED = "Completed";
 
@@ -618,15 +619,19 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         private static final String FILTER_HIGH_PRIORITY = "High";
         private static final String FILTER_MEDIUM_PRIORITY = "Medium";
         private static final String FILTER_LOW_PRIORITY = "Low";
+        private static final String FILTER_NO_PRIORITY = "Not Set";
+        private static final String FILTER_NO_GROUP = "No Group";
 
         private static final int POSITION_OF_NO_FILTER = 0;
         private static final int POSITION_OF_HIGH_PRIORITY = 1;
         private static final int POSITION_OF_MEDIUM_PRIORITY = 2;
         private static final int POSITION_OF_LOW_PRIORITY = 3;
-        private static final int POSITION_OF_COMPLETED = 4;
-        private static final int POSITION_OF_NOT_COMPLETE = 5;
-        private static final int POSITION_OF_WORK = 6;
-        private static final int POSITION_OF_PERSONAL = 7;
+        private static final int POSITION_OF_NO_PRIORITY = 4;
+        public static final int POSITION_OF_COMPLETED = 5;
+        private static final int POSITION_OF_NOT_COMPLETE = 6;
+        private static final int POSITION_OF_WORK = 7;
+        private static final int POSITION_OF_PERSONAL = 8;
+        private static final int POSITION_OF_NO_GROUP = 9;
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -678,6 +683,13 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     }
                 }
                 setTitle(FILTER_TITLE_LOW_PRIORITY);
+            } else if(position == POSITION_OF_NO_PRIORITY) {
+                for (ToDoItem toDoItem : toDoList) {
+                    if (toDoItem.getPriority().equals(FILTER_NO_PRIORITY)) {
+                        addItem(toDoItem);
+                    }
+                }
+                setTitle(FILTER_TITLE_NO_PRIORITY);
             } else if (position == POSITION_OF_COMPLETED) {
                 for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.isComplete()) {
@@ -706,6 +718,13 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     }
                 }
                 setTitle(FILTER_PERSONAL);
+            } else if (position == POSITION_OF_NO_GROUP) { //Filter by personal
+                for (ToDoItem toDoItem : toDoList) {
+                    if (toDoItem.getGroup().equals(FILTER_NO_GROUP)) {
+                        addItem(toDoItem);
+                    }
+                }
+                setTitle(FILTER_NO_GROUP);
             }
 
             updateTextViews();
