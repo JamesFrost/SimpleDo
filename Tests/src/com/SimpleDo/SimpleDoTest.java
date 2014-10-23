@@ -6,6 +6,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import me.jamesfrost.simpledo.SimpleDo;
 
 /**
  * This is a simple framework for a test of an Application.  See

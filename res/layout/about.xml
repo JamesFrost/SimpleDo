@@ -20,7 +20,14 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Released under the GNU Public License."
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/about_madeby"
+            android:id="@+id/textView4" android:layout_gravity="center_horizontal"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:linksClickable="true"
+            android:text="@string/about_license"
             android:id="@+id/textView3" android:layout_gravity="center_horizontal"/>
     <TextView
             android:layout_width="wrap_content"

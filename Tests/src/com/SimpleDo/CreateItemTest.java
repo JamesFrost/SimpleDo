@@ -7,6 +7,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.test.TouchUtils;
 import android.view.View;
 import android.widget.*;
+import me.jamesfrost.simpledo.CreateItem;
 
 /**
  * Test class for CreateItem
