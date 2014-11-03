@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="apk" build-on-make="true" name="SimpleDo">
+    <output-path>$PROJECT_DIR$/out/artifacts/SimpleDo</output-path>
+    <properties id="android-properties">
+      <options>
+        <option name="keyAlias" value="SimpleDoKey" />
+        <option name="keyPassword" value="My4xNDE1OTI2NTQ=" />
+        <option name="keyStorePassword" value="SmFtZXMxNTc=" />
+        <option name="keyStoreUrl" value="file://$USER_HOME$/Documents/CS/SimpleDoKS.jks" />
+        <option name="proGuardCfgFiles">
+          <list>
+            <option value="file://%MODULE_SDK_HOME%/tools/proguard/proguard-android.txt" />
+          </list>
+        </option>
+        <option name="signingMode" value="RELEASE_SIGNED" />
+      </options>
+    </properties>
+    <root id="archive" name="SimpleDo.apk">
+      <element id="android-final-package" facet="SimpleDo/android/Android" />
+    </root>
+  </artifact>
+</component>

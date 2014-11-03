@@ -24,6 +24,7 @@
         <item>No Group</item>
         <item>Work</item>
         <item>Personal</item>
+        <item>School</item>
     </string-array>
 
     <string-array name="priority_array">
@@ -43,6 +44,7 @@
         <item>Not Completed</item>
         <item>Work</item>
         <item>Personal</item>
+        <item>School</item>
         <item>No Group</item>
     </string-array>
 

@@ -47,7 +47,7 @@ public class ToDoItem implements Serializable {
         this.timeSet = timeSet;
         complete = false;
 
-        if (!(this.group.equals("No Group") || this.group.equals("Work") || this.group.equals("Personal")))
+        if (!(this.group.equals("No Group") || this.group.equals("Work") || this.group.equals("Personal") || this.group.equals("School")))
             throw new IllegalArgumentException("No such group exists.");
         if (!(this.priority.equals("Not Set") || this.priority.equals("Low") || this.priority.equals("Medium") || this.priority.equals("High")))
             throw new IllegalArgumentException("No such priority exists.");

@@ -1,4 +1,4 @@
-package com.SimpleDo;
+package me.jamesfrost.SimpleDo;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -37,12 +37,12 @@ public class SimpleDoTest extends ActivityInstrumentationTestCase2<SimpleDo> {
     protected void setUp() throws Exception {
         super.setUp();
         simpleDo = getActivity();
-        textViewOverDue = (TextView) simpleDo.findViewById(R.id.overDue);
-        textViewToday = (TextView) simpleDo.findViewById(R.id.today);
-        textViewTomorrow = (TextView) simpleDo.findViewById(R.id.tomorrow);
-        textViewFuture = (TextView) simpleDo.findViewById(R.id.future);
-        textViewSomeday = (TextView) simpleDo.findViewById(R.id.someday);
-        buttonGo = (Button) simpleDo.findViewById(R.id.go);
+        textViewOverDue = (TextView) simpleDo.findViewById(me.jamesfrost.simpledo.R.id.overDue);
+        textViewToday = (TextView) simpleDo.findViewById(me.jamesfrost.simpledo.R.id.today);
+        textViewTomorrow = (TextView) simpleDo.findViewById(me.jamesfrost.simpledo.R.id.tomorrow);
+        textViewFuture = (TextView) simpleDo.findViewById(me.jamesfrost.simpledo.R.id.future);
+        textViewSomeday = (TextView) simpleDo.findViewById(me.jamesfrost.simpledo.R.id.someday);
+        buttonGo = (Button) simpleDo.findViewById(me.jamesfrost.simpledo.R.id.go);
     }
 
     public void testPreconditions() {

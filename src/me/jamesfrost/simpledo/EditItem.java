@@ -23,6 +23,7 @@ import java.util.ArrayList;
  */
 public class EditItem extends Activity implements AdapterView.OnItemSelectedListener, Constants {
 
+
     private EditText toDoItemName;
     private DatePicker datePicker;
     private TimePicker timePicker;
@@ -41,6 +42,7 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
     private static final int GROUP_NO_GROUP_INDEX = 0;
     private static final int GROUP_WORK_INDEX = 1;
     private static final int GROUP_PERSONAL_INDEX = 2;
+    private static final int GROUP_SCHOOL_INDEX = 3;
     private static final int PRIORITY_LOW_INDEX = 1;
     private static final int PRIORITY_MEDIUM_INDEX = 2;
     private static final int PRIORITY_HIGH_INDEX = 3;
@@ -165,6 +167,8 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
                 groupSpinner.setSelection(GROUP_WORK_INDEX);
             else if (bundle.getString(KEY_GROUP).equals(groupNames[2]))
                 groupSpinner.setSelection(GROUP_PERSONAL_INDEX);
+            else if (bundle.getString(KEY_GROUP).equals(groupNames[3]))
+                groupSpinner.setSelection(GROUP_SCHOOL_INDEX);
 
             if (bundle.getString(KEY_PRIORITY).equals(priorities[1]))
                 prioritySpinner.setSelection(PRIORITY_LOW_INDEX);

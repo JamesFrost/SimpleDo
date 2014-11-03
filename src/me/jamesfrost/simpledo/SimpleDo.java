@@ -159,7 +159,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
     private void sortToDoList(ArrayList<ToDoItem> toDoList) {
         for (int i = toDoList.size() - 1; i >= 0; i--) {
             for (int j = 0; j < i; j++) {
-                if (toDoList.get(j).getDate() != null && toDoList.get(j+1).getDate() != null) {
+                if (toDoList.get(j).getDate() != null && toDoList.get(j + 1).getDate() != null) {
                     if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
                         if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
                             ToDoItem temp = toDoList.get(j);
@@ -425,7 +425,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
             case R.id.edit:
                 for (ToDoItem a : toDoList) {
 
-                    if (mLastViewTouched.getText().toString().contains(a.getName())) { //What if more than one checkbox share a name / have similar names?
+                    if (mLastViewTouched.getText().toString().contains(a.getName())) {
 
                         if ((a.getDate() instanceof LocalDateTime && (mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDateTime)) || ((mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow) && mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxTime))))) ||
                                 (a.getDate() instanceof LocalDate && (mLastViewTouched.getText().toString().contains(a.getDate().toString(formatterCheckBoxDate)) || (mLastViewTouched.getParent() == linearLayoutToday || mLastViewTouched.getParent() == linearLayoutTomorrow))) ||
@@ -616,6 +616,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
         public static final String FILTER_WORK = "Work";
         private static final String FILTER_PERSONAL = "Personal";
+        private static final String FILTER_SCHOOL = "School";
         private static final String FILTER_HIGH_PRIORITY = "High";
         private static final String FILTER_MEDIUM_PRIORITY = "Medium";
         private static final String FILTER_LOW_PRIORITY = "Low";
@@ -631,7 +632,8 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         private static final int POSITION_OF_NOT_COMPLETE = 6;
         private static final int POSITION_OF_WORK = 7;
         private static final int POSITION_OF_PERSONAL = 8;
-        private static final int POSITION_OF_NO_GROUP = 9;
+        private static final int POSITION_OF_SCHOOL = 9;
+        private static final int POSITION_OF_NO_GROUP = 10;
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -683,7 +685,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     }
                 }
                 setTitle(FILTER_TITLE_LOW_PRIORITY);
-            } else if(position == POSITION_OF_NO_PRIORITY) {
+            } else if (position == POSITION_OF_NO_PRIORITY) {
                 for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getPriority().equals(FILTER_NO_PRIORITY)) {
                         addItem(toDoItem);
@@ -718,7 +720,14 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     }
                 }
                 setTitle(FILTER_PERSONAL);
-            } else if (position == POSITION_OF_NO_GROUP) { //Filter by personal
+            } else if (position == POSITION_OF_SCHOOL) { //Filter by school
+                for (ToDoItem toDoItem : toDoList) {
+                    if (toDoItem.getGroup().equals(FILTER_SCHOOL)) {
+                        addItem(toDoItem);
+                    }
+                }
+                setTitle(FILTER_SCHOOL);
+            } else if (position == POSITION_OF_NO_GROUP) { //Filter by no grou[
                 for (ToDoItem toDoItem : toDoList) {
                     if (toDoItem.getGroup().equals(FILTER_NO_GROUP)) {
                         addItem(toDoItem);

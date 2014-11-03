@@ -1,4 +1,4 @@
-package com.SimpleDo;
+package me.jamesfrost.SimpleDo;
 
 import junit.framework.TestCase;
 
