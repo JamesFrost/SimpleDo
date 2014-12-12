@@ -2,16 +2,14 @@ package me.jamesfrost.simpledo;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.*;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import android.widget.*;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -50,6 +48,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
     private DateTimeFormatter formatter;
     private CheckBox mLastViewTouched;
     private CheckBox checkBoxToBeDeleted;
+    ReminderHelper reminderHelper;
 
     private static final String noItemsText = "Nothing to do, add something!";
     private static final DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
@@ -75,6 +74,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         textViewNoItems.setTypeface(null, Typeface.ITALIC);
 
         formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+        reminderHelper = new ReminderHelper();
 
         dataSource = new ItemsDataSource(this);
         dataSource.open();
@@ -190,6 +190,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (data != null) {
             super.onActivityResult(requestCode, resultCode, data);
             Bundle bundle = data.getExtras();
@@ -199,7 +200,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 dataSource.createItem(toDoItem);
 
                 if (bundle.getBoolean(KEY_REMINDER)) {
-                    addReminder(toDoItem);
+                    reminderHelper.addReminder(toDoItem, getContentResolver());
                 }
 
                 toDoList.add(toDoItem);
@@ -212,9 +213,9 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
                 if (bundle.getBoolean(KEY_REMINDER) != oldToDoItem.isReminder()) {
                     if (bundle.getBoolean(KEY_REMINDER))
-                        addReminder(toDoItem);
+                        reminderHelper.addReminder(toDoItem, getContentResolver());
                     else
-                        deleteReminder(toDoItem);
+                        reminderHelper.deleteReminder(toDoItem, getContentResolver());
                 }
 
                 toDoList.remove(oldToDoItem);
@@ -231,7 +232,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
                 assert toDoItem != null;
                 if (oldToDoItem.isReminder() && toDoItem.getDate() != null && !(toDoItem.getDate() instanceof LocalDateTime)) {
-                    deleteReminder(oldToDoItem);
+                    reminderHelper.deleteReminder(oldToDoItem, getContentResolver());
                 } else
                     toDoItem.setEventID(oldToDoItem.getEventID());
 
@@ -245,59 +246,6 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
             }
         }
-    }
-
-    /**
-     * Set a reminder for an item using the phones native calendar.
-     *
-     * @param toDoItem The item to set a reminder for
-     */
-    private void addReminder(ToDoItem toDoItem) {
-
-        String eventUriStr = "content://com.android.calendar/events";
-        ContentValues event = new ContentValues();
-        // id, We need to choose from our mobile for primary its 1
-        event.put("calendar_id", 1);
-        event.put("title", toDoItem.getName());
-        event.put("eventTimezone", "GMT");
-
-//        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
-        String test = toDoItem.getDate().toString(formatter);
-        LocalDateTime date = formatter.parseLocalDateTime(test).minusHours(1);
-
-        long localMillis = date.toDateTime(DateTimeZone.UTC).getMillis();
-
-        event.put("dtstart", localMillis);
-        event.put("dtend", localMillis);
-        event.put("hasAlarm", 1);
-        //If it is bithday alarm or such kind (which should remind me for whole day) 0 for false, 1 for true
-        // values.put("allDay", 1);
-
-        ContentResolver cr = getContentResolver();
-        Uri eventUri = cr.insert(Uri.parse(eventUriStr), event);
-        long eventID = Long.parseLong(eventUri.getLastPathSegment());
-        toDoItem.setEventID(eventID);
-
-        String reminderUriString = "content://com.android.calendar/reminders";
-        ContentValues reminderValues = new ContentValues();
-        reminderValues.put("event_id", eventID);
-        // Default value of the system. Minutes is a integer
-        reminderValues.put("minutes", 1);
-        // Alert Methods: Default(0), Alert(1), Email(2), SMS(3)
-        reminderValues.put("method", 1);
-        cr.insert(Uri.parse(reminderUriString), reminderValues);
-    }
-
-    /**
-     * Deletes the calendar event for a toDoItem.
-     *
-     * @param toDoItem The item to the delete the calendar event for
-     */
-    private void deleteReminder(ToDoItem toDoItem) {
-        ContentValues values = new ContentValues();
-        Uri deleteUri = null;
-        deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, toDoItem.getEventID());
-        getContentResolver().delete(deleteUri, null, null);
     }
 
     /**
@@ -396,9 +344,9 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 }
 
                 if (toDoItem.isComplete() && toDoItem.isReminder()) {
-                    deleteReminder(toDoItem);
+                    reminderHelper.deleteReminder(toDoItem, getContentResolver());
                 } else if (toDoItem.isReminder()) {
-                    addReminder(toDoItem);
+                    reminderHelper.addReminder(toDoItem, getContentResolver());
                 }
             }
         });

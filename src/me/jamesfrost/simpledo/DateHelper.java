@@ -5,7 +5,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 /**
- *
+ * Handles all date checks
  *
  * Created by James Frost on 12/12/2014.
  */
