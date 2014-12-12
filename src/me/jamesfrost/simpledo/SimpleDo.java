@@ -11,7 +11,6 @@ import android.provider.CalendarContract;
 import android.support.v4.widget.DrawerLayout;
 import android.view.*;
 import android.widget.*;
-import org.joda.time.DateTimeFieldType;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -127,10 +126,6 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         toDoList = dataSource.getAllItems();
         sortToDoList(toDoList);
         drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
-
-//        for (ToDoItem a : toDoList) {
-//            System.out.println("Name: " + a.getName() + " Complete: " + a.isComplete());
-//        }
 
         getOverflowMenu();
     }
@@ -302,9 +297,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         ContentValues values = new ContentValues();
         Uri deleteUri = null;
         deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, toDoItem.getEventID());
-        int rows = getContentResolver().delete(deleteUri, null, null);
-//        final String DEBUG_TAG = "MyActivity";
-//        Log.i(DEBUG_TAG, "Rows deleted: " + rows);
+        getContentResolver().delete(deleteUri, null, null);
     }
 
     /**
@@ -315,6 +308,8 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
     private void addItem(final ToDoItem toDoItem) {
         final CheckBox ch = new CheckBox(this);
 
+        final DateHelper dateHelper = new DateHelper();
+
         ch.setTextColor(Color.LTGRAY);
         registerForContextMenu(ch);
 
@@ -322,7 +317,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
             if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
                 ch.setText(toDoItem.getName());
                 linearLayoutSomeday.addView(ch);
-            } else if (isTodaysDate(toDoItem)) {
+            } else if (dateHelper.isTodaysDate(toDoItem)) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
                     ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
                 else ch.setText(toDoItem.getName());
@@ -331,7 +326,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     ch.setChecked(true);
                 }
 
-            } else if (isTomorrowsDate(toDoItem)) {
+            } else if (dateHelper.isTomorrowsDate(toDoItem)) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
                     ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
                 else ch.setText(toDoItem.getName());
@@ -340,7 +335,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     ch.setChecked(true);
                 }
 
-            } else if (isOverDue(toDoItem) && !toDoItem.isComplete()) {
+            } else if (dateHelper.isOverDue(toDoItem) && !toDoItem.isComplete()) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
                     ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDateTime));
                 else ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDate));
@@ -356,7 +351,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 ch.setText(toDoItem.getName());
                 linearLayoutSomeday.addView(ch);
                 ch.setChecked(true);
-            } else if (isTodaysDate(toDoItem) && toDoItem.isComplete()) {
+            } else if (dateHelper.isTodaysDate(toDoItem) && toDoItem.isComplete()) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
                     ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
                 else ch.setText(toDoItem.getName());
@@ -365,7 +360,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     ch.setChecked(true);
                 }
 
-            } else if (isTomorrowsDate(toDoItem) && toDoItem.isComplete()) {
+            } else if (dateHelper.isTomorrowsDate(toDoItem) && toDoItem.isComplete()) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
                     ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
                 else ch.setText(toDoItem.getName());
@@ -374,7 +369,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     ch.setChecked(true);
                 }
 
-            } else if (toDoItem.isComplete() && !isOverDue(toDoItem)) {
+            } else if (toDoItem.isComplete() && !dateHelper.isOverDue(toDoItem)) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
                     ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDateTime));
                 else ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDate));
@@ -389,13 +384,13 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 toDoItem.setComplete(((CheckBox) view).isChecked());
                 dataSource.updateItemCompleteStatus(toDoItem);
 
-                if (isOverDue(toDoItem)) {
+                if (dateHelper.isOverDue(toDoItem)) {
                     linearLayoutOverdue.removeView(ch);
                     drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
                 } else if (toDoItem.getDate() == null) {
                     linearLayoutSomeday.removeView(ch);
                     drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
-                } else if (!isTodaysDate(toDoItem) && !isTomorrowsDate(toDoItem)) {
+                } else if (!dateHelper.isTodaysDate(toDoItem) && !dateHelper.isTomorrowsDate(toDoItem)) {
                     linearLayoutFuture.removeView(ch);
                     drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
                 }
@@ -513,66 +508,6 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         super.onCreateContextMenu(menu, v, menuInfo);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-    }
-
-    /**
-     * Checks if a task falls on today's date.
-     *
-     * @param toDoItem The task to perform the check for
-     * @return True if today's date
-     */
-    private boolean isTodaysDate(ToDoItem toDoItem) {
-        if (toDoItem.getDate() != null) {
-
-            if (toDoItem.getDate() instanceof LocalDate) {
-                LocalDate lt = new LocalDate();
-                return lt.equals(toDoItem.getDate());
-            } else {
-                LocalDateTime ldt = new LocalDateTime();
-                LocalDate ld = new LocalDate();
-                LocalDate test = new LocalDate(toDoItem.getDate().get(DateTimeFieldType.year()), toDoItem.getDate().get(DateTimeFieldType.monthOfYear()), toDoItem.getDate().get(DateTimeFieldType.dayOfMonth()));
-                return toDoItem.getDate().isAfter(ldt) && test.isBefore(ld.plusDays(1));
-            }
-
-        } else return false;
-    }
-
-    /**
-     * Checks if a task falls on tomorrows date.
-     *
-     * @param toDoItem The task to perform the check for
-     * @return True if tomorrows's date
-     */
-    private boolean isTomorrowsDate(ToDoItem toDoItem) {
-        if (toDoItem.getDate() != null) {
-
-            if (toDoItem.getDate() instanceof LocalDate) {
-                LocalDate lt = new LocalDate();
-                return toDoItem.getDate().equals(lt.plusDays(1));
-            } else {
-                LocalDate lt = new LocalDate();
-                LocalDate test = new LocalDate(toDoItem.getDate().get(DateTimeFieldType.year()), toDoItem.getDate().get(DateTimeFieldType.monthOfYear()), toDoItem.getDate().get(DateTimeFieldType.dayOfMonth()));
-                return test.equals(lt.plusDays(1));
-            }
-        } else return false;
-    }
-
-    /**
-     * Checks if a task is over due.
-     *
-     * @param toDoItem The task to perform the check for
-     * @return True if over due
-     */
-    private boolean isOverDue(ToDoItem toDoItem) {
-        if (toDoItem.getDate() != null) {
-            if (toDoItem.getDate() instanceof LocalDate) {
-                LocalDate lt = new LocalDate();
-                return toDoItem.getDate().isBefore(lt);
-            } else {
-                LocalDateTime ldt = new LocalDateTime();
-                return toDoItem.getDate().isBefore(ldt);
-            }
-        } else return false;
     }
 
     public ListView getDrawerList() {
