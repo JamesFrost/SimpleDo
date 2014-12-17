@@ -112,3 +112,4 @@ proguard/
 
 # Log Files
 *.log
+.idea/workspace.xml

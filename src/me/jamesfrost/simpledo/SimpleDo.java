@@ -48,7 +48,8 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
     private DateTimeFormatter formatter;
     private CheckBox mLastViewTouched;
     private CheckBox checkBoxToBeDeleted;
-    ReminderHelper reminderHelper;
+    private ReminderHelper reminderHelper;
+    private ToDoItemSorter toDoItemSorter;
 
     private static final String noItemsText = "Nothing to do, add something!";
     private static final DateTimeFormatter formatterCheckBoxDateTime = DateTimeFormat.forPattern("dd/MM/yyyy - HH:mm");
@@ -72,6 +73,8 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         textViewNoItems.setText(noItemsText);
         textViewNoItems.setTextSize(17);
         textViewNoItems.setTypeface(null, Typeface.ITALIC);
+
+        toDoItemSorter = new ToDoItemSorter();
 
         formatter = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
         reminderHelper = new ReminderHelper();
@@ -124,7 +127,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
         toDoList = new ArrayList<ToDoItem>();
         toDoList = dataSource.getAllItems();
-        sortToDoList(toDoList);
+        toDoList = toDoItemSorter.sortToDoList(toDoList);
         drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
         getOverflowMenu();
@@ -151,37 +154,37 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
      *
      * @param toDoList The list to sort
      */
-    private void sortToDoList(ArrayList<ToDoItem> toDoList) {
-        for (int i = toDoList.size() - 1; i >= 0; i--) {
-            for (int j = 0; j < i; j++) {
-                if (toDoList.get(j).getDate() != null && toDoList.get(j + 1).getDate() != null) {
-                    if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-                        if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
-                            ToDoItem temp = toDoList.get(j);
-                            toDoList.set(j, toDoList.get(j + 1));
-                            toDoList.set(j + 1, temp);
-                        }
-                    } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-                        if (toDoList.get(j).getDate().isAfter(((LocalDateTime) toDoList.get(j + 1).getDate()).toLocalDate())) {
-                            ToDoItem temp = toDoList.get(j);
-                            toDoList.set(j, toDoList.get(j + 1));
-                            toDoList.set(j + 1, temp);
-                        } else if (toDoList.get(j).getDate().isEqual(((LocalDateTime) toDoList.get(j + 1).getDate()).toLocalDate())) {
-                            ToDoItem temp = toDoList.get(j);
-                            toDoList.set(j, toDoList.get(j + 1));
-                            toDoList.set(j + 1, temp);
-                        }
-                    } else if (toDoList.get(j).getDate() instanceof LocalDate && toDoList.get(j + 1).getDate() instanceof LocalDate) {
-                        if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
-                            ToDoItem temp = toDoList.get(j);
-                            toDoList.set(j, toDoList.get(j + 1));
-                            toDoList.set(j + 1, temp);
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private void sortToDoList(ArrayList<ToDoItem> toDoList) {
+//        for (int i = toDoList.size() - 1; i >= 0; i--) {
+//            for (int j = 0; j < i; j++) {
+//                if (toDoList.get(j).getDate() != null && toDoList.get(j + 1).getDate() != null) {
+//                    if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
+//                        if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
+//                            ToDoItem temp = toDoList.get(j);
+//                            toDoList.set(j, toDoList.get(j + 1));
+//                            toDoList.set(j + 1, temp);
+//                        }
+//                    } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
+//                        if (toDoList.get(j).getDate().isAfter(((LocalDateTime) toDoList.get(j + 1).getDate()).toLocalDate())) {
+//                            ToDoItem temp = toDoList.get(j);
+//                            toDoList.set(j, toDoList.get(j + 1));
+//                            toDoList.set(j + 1, temp);
+//                        } else if (toDoList.get(j).getDate().isEqual(((LocalDateTime) toDoList.get(j + 1).getDate()).toLocalDate())) {
+//                            ToDoItem temp = toDoList.get(j);
+//                            toDoList.set(j, toDoList.get(j + 1));
+//                            toDoList.set(j + 1, temp);
+//                        }
+//                    } else if (toDoList.get(j).getDate() instanceof LocalDate && toDoList.get(j + 1).getDate() instanceof LocalDate) {
+//                        if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
+//                            ToDoItem temp = toDoList.get(j);
+//                            toDoList.set(j, toDoList.get(j + 1));
+//                            toDoList.set(j + 1, temp);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     /**
      * @param requestCode
@@ -204,7 +207,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 }
 
                 toDoList.add(toDoItem);
-                sortToDoList(toDoList);
+                toDoList = toDoItemSorter.sortToDoList(toDoList);
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
 
             } else if (resultCode == REQUEST_CODE_EDIT_ITEM && bundle != null) { //Edit item result
@@ -220,7 +223,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
                 toDoList.remove(oldToDoItem);
                 toDoList.add(toDoItem);
-                sortToDoList(toDoList);
+                toDoList = toDoItemSorter.sortToDoList(toDoList);
 
                 dataSource.deleteItem(oldToDoItem);
                 dataSource.createItem(toDoItem);
@@ -238,7 +241,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
                 toDoList.remove(oldToDoItem);
                 toDoList.add(toDoItem);
-                sortToDoList(toDoList);
+                toDoList = toDoItemSorter.sortToDoList(toDoList);
 
                 dataSource.deleteItem(oldToDoItem);
                 dataSource.createItem(toDoItem);
@@ -412,6 +415,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
                 checkBoxToBeDeleted = mLastViewTouched;
                 DialogFragment newFragment = new DeleteDialog();
+                test = newFragment.getId();
                 Bundle bundle = new Bundle();
                 bundle.putString(KEY_CHECKBOXTOBODELETEDNAME, checkBoxToBeDeleted.getText().toString());
 
@@ -423,6 +427,8 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 return super.onContextItemSelected(item);
         }
     }
+
+    int test;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
