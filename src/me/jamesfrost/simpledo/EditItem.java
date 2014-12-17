@@ -74,6 +74,8 @@ public class EditItem extends Activity implements AdapterView.OnItemSelectedList
         relativeLayout.removeView(reminder);
         relativeLayout.removeView(time);
 
+        button.setText("Save");
+
         dateToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
