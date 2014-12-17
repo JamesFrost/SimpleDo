@@ -242,6 +242,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 toDoList.remove(oldToDoItem);
                 toDoList.add(toDoItem);
                 toDoList = toDoItemSorter.sortToDoList(toDoList);
+                toDoList = toDoItemSorter.sortToDoList(toDoList);
 
                 dataSource.deleteItem(oldToDoItem);
                 dataSource.createItem(toDoItem);
