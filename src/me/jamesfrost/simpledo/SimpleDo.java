@@ -150,43 +150,6 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
     }
 
     /**
-     * Sorts an ArrayList of ToDoItems by date using a bubble sort algorithm.
-     *
-     * @param toDoList The list to sort
-     */
-//    private void sortToDoList(ArrayList<ToDoItem> toDoList) {
-//        for (int i = toDoList.size() - 1; i >= 0; i--) {
-//            for (int j = 0; j < i; j++) {
-//                if (toDoList.get(j).getDate() != null && toDoList.get(j + 1).getDate() != null) {
-//                    if (toDoList.get(j).getDate() instanceof LocalDateTime && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-//                        if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
-//                            ToDoItem temp = toDoList.get(j);
-//                            toDoList.set(j, toDoList.get(j + 1));
-//                            toDoList.set(j + 1, temp);
-//                        }
-//                    } else if (!(toDoList.get(j).getDate() instanceof LocalDateTime) && toDoList.get(j + 1).getDate() instanceof LocalDateTime) {
-//                        if (toDoList.get(j).getDate().isAfter(((LocalDateTime) toDoList.get(j + 1).getDate()).toLocalDate())) {
-//                            ToDoItem temp = toDoList.get(j);
-//                            toDoList.set(j, toDoList.get(j + 1));
-//                            toDoList.set(j + 1, temp);
-//                        } else if (toDoList.get(j).getDate().isEqual(((LocalDateTime) toDoList.get(j + 1).getDate()).toLocalDate())) {
-//                            ToDoItem temp = toDoList.get(j);
-//                            toDoList.set(j, toDoList.get(j + 1));
-//                            toDoList.set(j + 1, temp);
-//                        }
-//                    } else if (toDoList.get(j).getDate() instanceof LocalDate && toDoList.get(j + 1).getDate() instanceof LocalDate) {
-//                        if (toDoList.get(j).getDate().isAfter(toDoList.get(j + 1).getDate())) {
-//                            ToDoItem temp = toDoList.get(j);
-//                            toDoList.set(j, toDoList.get(j + 1));
-//                            toDoList.set(j + 1, temp);
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-    /**
      * @param requestCode
      * @param resultCode  100 for adding a new item, 200 for editing an item and 300 for quick reschedule
      * @param data        Date sent from activity returning a result
@@ -209,6 +172,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 toDoList.add(toDoItem);
                 toDoList = toDoItemSorter.sortToDoList(toDoList);
                 drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
+                Toast.makeText(getApplicationContext(), TOAST_TASK_CREATED, Toast.LENGTH_SHORT).show();
 
             } else if (resultCode == REQUEST_CODE_EDIT_ITEM && bundle != null) { //Edit item result
                 ToDoItem toDoItem = (ToDoItem) data.getSerializableExtra(KEY_NEWTODOITEM);
@@ -416,7 +380,6 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
                 checkBoxToBeDeleted = mLastViewTouched;
                 DialogFragment newFragment = new DeleteDialog();
-                test = newFragment.getId();
                 Bundle bundle = new Bundle();
                 bundle.putString(KEY_CHECKBOXTOBODELETEDNAME, checkBoxToBeDeleted.getText().toString());
 
@@ -428,8 +391,6 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 return super.onContextItemSelected(item);
         }
     }
-
-    int test;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -483,6 +444,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                     dataSource.deleteItem(currentElement);
                     setIterator.remove();
                     drawerItemClickListener.filter(drawerList.getCheckedItemPosition());
+                    Toast.makeText(getApplicationContext(), TOAST_TASK_DELETED, Toast.LENGTH_SHORT).show();
                     break;
                 }
             }
