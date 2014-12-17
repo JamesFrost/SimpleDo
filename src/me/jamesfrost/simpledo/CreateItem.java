@@ -112,8 +112,8 @@ public class CreateItem extends Activity implements AdapterView.OnItemSelectedLi
                         if (toDoItemName.getText().toString().matches("")) { //if the name field is empty
                             Toast.makeText(getApplicationContext(), TOAST_EMPTY_NAME_WARNING, Toast.LENGTH_SHORT).show();
                             notFailed = false;
-                        } else if (toDoItemName.getText().toString().contains("-")) {
-                            Toast.makeText(getApplicationContext(), TOAST_HYPHEN_WARNING, Toast.LENGTH_SHORT).show();
+                        } else if (toDoItemName.getText().toString().contains(SEPARATOR)) {
+                            Toast.makeText(getApplicationContext(), TOAST_INVISIBLE_CHAR_WARNING, Toast.LENGTH_SHORT).show();
                             notFailed = false;
                         }
 

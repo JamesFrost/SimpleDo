@@ -229,13 +229,14 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
         ch.setTextColor(Color.LTGRAY);
         registerForContextMenu(ch);
 
+
         if (drawerList.getCheckedItemPosition() != DrawerItemClickListener.POSITION_OF_COMPLETED) {
             if (toDoItem.getDate() == null && !toDoItem.isComplete()) {
                 ch.setText(toDoItem.getName());
                 linearLayoutSomeday.addView(ch);
             } else if (dateHelper.isTodaysDate(toDoItem)) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
-                    ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
+                    ch.setText(toDoItem.getName() + SEPARATOR + " - " + SEPARATOR + toDoItem.getDate().toString(formatterCheckBoxTime));
                 else ch.setText(toDoItem.getName());
                 linearLayoutToday.addView(ch);
                 if (toDoItem.isComplete()) {
@@ -244,7 +245,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
             } else if (dateHelper.isTomorrowsDate(toDoItem)) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
-                    ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
+                    ch.setText(toDoItem.getName() + SEPARATOR + " - " + SEPARATOR + toDoItem.getDate().toString(formatterCheckBoxTime));
                 else ch.setText(toDoItem.getName());
                 linearLayoutTomorrow.addView(ch);
                 if (toDoItem.isComplete()) {
@@ -253,13 +254,13 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
 
             } else if (dateHelper.isOverDue(toDoItem) && !toDoItem.isComplete()) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
-                    ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDateTime));
+                    ch.setText(toDoItem.getName() + SEPARATOR + " - " + SEPARATOR + toDoItem.getDate().toString(formatterCheckBoxDateTime));
                 else ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDate));
                 linearLayoutOverdue.addView(ch);
             } else if (!toDoItem.isComplete()) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
-                    ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDateTime));
-                else ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxDate));
+                    ch.setText(toDoItem.getName() + SEPARATOR +" - " + SEPARATOR + toDoItem.getDate().toString(formatterCheckBoxDateTime));
+                else ch.setText(toDoItem.getName() + SEPARATOR +" - " + SEPARATOR +toDoItem.getDate().toString(formatterCheckBoxDate));
                 linearLayoutFuture.addView(ch);
             }
         } else { //drawerList.getCheckedItemPosition() == 4
@@ -269,7 +270,7 @@ public class SimpleDo extends Activity implements Constants, DeleteDialog.Notice
                 ch.setChecked(true);
             } else if (dateHelper.isTodaysDate(toDoItem) && toDoItem.isComplete()) {
                 if (toDoItem.getDate() instanceof LocalDateTime)
-                    ch.setText(toDoItem.getName() + " - " + toDoItem.getDate().toString(formatterCheckBoxTime));
+                    ch.setText(toDoItem.getName() + SEPARATOR +" - " + SEPARATOR + toDoItem.getDate().toString(formatterCheckBoxTime));
                 else ch.setText(toDoItem.getName());
                 linearLayoutToday.addView(ch);
                 if (toDoItem.isComplete()) {

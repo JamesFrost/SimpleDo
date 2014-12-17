@@ -16,10 +16,11 @@ public interface Constants {
     public static final String KEY_DATE = "date";
     public static final String KEY_NAME = "toDoItemName";
     public static final String KEY_CHECKBOXTOBODELETEDNAME = "checkBoxToBeDeletedName";
+    public static final String SEPARATOR = "\u200B"; //Unicode invisible character
     //Warning messages
     public static final String TOAST_EMPTY_NAME_WARNING = "The task name is empty!";
     public static final String TOAST_DUPLICATE_ITEM_WARNING = "Task with that name already exists!";
-    public static final String TOAST_HYPHEN_WARNING = "Cannot create a task with '-' in the name!";
+    public static final String TOAST_INVISIBLE_CHAR_WARNING = "Cannot create a task with an invisible character!";
     public static final String TOAST_TASK_CREATED = "Task Created";
     public static final String TOAST_TASK_DELETED = "Task Deleted";
     //Activity results codes

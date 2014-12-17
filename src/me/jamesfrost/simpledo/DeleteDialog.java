@@ -24,7 +24,8 @@ public class DeleteDialog extends DialogFragment implements Constants {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         Bundle bundle = getArguments();
-        String[] checkBoxName = bundle.getString(KEY_CHECKBOXTOBODELETEDNAME).split("-");
+        String[] checkBoxName = bundle.getString(KEY_CHECKBOXTOBODELETEDNAME).split(SEPARATOR);
+        System.out.println("Checkbox length: " + checkBoxName.length);
         String DELETE_CONFORMATION_DIALOG = "Are you sure you want to delete " + checkBoxName[0] + "?";
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
